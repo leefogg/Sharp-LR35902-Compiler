@@ -23,6 +23,7 @@ namespace Sharp_LR35902_Compiler
 			{ "SUB", Subtract },
 			{ "XOR", XOR },
 			{ "ADD", Add },
+			{ "INC", Increment },
 			{ "DEC", Decrement },
 			{ "CP", Compare },
 			{ "OR", OR },
@@ -186,6 +187,20 @@ namespace Sharp_LR35902_Compiler
 				
 
 			return ListOf((byte)(0xA8 + registerindex));
+		}
+		private static byte[] Increment(string[] oprands)
+		{
+			var registerindex = registers.IndexOf(oprands[0]);
+			if (registerindex == -1)
+			{
+				var pairindex = registerPairs.IndexOf(oprands[0]);
+				if (pairindex == -1)
+					throw new ArgumentException($"Unknown register '{oprands[0]}'");
+
+				return ListOf((byte)(0x03 + 0x10 * pairindex));
+			}
+
+			return ListOf((byte)(0x04 + 8 * registerindex));
 		}
 		private static byte[] Decrement(string[] oprands)
 		{
