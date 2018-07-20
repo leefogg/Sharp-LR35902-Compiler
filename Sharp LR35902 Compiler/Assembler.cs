@@ -23,7 +23,8 @@ namespace Sharp_LR35902_Compiler
 			{ "SUB", Subtract },
 			{ "XOR", XOR },
 			{ "DEC", Decrement },
-			{ "CP", Compare }
+			{ "CP", Compare },
+			{ "OR", OR }
 		};
 
 		private static byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
@@ -175,6 +176,21 @@ namespace Sharp_LR35902_Compiler
 
 
 			return ListOf((byte)(0xB8 + registerindex));
+		}
+		private static byte[] OR(string[] oprands)
+		{
+			var registerindex = registers.IndexOf(oprands[0]);
+			if (registerindex == -1)
+			{
+				ushort constant = 0;
+				if (!TryParseConstant(oprands[0], ref constant))
+					throw new ArgumentException($"Unknown register '{oprands[0]}'");
+
+				return ListOf<byte>(0xF6, (byte)constant);
+			}
+
+
+			return ListOf((byte)(0xB0 + registerindex));
 		}
 
 		public static void Main(string[] args)
