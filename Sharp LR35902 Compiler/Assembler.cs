@@ -31,6 +31,7 @@ namespace Sharp_LR35902_Compiler
 			{ "OR", OR },
 			{ "RL", RotateLeft},
 			{ "RR", RotateRight},
+			{ "RST", Reset }
 		};
 
 		private static byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
@@ -303,6 +304,15 @@ namespace Sharp_LR35902_Compiler
 
 			var registerindex = registers.IndexOf(oprands[0]);
 			return ListOf<byte>(0xCB, (byte)(0x18 + registerindex));
+		}
+		private static byte[] Reset(string[] oprands)
+		{
+			var vectors = new[] {"0", "8", "10", "18", "20", "28", "30", "38" };
+			var vectorindex = vectors.IndexOf(oprands[0]);
+			if (vectorindex == -1)
+				throw new ArgumentException($"Unknown reset vector '{oprands[0]}'");
+
+			return ListOf((byte)(0xC7 + 8 * vectorindex));
 		}
 
 		public static void Main(string[] args)

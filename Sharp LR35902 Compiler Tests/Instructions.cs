@@ -1659,7 +1659,7 @@ namespace Sharp_LR35902_Compiler_Tests
 
 
 		[TestMethod]
-		public void RST_8()
+		public void RST_08()
 		{
 			var result = Assembler.CompileInstruction("RST 8");
 			Is(result, 0xCF);
