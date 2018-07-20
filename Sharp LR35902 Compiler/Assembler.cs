@@ -34,7 +34,8 @@ namespace Sharp_LR35902_Compiler
 			{ "RST", Reset },
 			{ "SCF", SetCarryFlag },
 			{ "CPL", ComplementA },
-			{ "DAA", BCDAdjustA }
+			{ "DAA", BCDAdjustA },
+			{ "CCF", ClearCarryFlag }
 		};
 
 		private static byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
@@ -320,6 +321,7 @@ namespace Sharp_LR35902_Compiler
 		public static byte[] SetCarryFlag(string[] oprands) => ListOf<byte>(0x37);
 		public static byte[] ComplementA(string[] oprands) => ListOf<byte>(0x2F);
 		public static byte[] BCDAdjustA(string[] oprands) => ListOf<byte>(0x27);
+		public static byte[] ClearCarryFlag(string[] oprands) => ListOf<byte>(0x3F);
 
 		public static void Main(string[] args)
 		{
