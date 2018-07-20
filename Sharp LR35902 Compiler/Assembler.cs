@@ -8,15 +8,18 @@ namespace Sharp_LR35902_Compiler
 {
 	public class Assembler
 	{
+		private static readonly string[] registers = new[] { "B", "C", "D", "E", "H", "L", "(HL)", "A" };
+
 		private static readonly Dictionary<string, Func<string[], byte[]>> Instructions = new Dictionary<string, Func<string[], byte[]>> { 
 			{ "NOP", NoOp },
-			{ "STOP", STOP },
+			{ "STOP", Stop },
 			{ "DI", DisableInterrupts },
 			{ "EI", EnableInterrupts },
 			{ "RET", Return },
 			{ "RETI", ReturnWithInterrrupts },
-			{ "LD", LOAD },
-			{ "HALT", HALT },
+			{ "LD", Load },
+			{ "HALT", Halt },
+			{ "SUB", Subtract }
 		};
 
 		private static byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
@@ -24,9 +27,9 @@ namespace Sharp_LR35902_Compiler
 		private static byte[] EnableInterrupts(string[] oprands) => ListOf<byte>(0xFB);
 		private static byte[] ReturnWithInterrrupts(string[] oprands) => ListOf<byte>(0xD9);
 		private static byte[] Return(string[] oprands) => ListOf<byte>(0xC9);
-		private static byte[] HALT(string[] oprands) => ListOf<byte>(0x76);
-		private static byte[] STOP(string[] oprands) => ListOf<byte>(0x10);
-		private static byte[] LOAD(string[] oprands)
+		private static byte[] Halt(string[] oprands) => ListOf<byte>(0x76);
+		private static byte[] Stop(string[] oprands) => ListOf<byte>(0x10);
+		private static byte[] Load(string[] oprands)
 		{
 			// Assigning ushort to register pair
 			// 0xn1
@@ -51,8 +54,6 @@ namespace Sharp_LR35902_Compiler
 			// Loading HL into SP
 			if (oprands[0] == "SP" && oprands[1] == "HL")
 				return ListOf<byte>(0xF9);
-
-			string[] registers = new[] { "B", "C", "D", "E", "H", "L", "(HL)", "A" };
 
 			var oprand1offset = registers.IndexOf(oprands[0]);
 			var oprand2offset = registers.IndexOf(oprands[1]);
@@ -102,6 +103,21 @@ namespace Sharp_LR35902_Compiler
 				var bytecode = topleft + (oprand1offset * registers.Length) + oprand2offset;
 				return new[] { ((byte)bytecode) };
 			}
+		}
+		private static byte[] Subtract(string[] oprands)
+		{
+			ushort constant = 0;
+			if (TryParseConstant(oprands[1], ref constant))
+				return ListOf<byte>(0xD6, (byte)constant);
+
+			if (oprands[0] != "A")
+				throw new ArgumentException($"Cannot subtract into register '{oprands[0]}'. Can only subtract into register A");
+
+			var registerindex = registers.IndexOf(oprands[1]);
+			if (registerindex == -1)
+				throw new ArgumentException($"Unrecognised register '{oprands[1]}'");
+
+			return ListOf((byte)(0x90 + registerindex));
 		}
 
 		public static void Main(string[] args)
