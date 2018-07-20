@@ -23,6 +23,7 @@ namespace Sharp_LR35902_Compiler
 			{ "SUB", Subtract },
 			{ "XOR", XOR },
 			{ "ADD", Add },
+			{ "ADC", AddWithCarry },
 			{ "INC", Increment },
 			{ "DEC", Decrement },
 			{ "CP", Compare },
@@ -158,6 +159,23 @@ namespace Sharp_LR35902_Compiler
 
 
 			return ListOf((byte)(0x80 + registerindex));
+		}
+		private static byte[] AddWithCarry(string[] oprands)
+		{
+			if (oprands[0] != "A")
+				throw new ArgumentException($"Cannot add into register '{oprands[0]}'. Can only add into register A");
+
+			var registerindex = registers.IndexOf(oprands[1]);
+			if (registerindex == -1)
+			{
+				ushort constant = 0;
+				if (!TryParseConstant(oprands[1], ref constant))
+					throw new ArgumentException($"Unknown register '{oprands[0]}'");
+
+				return ListOf<byte>(0xCE, (byte)constant);
+			}
+
+			return ListOf((byte)(0x88 + registerindex));
 		}
 		private static byte[] Subtract(string[] oprands)
 		{
