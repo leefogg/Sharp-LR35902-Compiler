@@ -9,6 +9,7 @@ namespace Sharp_LR35902_Compiler
 	public class Assembler
 	{
 		private static readonly string[] registers = new[] { "B", "C", "D", "E", "H", "L", "(HL)", "A" };
+		private static readonly string[] registerPairs = new[] { "BC", "DE", "HL", "SP" };
 
 		private static readonly Dictionary<string, Func<string[], byte[]>> Instructions = new Dictionary<string, Func<string[], byte[]>> { 
 			{ "NOP", NoOp },
@@ -20,7 +21,8 @@ namespace Sharp_LR35902_Compiler
 			{ "LD", Load },
 			{ "HALT", Halt },
 			{ "SUB", Subtract },
-			{ "XOR", XOR }
+			{ "XOR", XOR },
+			{ "DEC", Decrement }
 		};
 
 		private static byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
@@ -48,8 +50,7 @@ namespace Sharp_LR35902_Compiler
 			ushort oprand2const = 0;
 			if (TryParseConstant(oprands[1], ref oprand2const) && !oprand2const.isByte())
 			{
-				string[] pairs = new[] { "BC", "DE", "HL", "SP" };
-				var pairindex = pairs.IndexOf(oprands[0]);
+				var pairindex = registerPairs.IndexOf(oprands[0]);
 				if (pairindex == -1)
 					throw new ArgumentException($"Register pair '{oprands[1]}' doesn't exist");
 
@@ -144,6 +145,20 @@ namespace Sharp_LR35902_Compiler
 				
 
 			return ListOf((byte)(0xA8 + registerindex));
+		}
+		private static byte[] Decrement(string[] oprands)
+		{
+			var registerindex = registers.IndexOf(oprands[0]);
+			if (registerindex == -1)
+			{
+				var pairindex = registerPairs.IndexOf(oprands[0]);
+				if (pairindex == -1)
+					throw new ArgumentException($"Unknown register '{oprands[0]}'");
+
+				return ListOf((byte)(0x0B + 0x10 * pairindex));
+			}
+
+			return ListOf((byte)(0x05 + 8 * registerindex));
 		}
 
 		public static void Main(string[] args)
