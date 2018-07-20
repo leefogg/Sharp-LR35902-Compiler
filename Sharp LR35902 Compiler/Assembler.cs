@@ -37,7 +37,8 @@ namespace Sharp_LR35902_Compiler
 			{ "CPL", ComplementA },
 			{ "DAA", BCDAdjustA },
 			{ "CCF", ClearCarryFlag },
-			{ "CALL", Call }
+			{ "CALL", Call },
+			{ "PUSH", Push }
 		};
 
 		private static byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
@@ -359,6 +360,15 @@ namespace Sharp_LR35902_Compiler
 
 			var constantbytes = constant.ToByteArray();
 			return ListOf((byte)(0xC4 + 8 * conditionindex), constantbytes[0], constantbytes[1]);
+		}
+		public static byte[] Push(string[] oprands)
+		{
+			string[] pairs = new[] { "BC", "DE", "HL", "AF" };
+			var pairindex = pairs.IndexOf(oprands[0]);
+			if (pairindex == -1)
+				throw new ArgumentException($"Unknown register pair '{oprands[0]}'");
+
+			return ListOf((byte)(0xC5 + 0x10 * pairindex));
 		}
 
 		public static void Main(string[] args)
