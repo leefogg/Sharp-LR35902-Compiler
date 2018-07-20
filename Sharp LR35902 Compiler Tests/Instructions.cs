@@ -1634,15 +1634,6 @@ namespace Sharp_LR35902_Compiler_Tests
 			Is(result, 0xCA, 225, 244);
 		}
 
-
-		[TestMethod]
-		public void Ext_ops()
-		{
-			var result = Assembler.CompileInstruction("Ext ops");
-			Is(result, 0xCB);
-		}
-
-
 		[TestMethod]
 		public void CALL_Z_nn()
 		{
