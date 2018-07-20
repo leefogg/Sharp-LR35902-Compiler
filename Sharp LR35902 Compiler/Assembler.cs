@@ -36,7 +36,8 @@ namespace Sharp_LR35902_Compiler
 			{ "SCF", SetCarryFlag },
 			{ "CPL", ComplementA },
 			{ "DAA", BCDAdjustA },
-			{ "CCF", ClearCarryFlag }
+			{ "CCF", ClearCarryFlag },
+			{ "CALL", Call }
 		};
 
 		private static byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
@@ -338,6 +339,27 @@ namespace Sharp_LR35902_Compiler
 		public static byte[] ComplementA(string[] oprands) => ListOf<byte>(0x2F);
 		public static byte[] BCDAdjustA(string[] oprands) => ListOf<byte>(0x27);
 		public static byte[] ClearCarryFlag(string[] oprands) => ListOf<byte>(0x3F);
+		public static byte[] Call(string[] oprands)
+		{
+			string[] conditions = new[] { "NZ", "Z", "NC", "C" };
+			var conditionindex = conditions.IndexOf(oprands[0]);
+			if (conditionindex == -1)
+			{
+				ushort address = 0;
+				if (!TryParseConstant(oprands[0], ref address))
+					throw new ArgumentException($"Unknown expression '{oprands[0]}'");
+
+				var addressbytes = address.ToByteArray();
+				return ListOf<byte>(0xCD, addressbytes[0], addressbytes[1]);
+			}
+
+			ushort constant = 0;
+			if (!TryParseConstant(oprands[1], ref constant))
+				throw new ArgumentException($"Unknown condition '{oprands[1]}'");
+
+			var constantbytes = constant.ToByteArray();
+			return ListOf((byte)(0xC4 + 8 * conditionindex), constantbytes[0], constantbytes[1]);
+		}
 
 		public static void Main(string[] args)
 		{
