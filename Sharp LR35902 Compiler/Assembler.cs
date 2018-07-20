@@ -10,6 +10,7 @@ namespace Sharp_LR35902_Compiler
 	{
 		private static readonly string[] registers = new[] { "B", "C", "D", "E", "H", "L", "(HL)", "A" };
 		private static readonly string[] registerPairs = new[] { "BC", "DE", "HL", "SP" };
+		private static readonly string[] conditions = new[] { "NZ", "Z", "NC", "C" };
 
 		private static readonly Dictionary<string, Func<string[], byte[]>> Instructions = new Dictionary<string, Func<string[], byte[]>> { 
 			{ "NOP", NoOp },
@@ -39,7 +40,8 @@ namespace Sharp_LR35902_Compiler
 			{ "CCF", ClearCarryFlag },
 			{ "CALL", Call },
 			{ "PUSH", Push },
-			{ "POP", Pop }
+			{ "POP", Pop },
+			{ "JP", Jump }
 		};
 
 		private static byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
@@ -49,8 +51,6 @@ namespace Sharp_LR35902_Compiler
 		private static byte[] Return(string[] oprands) {
 			if (oprands.Length == 0)
 				return ListOf<byte>(0xC9);
-
-			string[] conditions = new[] { "NZ", "Z", "NC", "C" };
 
 			var conditionindex = conditions.IndexOf(oprands[0]);
 			if (conditionindex == -1)
@@ -343,7 +343,6 @@ namespace Sharp_LR35902_Compiler
 		public static byte[] ClearCarryFlag(string[] oprands) => ListOf<byte>(0x3F);
 		public static byte[] Call(string[] oprands)
 		{
-			string[] conditions = new[] { "NZ", "Z", "NC", "C" };
 			var conditionindex = conditions.IndexOf(oprands[0]);
 			if (conditionindex == -1)
 			{
@@ -379,6 +378,29 @@ namespace Sharp_LR35902_Compiler
 				throw new ArgumentException($"Unknown register pair '{oprands[0]}'");
 
 			return ListOf((byte)(0xC1 + 0x10 * pairindex));
+		}
+		public static byte[] Jump(string[] oprands)
+		{
+			if (oprands[0] == "(HL)")
+				return ListOf<byte>(0xE9);
+
+			var conditionindex = conditions.IndexOf(oprands[0]);
+			if (conditionindex == -1)
+			{
+				ushort address = 0;
+				if (!TryParseConstant(oprands[0], ref address))
+					throw new ArgumentException($"Unknown expression '{oprands[0]}'");
+
+				var addressbytes = address.ToByteArray();
+				return ListOf<byte>(0xC3, addressbytes[0], addressbytes[1]);
+			}
+
+			ushort constant = 0;
+			if (!TryParseConstant(oprands[1], ref constant))
+				throw new ArgumentException($"Unknown condition '{oprands[1]}'");
+
+			var constantbytes = constant.ToByteArray();
+			return ListOf((byte)(0xC2 + 8 * conditionindex), constantbytes[0], constantbytes[1]);
 		}
 
 		public static void Main(string[] args)
