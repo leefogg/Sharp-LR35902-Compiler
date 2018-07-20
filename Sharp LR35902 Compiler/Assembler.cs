@@ -41,7 +41,8 @@ namespace Sharp_LR35902_Compiler
 			{ "CALL", Call },
 			{ "PUSH", Push },
 			{ "POP", Pop },
-			{ "JP", Jump }
+			{ "JP", Jump },
+			{ "JR", JumpRelative }
 		};
 
 		private static byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
@@ -401,6 +402,29 @@ namespace Sharp_LR35902_Compiler
 
 			var constantbytes = constant.ToByteArray();
 			return ListOf((byte)(0xC2 + 8 * conditionindex), constantbytes[0], constantbytes[1]);
+		}
+		public static byte[] JumpRelative(string[] oprands)
+		{
+			var conditionindex = conditions.IndexOf(oprands[0]);
+			if (conditionindex == -1)
+			{
+				ushort address = 0;
+				if (!TryParseConstant(oprands[0], ref address))
+					throw new ArgumentException($"Unknown expression '{oprands[0]}'");
+
+				if (!address.isByte())
+					throw new ArgumentException("Can only jump back 127 and forward 128");
+
+				var addressbytes = address.ToByteArray();
+				return ListOf<byte>(0x18, addressbytes[0]);
+			}
+
+			ushort constant = 0;
+			if (!TryParseConstant(oprands[1], ref constant))
+				throw new ArgumentException($"Unknown condition '{oprands[1]}'");
+
+			var constantbytes = constant.ToByteArray();
+			return ListOf((byte)(0x20 + 8 * conditionindex), constantbytes[0]);
 		}
 
 		public static void Main(string[] args)
