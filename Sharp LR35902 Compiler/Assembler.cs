@@ -31,7 +31,8 @@ namespace Sharp_LR35902_Compiler
 			{ "OR", OR },
 			{ "RL", RotateLeft},
 			{ "RR", RotateRight},
-			{ "RST", Reset }
+			{ "RST", Reset },
+			{ "SCF", SetCarryFlag }
 		};
 
 		private static byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
@@ -314,6 +315,7 @@ namespace Sharp_LR35902_Compiler
 
 			return ListOf((byte)(0xC7 + 8 * vectorindex));
 		}
+		public static byte[] SetCarryFlag(string[] oprands) => ListOf<byte>(0x37);
 
 		public static void Main(string[] args)
 		{
