@@ -26,7 +26,18 @@ namespace Sharp_LR35902_Compiler
 		private static byte[] DisableInterrupts(string[] oprands) => ListOf<byte>(0xF3);
 		private static byte[] EnableInterrupts(string[] oprands) => ListOf<byte>(0xFB);
 		private static byte[] ReturnWithInterrrupts(string[] oprands) => ListOf<byte>(0xD9);
-		private static byte[] Return(string[] oprands) => ListOf<byte>(0xC9);
+		private static byte[] Return(string[] oprands) {
+			if (oprands.Length == 0)
+				return ListOf<byte>(0xC9);
+
+			string[] conditions = new[] { "NZ", "Z", "NC", "C" };
+
+			var conditionindex = conditions.IndexOf(oprands[0]);
+			if (conditionindex == -1)
+				throw new ArgumentException($"Unexpected condition '{oprands[0]}'");
+
+			return ListOf((byte)(0xC0 + (conditionindex * 8)));
+		}
 		private static byte[] Halt(string[] oprands) => ListOf<byte>(0x76);
 		private static byte[] Stop(string[] oprands) => ListOf<byte>(0x10);
 		private static byte[] Load(string[] oprands)
