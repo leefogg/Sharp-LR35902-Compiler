@@ -25,7 +25,9 @@ namespace Sharp_LR35902_Compiler
 			{ "ADD", Add },
 			{ "DEC", Decrement },
 			{ "CP", Compare },
-			{ "OR", OR }
+			{ "OR", OR },
+			{ "RL", RotateLeft},
+			{ "RR", RotateRight},
 		};
 
 		private static byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
@@ -228,6 +230,28 @@ namespace Sharp_LR35902_Compiler
 
 
 			return ListOf((byte)(0xB0 + registerindex));
+		}
+		private static byte[] RotateLeft(string[] oprands)
+		{
+			if (oprands.Length != 1)
+				throw new ArgumentException("Register expected");
+
+			if (oprands[0] == "A")
+				return ListOf<byte>(0x17);
+
+			var registerindex = registers.IndexOf(oprands[0]);
+			return ListOf<byte>(0xCB, (byte)(0x10 + registerindex));
+		}
+		private static byte[] RotateRight(string[] oprands)
+		{
+			if (oprands.Length != 1)
+				throw new ArgumentException("Register expected");
+
+			if (oprands[0] == "A")
+				return ListOf<byte>(0x1F);
+
+			var registerindex = registers.IndexOf(oprands[0]);
+			return ListOf<byte>(0xCB, (byte)(0x18 + registerindex));
 		}
 
 		public static void Main(string[] args)
