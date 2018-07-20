@@ -20,10 +20,11 @@ namespace Sharp_LR35902_Compiler
 			{ "RETI", ReturnWithInterrrupts },
 			{ "LD", Load },
 			{ "HALT", Halt },
-			{ "SUB", Subtract },
 			{ "XOR", XOR },
 			{ "ADD", Add },
 			{ "ADC", AddWithCarry },
+			{ "SUB", Subtract },
+			{ "SBC", SubtractWithCarry },
 			{ "INC", Increment },
 			{ "DEC", Decrement },
 			{ "CP", Compare },
@@ -170,7 +171,7 @@ namespace Sharp_LR35902_Compiler
 			{
 				ushort constant = 0;
 				if (!TryParseConstant(oprands[1], ref constant))
-					throw new ArgumentException($"Unknown register '{oprands[0]}'");
+					throw new ArgumentException($"Unknown register '{oprands[1]}'");
 
 				return ListOf<byte>(0xCE, (byte)constant);
 			}
@@ -191,6 +192,23 @@ namespace Sharp_LR35902_Compiler
 				throw new ArgumentException($"Unrecognised register '{oprands[1]}'");
 
 			return ListOf((byte)(0x90 + registerindex));
+		}
+		private static byte[] SubtractWithCarry(string[] oprands)
+		{
+			if (oprands[0] != "A")
+				throw new ArgumentException($"Cannot subtract into register '{oprands[0]}'. Can only subtract into register A");
+
+			var registerindex = registers.IndexOf(oprands[1]);
+			if (registerindex == -1)
+			{
+				ushort constant = 0;
+				if (!TryParseConstant(oprands[1], ref constant))
+					throw new ArgumentException($"Unknown register '{oprands[1]}'");
+
+				return ListOf<byte>(0xDE, (byte)constant);
+			}
+
+			return ListOf((byte)(0x98 + registerindex));
 		}
 		private static byte[] XOR(string[] oprands)
 		{
