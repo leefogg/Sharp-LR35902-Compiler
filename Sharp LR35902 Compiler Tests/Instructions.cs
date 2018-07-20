@@ -1828,10 +1828,10 @@ namespace Sharp_LR35902_Compiler_Tests
 
 
 		[TestMethod]
-		public void ADD_SP_d()
+		public void ADD_SP_n()
 		{
-			var result = Assembler.CompileInstruction("ADD SP,d");
-			Is(result, 0xE8);
+			var result = Assembler.CompileInstruction("ADD SP, 225");
+			Is(result, 0xE8, 225);
 		}
 
 

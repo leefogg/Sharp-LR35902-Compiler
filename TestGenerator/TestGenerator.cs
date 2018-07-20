@@ -243,7 +243,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			"PUSH HL",
 			"AND n",
 			"RST 20",
-			"ADD SP,d",
+			"ADD SP,n",
 			"JP (HL)",
 			"LD (nn),A",
 			"XX",

@@ -131,6 +131,15 @@ namespace Sharp_LR35902_Compiler
 				return ListOf((byte)(0x09 + 0x10 * pairindex));
 			}
 
+			if (oprands[0] == "SP")
+			{
+				ushort constant = 0;
+				if (!TryParseConstant(oprands[1], ref constant))
+					throw new ArgumentException($"Unexpected expression '{oprands[1]}'");
+
+				return ListOf<byte>(0xE8, (byte)constant);
+			}
+
 			if (oprands[0] != "A")
 				throw new ArgumentException($"Cannot add into register '{oprands[0]}'. Can only add into register A and HL");
 
