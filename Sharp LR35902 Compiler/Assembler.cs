@@ -22,6 +22,7 @@ namespace Sharp_LR35902_Compiler
 			{ "HALT", Halt },
 			{ "SUB", Subtract },
 			{ "XOR", XOR },
+			{ "ADD", Add },
 			{ "DEC", Decrement },
 			{ "CP", Compare },
 			{ "OR", OR }
@@ -118,6 +119,33 @@ namespace Sharp_LR35902_Compiler
 				var bytecode = topleft + (oprand1offset * registers.Length) + oprand2offset;
 				return new[] { ((byte)bytecode) };
 			}
+		}
+		private static byte[] Add(string[] oprands)
+		{
+			if (oprands[0] == "HL")
+			{
+				var pairindex = registerPairs.IndexOf(oprands[1]);
+				if (pairindex == -1)
+					throw new ArgumentException($"Unrecognised register pair '{oprands[1]}'");
+
+				return ListOf((byte)(0x09 + 0x10 * pairindex));
+			}
+
+			if (oprands[0] != "A")
+				throw new ArgumentException($"Cannot add into register '{oprands[0]}'. Can only add into register A and HL");
+
+			var registerindex = registers.IndexOf(oprands[1]);
+			if (registerindex == -1)
+			{
+				ushort constant = 0;
+				if (!TryParseConstant(oprands[1], ref constant))
+					throw new ArgumentException($"Unknown register '{oprands[1]}'");
+
+				return ListOf<byte>(0xC6, (byte)constant);
+			}
+
+
+			return ListOf((byte)(0x80 + registerindex));
 		}
 		private static byte[] Subtract(string[] oprands)
 		{
