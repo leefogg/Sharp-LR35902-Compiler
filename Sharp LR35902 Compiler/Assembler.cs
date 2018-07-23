@@ -3,6 +3,7 @@ using static Sharp_LR35902_Compiler.Extensions.IEnumerableExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sharp_LR35902_Compiler.Exceptions;
 
 namespace Sharp_LR35902_Compiler
 {
@@ -547,8 +548,19 @@ namespace Sharp_LR35902_Compiler
 
 		public static byte[] CompileInstruction(string opcode, string[] oprands)
 		{
-			var bestguess = Instructions[opcode];
-			return bestguess(oprands);
+			try
+			{
+				Func<string[], byte[]> method = NoOp;
+
+				if (!Instructions.TryGetValue(opcode, out method))
+					throw new NotFoundException($"Instruction '{opcode}' not found");
+
+				return method(oprands);
+			} 
+			catch (ArgumentException ee)
+			{
+				throw new SyntaxException("Unable to compilemalformed instruction", ee);
+			}
 		}
 
 
