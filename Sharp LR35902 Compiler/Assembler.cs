@@ -50,7 +50,8 @@ namespace Sharp_LR35902_Compiler
 			{ "RR", RotateRight},
 			{ "BIT", TestBit },
 			{ "RES", ClearBit },
-			{ "SET", SetBit }
+			{ "SET", SetBit },
+			{ "SWAP", SwapNybbles }
 		};
 
 		// Common patterns for opcode ranges
@@ -517,7 +518,17 @@ namespace Sharp_LR35902_Compiler
 		public static byte[] TestBit(string[] oprands) => Pattern_BIT(oprands, 0x40);
 		public static byte[] ClearBit(string[] oprands) => Pattern_BIT(oprands, 0x80);
 		public static byte[] SetBit(string[] oprands) => Pattern_BIT(oprands, 0xC0);
+		public static byte[] SwapNybbles(string[] oprands)
+		{
+			if (oprands.Length != 1)
+				throw new ArgumentException("Expected one register oprand");
 
+			var registerindex = registers.IndexOf(oprands[0]);
+			if (registerindex == -1)
+				throw new ArgumentException("Oprand 1 is not a register");
+
+			return ListOf<byte>(0xCB, (byte)(0x30 + registerindex));
+		}
 
 		public static void Main(string[] args)
 		{
