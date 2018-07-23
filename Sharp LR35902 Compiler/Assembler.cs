@@ -54,7 +54,8 @@ namespace Sharp_LR35902_Compiler
 			{ "SWAP", SwapNybbles },
 			{ "SLA", ShiftLeftPreserveSign },
 			{ "SRA", ShiftRightPreserveSign },
-			{ "SRL", ShiftRight }
+			{ "SRL", ShiftRight },
+			{ "RRC", RotateRightWithCarry },
 		};
 
 		// Common patterns for opcode ranges
@@ -363,6 +364,7 @@ namespace Sharp_LR35902_Compiler
 
 			return ListOf((byte)(0xB0 + registerindex));
 		}
+		private static byte[] RotateRightWithCarry(string[] oprands) => Pattern_LineWithFastA(oprands, 0x08);
 		private static byte[] RotateLeft(string[] oprands) => Pattern_LineWithFastA(oprands, 0x10);
 		private static byte[] RotateRight(string[] oprands) => Pattern_LineWithFastA(oprands, 0x18);
 		private static byte[] Reset(string[] oprands)

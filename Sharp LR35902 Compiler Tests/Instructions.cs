@@ -2041,14 +2041,6 @@ namespace Sharp_LR35902_Compiler_Tests
 
 
 		[TestMethod]
-		public void CB_RRC_A()
-		{
-			var result = Assembler.CompileInstruction("RRC A");
-			Is(result, 0xCB, 0x0F);
-		}
-
-
-		[TestMethod]
 		public void CB_RL_B()
 		{
 			var result = Assembler.CompileInstruction("RL B");
