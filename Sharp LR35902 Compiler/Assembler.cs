@@ -378,11 +378,11 @@ namespace Sharp_LR35902_Compiler
 
 			return ListOf((byte)(0xC7 + 8 * vectorindex));
 		}
-		public static byte[] SetCarryFlag(string[] oprands) => ListOf<byte>(0x37);
-		public static byte[] ComplementA(string[] oprands) => ListOf<byte>(0x2F);
-		public static byte[] BCDAdjustA(string[] oprands) => ListOf<byte>(0x27);
-		public static byte[] ClearCarryFlag(string[] oprands) => ListOf<byte>(0x3F);
-		public static byte[] Call(string[] oprands)
+		private static byte[] SetCarryFlag(string[] oprands) => ListOf<byte>(0x37);
+		private static byte[] ComplementA(string[] oprands) => ListOf<byte>(0x2F);
+		private static byte[] BCDAdjustA(string[] oprands) => ListOf<byte>(0x27);
+		private static byte[] ClearCarryFlag(string[] oprands) => ListOf<byte>(0x3F);
+		private static byte[] Call(string[] oprands)
 		{
 			var conditionindex = conditions.IndexOf(oprands[0]);
 			if (conditionindex == -1)
@@ -402,7 +402,7 @@ namespace Sharp_LR35902_Compiler
 			var constantbytes = constant.ToByteArray();
 			return ListOf((byte)(0xC4 + 8 * conditionindex), constantbytes[0], constantbytes[1]);
 		}
-		public static byte[] Push(string[] oprands)
+		private static byte[] Push(string[] oprands)
 		{
 			string[] pairs = new[] { "BC", "DE", "HL", "AF" };
 			var pairindex = pairs.IndexOf(oprands[0]);
@@ -411,7 +411,7 @@ namespace Sharp_LR35902_Compiler
 
 			return ListOf((byte)(0xC5 + 0x10 * pairindex));
 		}
-		public static byte[] Pop(string[] oprands)
+		private static byte[] Pop(string[] oprands)
 		{
 			string[] pairs = new[] { "BC", "DE", "HL", "AF" };
 			var pairindex = pairs.IndexOf(oprands[0]);
@@ -420,7 +420,7 @@ namespace Sharp_LR35902_Compiler
 
 			return ListOf((byte)(0xC1 + 0x10 * pairindex));
 		}
-		public static byte[] Jump(string[] oprands)
+		private static byte[] Jump(string[] oprands)
 		{
 			if (oprands[0] == "(HL)")
 				return ListOf<byte>(0xE9);
@@ -443,7 +443,7 @@ namespace Sharp_LR35902_Compiler
 			var constantbytes = constant.ToByteArray();
 			return ListOf((byte)(0xC2 + 8 * conditionindex), constantbytes[0], constantbytes[1]);
 		}
-		public static byte[] JumpRelative(string[] oprands)
+		private static byte[] JumpRelative(string[] oprands)
 		{
 			var conditionindex = conditions.IndexOf(oprands[0]);
 			if (conditionindex == -1)
@@ -466,7 +466,7 @@ namespace Sharp_LR35902_Compiler
 			var constantbytes = constant.ToByteArray();
 			return ListOf((byte)(0x20 + 8 * conditionindex), constantbytes[0]);
 		}
-		public static byte[] LoadAndIncrement(string[] oprands)
+		private static byte[] LoadAndIncrement(string[] oprands)
 		{
 			if (oprands[0] == "A" && oprands[1] == "(HL)")
 				return ListOf<byte>(0x2A);
@@ -475,7 +475,7 @@ namespace Sharp_LR35902_Compiler
 
 			throw new ArgumentException("No known oprand match found");
 		}
-		public static byte[] LoadAndDecrement(string[] oprands) {
+		private static byte[] LoadAndDecrement(string[] oprands) {
 			if (oprands[0] == "A" && oprands[1] == "(HL)")
 				return ListOf<byte>(0x3A);
 			if (oprands[0] == "(HL)" && oprands[1] == "A")
@@ -483,7 +483,7 @@ namespace Sharp_LR35902_Compiler
 
 			throw new ArgumentException("No known oprand match found");
 		}
-		public static byte[] LoadHiger(string[] oprands)
+		private static byte[] LoadHiger(string[] oprands)
 		{
 			ushort addressoffset = 0;
 			if (oprands[1] == "A")
@@ -509,7 +509,7 @@ namespace Sharp_LR35902_Compiler
 
 			throw new ArgumentException("No known oprand match found");
 		}
-		public static byte[] AddSPIntoHL(string[] oprands)
+		private static byte[] AddSPIntoHL(string[] oprands)
 		{
 			if (oprands[0] != "SP")
 				throw new ArgumentException("Can only add 8-bit immediate to SP");
@@ -524,13 +524,13 @@ namespace Sharp_LR35902_Compiler
 
 			throw new ArgumentException("No known oprand match found");
 		}
-		public static byte[] TestBit(string[] oprands) => Pattern_BIT(oprands, 0x40);
-		public static byte[] ClearBit(string[] oprands) => Pattern_BIT(oprands, 0x80);
-		public static byte[] SetBit(string[] oprands) => Pattern_BIT(oprands, 0xC0);
-		public static byte[] SwapNybbles(string[] oprands) => Pattern_Line(oprands, 0x30);
-		public static byte[] ShiftLeftPreserveSign(string[] oprands) => Pattern_Line(oprands, 0x20);
-		public static byte[] ShiftRightPreserveSign(string[] oprands) => Pattern_Line(oprands, 0x28);
-		public static byte[] ShiftRight(string[] oprands) => Pattern_Line(oprands, 0x38);
+		private static byte[] TestBit(string[] oprands) => Pattern_BIT(oprands, 0x40);
+		private static byte[] ClearBit(string[] oprands) => Pattern_BIT(oprands, 0x80);
+		private static byte[] SetBit(string[] oprands) => Pattern_BIT(oprands, 0xC0);
+		private static byte[] SwapNybbles(string[] oprands) => Pattern_Line(oprands, 0x30);
+		private static byte[] ShiftLeftPreserveSign(string[] oprands) => Pattern_Line(oprands, 0x20);
+		private static byte[] ShiftRightPreserveSign(string[] oprands) => Pattern_Line(oprands, 0x28);
+		private static byte[] ShiftRight(string[] oprands) => Pattern_Line(oprands, 0x38);
 
 		public static void Main(string[] args)
 		{
