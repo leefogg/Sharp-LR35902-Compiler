@@ -31,8 +31,6 @@ namespace Sharp_LR35902_Compiler
 			{ "CP", Compare },
 			{ "AND", And },
 			{ "OR", Or },
-			{ "RL", RotateLeft},
-			{ "RR", RotateRight},
 			{ "RST", Reset },
 			{ "SCF", SetCarryFlag },
 			{ "CPL", ComplementA },
@@ -46,7 +44,11 @@ namespace Sharp_LR35902_Compiler
 			{ "LDI", LoadAndIncrement },
 			{ "LDD", LoadAndDecrement },
 			{ "LDH", LoadHiger },
-			{ "LDHL", AddSPIntoHL }
+			{ "LDHL", AddSPIntoHL },
+			// CB instructions
+			{ "RL", RotateLeft},
+			{ "RR", RotateRight},
+			{ "BIT", TestBit }
 		};
 
 		private static byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
@@ -488,6 +490,28 @@ namespace Sharp_LR35902_Compiler
 
 			throw new ArgumentException("No known oprand match found");
 		}
+		public static byte[] TestBit(string[] oprands)
+		{
+			if (oprands.Length != 2)
+				throw new ArgumentException("Expected 2 oprands");
+
+			var registerindex = registers.IndexOf(oprands[1]);
+			if (registerindex == -1)
+				throw new ArgumentException("Expected register for oprand 2");
+
+			ushort bit = 0;
+			if (TryParseConstant(oprands[0], ref bit))
+			{
+				if (bit > 7)
+					throw new ArgumentException("Unkown bit '{oprands[0]}'. Expected bit 0-7 inclusive");
+
+				return ListOf<byte>(0xCB, (byte)(0x40 + (8 * bit) + registerindex));
+			}
+
+			throw new ArgumentException("No known oprand match found");
+		}
+
+
 
 		public static void Main(string[] args)
 		{
