@@ -60,11 +60,15 @@ namespace Sharp_LR35902_Compiler
 			{ "RLC", RotateLeftWithCarry }
 		};
 
+		private static ArgumentException TooFewOprandsException(int expectednumber) => new ArgumentException($"Expected {expectednumber} oprands");
+		private static ArgumentException NoOprandMatchException => new ArgumentException("No known oprand match found");
+		private static ArgumentException UnexpectedInt16Exception => throw new ArgumentException($"Unexpected 16-bit immediate, expected 8-bit immediate.");
+
 		// Common patterns for opcode ranges
 		private static byte[] Pattern_BIT(string[] oprands, byte startopcode)
 		{
 			if (oprands.Length != 2)
-				throw new ArgumentException("Expected 2 oprands");
+				throw TooFewOprandsException(2);
 
 			var registerindex = registers.IndexOf(oprands[1]);
 			if (registerindex == -1)
@@ -84,7 +88,7 @@ namespace Sharp_LR35902_Compiler
 		private static byte[] Pattern_Line(string[] oprands, byte startopcode)
 		{
 			if (oprands.Length != 1)
-				throw new ArgumentException("Expected one register oprand");
+				throw new ArgumentException("Expected 1 register oprand");
 
 			var registerindex = registers.IndexOf(oprands[0]);
 			if (registerindex == -1)
@@ -95,7 +99,7 @@ namespace Sharp_LR35902_Compiler
 		private static byte[] Pattern_LineWithFastA(string[] oprands, byte rowstartopcode)
 		{
 			if (oprands.Length != 1)
-				throw new ArgumentException("Register expected");
+				throw TooFewOprandsException(1);
 
 			if (oprands[0] == "A")
 				return ListOf((byte)(rowstartopcode + 7));
@@ -109,6 +113,9 @@ namespace Sharp_LR35902_Compiler
 		private static byte[] EnableInterrupts(string[] oprands) => ListOf<byte>(0xFB);
 		private static byte[] ReturnWithInterrrupts(string[] oprands) => ListOf<byte>(0xD9);
 		private static byte[] Return(string[] oprands) {
+			if (oprands.Length > 1)
+				throw new ArgumentException("Unexpected oprands");
+
 			if (oprands.Length == 0)
 				return ListOf<byte>(0xC9);
 
@@ -122,6 +129,9 @@ namespace Sharp_LR35902_Compiler
 		private static byte[] Stop(string[] oprands) => ListOf<byte>(0x10);
 		private static byte[] Load(string[] oprands)
 		{
+			if (oprands.Length != 2)
+				throw TooFewOprandsException(2);
+
 			// Assigning ushort to register pair
 			// 0xn1
 			ushort oprand2const = 0;
@@ -175,7 +185,7 @@ namespace Sharp_LR35902_Compiler
 				var locationbytes = location.ToByteArray();
 				return new byte[] { 0xFA, locationbytes[0], locationbytes[1] };
 			}
-			else if (oprand2offset == -1) // Loading constant into register (0xn6/0xnE)
+			else if (oprand1offset != -1 && oprand2offset == -1) // Loading constant into register (0xn6/0xnE)
 			{
 				// Assume its a constant
 				byte start = 0x06;
@@ -196,6 +206,9 @@ namespace Sharp_LR35902_Compiler
 		}
 		private static byte[] Add(string[] oprands)
 		{
+			if (oprands.Length != 2)
+				throw TooFewOprandsException(2);
+
 			if (oprands[0] == "HL")
 			{
 				var pairindex = registerPairs.IndexOf(oprands[1]);
@@ -208,7 +221,12 @@ namespace Sharp_LR35902_Compiler
 			if (oprands[0] == "SP")
 			{
 				ushort constant = 0;
-				if (!TryParseConstant(oprands[1], ref constant))
+				if (TryParseConstant(oprands[1], ref constant))
+				{
+					if (!constant.isByte())
+						throw UnexpectedInt16Exception;
+				}
+				else
 					throw new ArgumentException($"Unexpected expression '{oprands[1]}'");
 
 				return ListOf<byte>(0xE8, (byte)constant);
@@ -221,7 +239,11 @@ namespace Sharp_LR35902_Compiler
 			if (registerindex == -1)
 			{
 				ushort constant = 0;
-				if (!TryParseConstant(oprands[1], ref constant))
+				if (TryParseConstant(oprands[1], ref constant))
+				{
+					if (!constant.isByte())
+						throw UnexpectedInt16Exception;
+				} else
 					throw new ArgumentException($"Unknown register '{oprands[1]}'");
 
 				return ListOf<byte>(0xC6, (byte)constant);
@@ -232,6 +254,9 @@ namespace Sharp_LR35902_Compiler
 		}
 		private static byte[] AddWithCarry(string[] oprands)
 		{
+			if (oprands.Length != 2)
+				throw TooFewOprandsException(2);
+
 			if (oprands[0] != "A")
 				throw new ArgumentException($"Cannot add into register '{oprands[0]}'. Can only add into register A");
 
@@ -241,6 +266,8 @@ namespace Sharp_LR35902_Compiler
 				ushort constant = 0;
 				if (!TryParseConstant(oprands[1], ref constant))
 					throw new ArgumentException($"Unknown register '{oprands[1]}'");
+				if (!constant.isByte())
+					throw UnexpectedInt16Exception;
 
 				return ListOf<byte>(0xCE, (byte)constant);
 			}
@@ -249,11 +276,18 @@ namespace Sharp_LR35902_Compiler
 		}
 		private static byte[] Subtract(string[] oprands)
 		{
-			ushort constant = 0;
-			if (TryParseConstant(oprands[1], ref constant))
-				return ListOf<byte>(0xD6, (byte)constant);
+			if (oprands.Length != 2)
+				throw TooFewOprandsException(2);
 
-			if (oprands[0] != "A")
+			if (oprands[0] == "A")
+			{
+				ushort constant = 0;
+				if (TryParseConstant(oprands[1], ref constant))
+					if (constant.isByte())
+						return ListOf<byte>(0xD6, (byte)constant);
+					else
+						throw UnexpectedInt16Exception;
+			} else
 				throw new ArgumentException($"Cannot subtract into register '{oprands[0]}'. Can only subtract into register A");
 
 			var registerindex = registers.IndexOf(oprands[1]);
@@ -264,6 +298,9 @@ namespace Sharp_LR35902_Compiler
 		}
 		private static byte[] SubtractWithCarry(string[] oprands)
 		{
+			if (oprands.Length != 2)
+				throw TooFewOprandsException(2);
+
 			if (oprands[0] != "A")
 				throw new ArgumentException($"Cannot subtract into register '{oprands[0]}'. Can only subtract into register A");
 
@@ -273,6 +310,8 @@ namespace Sharp_LR35902_Compiler
 				ushort constant = 0;
 				if (!TryParseConstant(oprands[1], ref constant))
 					throw new ArgumentException($"Unknown register '{oprands[1]}'");
+				if (!constant.isByte())
+					throw UnexpectedInt16Exception;
 
 				return ListOf<byte>(0xDE, (byte)constant);
 			}
@@ -281,11 +320,16 @@ namespace Sharp_LR35902_Compiler
 		}
 		private static byte[] XOR(string[] oprands)
 		{
+			if (oprands.Length != 1)
+				throw TooFewOprandsException(1);
+
 			var registerindex = registers.IndexOf(oprands[0]);
 			if (registerindex == -1) {
 				ushort constant = 0;
 				if (!TryParseConstant(oprands[0], ref constant))
 					throw new ArgumentException($"Unknown register '{oprands[0]}'");
+				if (!constant.isByte())
+					throw UnexpectedInt16Exception;
 
 				return ListOf<byte>(0xEE, (byte)constant);
 			}
@@ -295,6 +339,9 @@ namespace Sharp_LR35902_Compiler
 		}
 		private static byte[] Increment(string[] oprands)
 		{
+			if (oprands.Length != 1)
+				throw TooFewOprandsException(1);
+
 			var registerindex = registers.IndexOf(oprands[0]);
 			if (registerindex == -1)
 			{
@@ -309,6 +356,9 @@ namespace Sharp_LR35902_Compiler
 		}
 		private static byte[] Decrement(string[] oprands)
 		{
+			if (oprands.Length != 1)
+				throw TooFewOprandsException(1);
+
 			var registerindex = registers.IndexOf(oprands[0]);
 			if (registerindex == -1)
 			{
@@ -323,12 +373,17 @@ namespace Sharp_LR35902_Compiler
 		}
 		private static byte[] Compare(string[] oprands)
 		{
+			if (oprands.Length != 1)
+				throw TooFewOprandsException(1);
+
 			var registerindex = registers.IndexOf(oprands[0]);
 			if (registerindex == -1)
 			{
 				ushort constant = 0;
 				if (!TryParseConstant(oprands[0], ref constant))
 					throw new ArgumentException($"Unknown register '{oprands[0]}'");
+				if (!constant.isByte())
+					throw UnexpectedInt16Exception;
 
 				return ListOf<byte>(0xFE, (byte)constant);
 			}
@@ -338,12 +393,17 @@ namespace Sharp_LR35902_Compiler
 		}
 		private static byte[] And(string[] oprands)
 		{
+			if (oprands.Length != 1)
+				throw TooFewOprandsException(1);
+
 			var registerindex = registers.IndexOf(oprands[0]);
 			if (registerindex == -1)
 			{
 				ushort constant = 0;
 				if (!TryParseConstant(oprands[0], ref constant))
 					throw new ArgumentException($"Unknown register '{oprands[0]}'");
+				if (!constant.isByte())
+					throw UnexpectedInt16Exception;
 
 				return ListOf<byte>(0xE6, (byte)constant);
 			}
@@ -353,12 +413,17 @@ namespace Sharp_LR35902_Compiler
 		}
 		private static byte[] Or(string[] oprands)
 		{
+			if (oprands.Length != 1)
+				throw TooFewOprandsException(1);
+
 			var registerindex = registers.IndexOf(oprands[0]);
 			if (registerindex == -1)
 			{
 				ushort constant = 0;
 				if (!TryParseConstant(oprands[0], ref constant))
 					throw new ArgumentException($"Unknown register '{oprands[0]}'");
+				if (!constant.isByte())
+					throw UnexpectedInt16Exception;
 
 				return ListOf<byte>(0xF6, (byte)constant);
 			}
@@ -372,6 +437,9 @@ namespace Sharp_LR35902_Compiler
 		private static byte[] RotateRight(string[] oprands) => Pattern_LineWithFastA(oprands, 0x18);
 		private static byte[] Reset(string[] oprands)
 		{
+			if (oprands.Length != 1)
+				throw TooFewOprandsException(1);
+
 			var vectors = new[] {"0", "8", "10", "18", "20", "28", "30", "38" };
 			var vectorindex = vectors.IndexOf(oprands[0]);
 			if (vectorindex == -1)
@@ -385,6 +453,9 @@ namespace Sharp_LR35902_Compiler
 		private static byte[] ClearCarryFlag(string[] oprands) => ListOf<byte>(0x3F);
 		private static byte[] Call(string[] oprands)
 		{
+			if (oprands.Length == 0)
+				throw new ArgumentException("Expected at least 1 oprand");
+
 			var conditionindex = conditions.IndexOf(oprands[0]);
 			if (conditionindex == -1)
 			{
@@ -405,6 +476,9 @@ namespace Sharp_LR35902_Compiler
 		}
 		private static byte[] Push(string[] oprands)
 		{
+			if (oprands.Length != 1)
+				throw TooFewOprandsException(1);
+
 			string[] pairs = new[] { "BC", "DE", "HL", "AF" };
 			var pairindex = pairs.IndexOf(oprands[0]);
 			if (pairindex == -1)
@@ -414,7 +488,10 @@ namespace Sharp_LR35902_Compiler
 		}
 		private static byte[] Pop(string[] oprands)
 		{
-			string[] pairs = new[] { "BC", "DE", "HL", "AF" };
+			if (oprands.Length != 1)
+				throw TooFewOprandsException(1);
+
+			string[] pairs = new[] { "BC", "DE", "HL", "AF" }; // Different to static list
 			var pairindex = pairs.IndexOf(oprands[0]);
 			if (pairindex == -1)
 				throw new ArgumentException($"Unknown register pair '{oprands[0]}'");
@@ -423,6 +500,9 @@ namespace Sharp_LR35902_Compiler
 		}
 		private static byte[] Jump(string[] oprands)
 		{
+			if (oprands.Length == 0)
+				throw new ArgumentException("Expected at least 1 oprand");
+
 			if (oprands[0] == "(HL)")
 				return ListOf<byte>(0xE9);
 
@@ -446,6 +526,9 @@ namespace Sharp_LR35902_Compiler
 		}
 		private static byte[] JumpRelative(string[] oprands)
 		{
+			if (oprands.Length == 0)
+				throw new ArgumentException("Expected at least 1 oprand");
+
 			var conditionindex = conditions.IndexOf(oprands[0]);
 			if (conditionindex == -1)
 			{
@@ -461,7 +544,11 @@ namespace Sharp_LR35902_Compiler
 			}
 
 			ushort constant = 0;
-			if (!TryParseConstant(oprands[1], ref constant))
+			if (TryParseConstant(oprands[1], ref constant))
+			{
+				if (!constant.isByte())
+					throw UnexpectedInt16Exception;
+			} else
 				throw new ArgumentException($"Unknown condition '{oprands[1]}'");
 
 			var constantbytes = constant.ToByteArray();
@@ -469,6 +556,9 @@ namespace Sharp_LR35902_Compiler
 		}
 		private static byte[] LoadAndIncrement(string[] oprands)
 		{
+			if (oprands.Length != 2)
+				throw TooFewOprandsException(2);
+
 			if (oprands[0] == "A" && oprands[1] == "(HL)")
 				return ListOf<byte>(0x2A);
 			if (oprands[0] == "(HL)" && oprands[1] == "A")
@@ -477,6 +567,9 @@ namespace Sharp_LR35902_Compiler
 			throw new ArgumentException("No known oprand match found");
 		}
 		private static byte[] LoadAndDecrement(string[] oprands) {
+			if (oprands.Length != 2)
+				throw TooFewOprandsException(2);
+
 			if (oprands[0] == "A" && oprands[1] == "(HL)")
 				return ListOf<byte>(0x3A);
 			if (oprands[0] == "(HL)" && oprands[1] == "A")
@@ -486,6 +579,9 @@ namespace Sharp_LR35902_Compiler
 		}
 		private static byte[] LoadHiger(string[] oprands)
 		{
+			if (oprands.Length != 2)
+				throw TooFewOprandsException(2);
+
 			ushort addressoffset = 0;
 			if (oprands[1] == "A")
 			{
@@ -495,7 +591,7 @@ namespace Sharp_LR35902_Compiler
 				if (TryParseConstant(TrimBrackets(oprands[0]), ref addressoffset))
 				{
 					if (!addressoffset.isByte())
-						throw new ArgumentException("Expected 8-bit offset, found 16-bit address");
+						throw UnexpectedInt16Exception;
 
 					return ListOf<byte>(0xE0, (byte)addressoffset);
 				}
@@ -503,7 +599,7 @@ namespace Sharp_LR35902_Compiler
 			else if (TryParseConstant(TrimBrackets(oprands[1]), ref addressoffset))
 			{
 				if (!addressoffset.isByte())
-					throw new ArgumentException("Expected 8-bit offset, found 16-bit address");
+					throw UnexpectedInt16Exception;
 
 				return ListOf<byte>(0xF0, (byte)addressoffset);
 			}
@@ -512,19 +608,23 @@ namespace Sharp_LR35902_Compiler
 		}
 		private static byte[] AddSPIntoHL(string[] oprands)
 		{
+			if (oprands.Length != 2)
+				throw TooFewOprandsException(2);
+
 			if (oprands[0] != "SP")
 				throw new ArgumentException("Can only add 8-bit immediate to SP");
 			ushort immediate = 0;
 			if (TryParseConstant(oprands[1], ref immediate))
 			{
 				if (!immediate.isByte())
-					throw new ArgumentException("Expected 8-bit immediate, found 16-bit immediate");
+					throw UnexpectedInt16Exception;
 
 				return ListOf<byte>(0xF8, (byte)immediate);
 			}
 
-			throw new ArgumentException("No known oprand match found");
+			throw NoOprandMatchException;
 		}
+
 		private static byte[] TestBit(string[] oprands) => Pattern_BIT(oprands, 0x40);
 		private static byte[] ClearBit(string[] oprands) => Pattern_BIT(oprands, 0x80);
 		private static byte[] SetBit(string[] oprands) => Pattern_BIT(oprands, 0xC0);

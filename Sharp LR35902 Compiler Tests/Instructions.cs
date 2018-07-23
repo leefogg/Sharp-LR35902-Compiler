@@ -1739,7 +1739,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		[ExpectedException(typeof(SyntaxException))]
 		public void RET_WrongNumberOfOprands()
 		{
-			CompileInstruction("RET"); // No oprands
+			CompileInstruction("RET NZ 225"); // No oprands
 		}
 
 
@@ -1857,21 +1857,6 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("JP Z,62689");
 			Is(result, 0xCA, 225, 244);
 		}
-
-
-		[TestMethod]
-		public void Ext_ops()
-		{
-			var result = CompileInstruction("Ext ops");
-			Is(result, 0xCB);
-		}
-		[TestMethod]
-		[ExpectedException(typeof(SyntaxException))]
-		public void EXT_WrongNumberOfOprands()
-		{
-			CompileInstruction("EXT"); // No oprands
-		}
-
 
 		[TestMethod]
 		public void CALL_Z_nn()
@@ -2320,14 +2305,6 @@ namespace Sharp_LR35902_Compiler_Tests
 
 
 		[TestMethod]
-		public void CB_RLC_A()
-		{
-			var result = CompileInstruction("RLC A");
-			Is(result, 0xCB, 0x07);
-		}
-
-
-		[TestMethod]
 		public void CB_RRC_B()
 		{
 			var result = CompileInstruction("RRC B");
@@ -2380,14 +2357,6 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("RRC (HL)");
 			Is(result, 0xCB, 0x0E);
-		}
-
-
-		[TestMethod]
-		public void CB_RRC_A()
-		{
-			var result = CompileInstruction("RRC A");
-			Is(result, 0xCB, 0x0F);
 		}
 
 
@@ -2446,15 +2415,6 @@ namespace Sharp_LR35902_Compiler_Tests
 			Is(result, 0xCB, 0x16);
 		}
 
-
-		[TestMethod]
-		public void CB_RL_A()
-		{
-			var result = CompileInstruction("RL A");
-			Is(result, 0xCB, 0x17);
-		}
-
-
 		[TestMethod]
 		public void CB_RR_B()
 		{
@@ -2508,14 +2468,6 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("RR (HL)");
 			Is(result, 0xCB, 0x1E);
-		}
-
-
-		[TestMethod]
-		public void CB_RR_A()
-		{
-			var result = CompileInstruction("RR A");
-			Is(result, 0xCB, 0x1F);
 		}
 
 
