@@ -42,7 +42,8 @@ namespace Sharp_LR35902_Compiler
 			{ "PUSH", Push },
 			{ "POP", Pop },
 			{ "JP", Jump },
-			{ "JR", JumpRelative }
+			{ "JR", JumpRelative },
+			{ "LDD", LoadAndDecrement }
 		};
 
 		private static byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
@@ -425,6 +426,15 @@ namespace Sharp_LR35902_Compiler
 
 			var constantbytes = constant.ToByteArray();
 			return ListOf((byte)(0x20 + 8 * conditionindex), constantbytes[0]);
+		}
+
+		public static byte[] LoadAndDecrement(string[] oprands) {
+			if (oprands[0] == "A" && oprands[1] == "(HL)")
+				return ListOf<byte>(0x3A);
+			if (oprands[0] == "(HL)" && oprands[1] == "A")
+				return ListOf<byte>(0x32);
+
+			throw new ArgumentException("No known oprand match found");
 		}
 
 		public static void Main(string[] args)
