@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sharp_LR35902_Compiler;
 using static Sharp_LR35902_Compiler_Tests.Utils;
 
@@ -1821,7 +1819,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		[TestMethod]
 		public void ADD_SP_n()
 		{
-			var result = Assembler.CompileInstruction("ADD SP, 225");
+			var result = Assembler.CompileInstruction("ADD SP,225");
 			Is(result, 0xE8, 225);
 		}
 
@@ -1909,7 +1907,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		[TestMethod]
 		public void LDHL_SP_n()
 		{
-			var result = Assembler.CompileInstruction("LDHL SP, 225");
+			var result = Assembler.CompileInstruction("LDHL SP,225");
 			Is(result, 0xF8, 225);
 		}
 
@@ -1943,6 +1941,2029 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = Assembler.CompileInstruction("CP 225");
 			Is(result, 0xFE, 225);
+		}
+
+
+		[TestMethod]
+		public void CB_RLC_B()
+		{
+			var result = Assembler.CompileInstruction("RLC B");
+			Is(result, 0xCB, 0x00);
+		}
+
+
+		[TestMethod]
+		public void CB_RLC_C()
+		{
+			var result = Assembler.CompileInstruction("RLC C");
+			Is(result, 0xCB, 0x01);
+		}
+
+
+		[TestMethod]
+		public void CB_RLC_D()
+		{
+			var result = Assembler.CompileInstruction("RLC D");
+			Is(result, 0xCB, 0x02);
+		}
+
+
+		[TestMethod]
+		public void CB_RLC_E()
+		{
+			var result = Assembler.CompileInstruction("RLC E");
+			Is(result, 0xCB, 0x03);
+		}
+
+
+		[TestMethod]
+		public void CB_RLC_H()
+		{
+			var result = Assembler.CompileInstruction("RLC H");
+			Is(result, 0xCB, 0x04);
+		}
+
+
+		[TestMethod]
+		public void CB_RLC_L()
+		{
+			var result = Assembler.CompileInstruction("RLC L");
+			Is(result, 0xCB, 0x05);
+		}
+
+
+		[TestMethod]
+		public void CB_RLC_HL()
+		{
+			var result = Assembler.CompileInstruction("RLC (HL)");
+			Is(result, 0xCB, 0x06);
+		}
+
+
+		[TestMethod]
+		public void CB_RRC_B()
+		{
+			var result = Assembler.CompileInstruction("RRC B");
+			Is(result, 0xCB, 0x08);
+		}
+
+
+		[TestMethod]
+		public void CB_RRC_C()
+		{
+			var result = Assembler.CompileInstruction("RRC C");
+			Is(result, 0xCB, 0x09);
+		}
+
+
+		[TestMethod]
+		public void CB_RRC_D()
+		{
+			var result = Assembler.CompileInstruction("RRC D");
+			Is(result, 0xCB, 0x0A);
+		}
+
+
+		[TestMethod]
+		public void CB_RRC_E()
+		{
+			var result = Assembler.CompileInstruction("RRC E");
+			Is(result, 0xCB, 0x0B);
+		}
+
+
+		[TestMethod]
+		public void CB_RRC_H()
+		{
+			var result = Assembler.CompileInstruction("RRC H");
+			Is(result, 0xCB, 0x0C);
+		}
+
+
+		[TestMethod]
+		public void CB_RRC_L()
+		{
+			var result = Assembler.CompileInstruction("RRC L");
+			Is(result, 0xCB, 0x0D);
+		}
+
+
+		[TestMethod]
+		public void CB_RRC_HL()
+		{
+			var result = Assembler.CompileInstruction("RRC (HL)");
+			Is(result, 0xCB, 0x0E);
+		}
+
+
+		[TestMethod]
+		public void CB_RRC_A()
+		{
+			var result = Assembler.CompileInstruction("RRC A");
+			Is(result, 0xCB, 0x0F);
+		}
+
+
+		[TestMethod]
+		public void CB_RL_B()
+		{
+			var result = Assembler.CompileInstruction("RL B");
+			Is(result, 0xCB, 0x10);
+		}
+
+
+		[TestMethod]
+		public void CB_RL_C()
+		{
+			var result = Assembler.CompileInstruction("RL C");
+			Is(result, 0xCB, 0x11);
+		}
+
+
+		[TestMethod]
+		public void CB_RL_D()
+		{
+			var result = Assembler.CompileInstruction("RL D");
+			Is(result, 0xCB, 0x12);
+		}
+
+
+		[TestMethod]
+		public void CB_RL_E()
+		{
+			var result = Assembler.CompileInstruction("RL E");
+			Is(result, 0xCB, 0x13);
+		}
+
+
+		[TestMethod]
+		public void CB_RL_H()
+		{
+			var result = Assembler.CompileInstruction("RL H");
+			Is(result, 0xCB, 0x14);
+		}
+
+
+		[TestMethod]
+		public void CB_RL_L()
+		{
+			var result = Assembler.CompileInstruction("RL L");
+			Is(result, 0xCB, 0x15);
+		}
+
+
+		[TestMethod]
+		public void CB_RL_HL()
+		{
+			var result = Assembler.CompileInstruction("RL (HL)");
+			Is(result, 0xCB, 0x16);
+		}
+
+
+		[TestMethod]
+		public void CB_RL_A()
+		{
+			var result = Assembler.CompileInstruction("RL A");
+			Is(result, 0xCB, 0x17);
+		}
+
+
+		[TestMethod]
+		public void CB_RR_B()
+		{
+			var result = Assembler.CompileInstruction("RR B");
+			Is(result, 0xCB, 0x18);
+		}
+
+
+		[TestMethod]
+		public void CB_RR_C()
+		{
+			var result = Assembler.CompileInstruction("RR C");
+			Is(result, 0xCB, 0x19);
+		}
+
+
+		[TestMethod]
+		public void CB_RR_D()
+		{
+			var result = Assembler.CompileInstruction("RR D");
+			Is(result, 0xCB, 0x1A);
+		}
+
+
+		[TestMethod]
+		public void CB_RR_E()
+		{
+			var result = Assembler.CompileInstruction("RR E");
+			Is(result, 0xCB, 0x1B);
+		}
+
+
+		[TestMethod]
+		public void CB_RR_H()
+		{
+			var result = Assembler.CompileInstruction("RR H");
+			Is(result, 0xCB, 0x1C);
+		}
+
+
+		[TestMethod]
+		public void CB_RR_L()
+		{
+			var result = Assembler.CompileInstruction("RR L");
+			Is(result, 0xCB, 0x1D);
+		}
+
+
+		[TestMethod]
+		public void CB_RR_HL()
+		{
+			var result = Assembler.CompileInstruction("RR (HL)");
+			Is(result, 0xCB, 0x1E);
+		}
+
+		[TestMethod]
+		public void CB_SLA_B()
+		{
+			var result = Assembler.CompileInstruction("SLA B");
+			Is(result, 0xCB, 0x20);
+		}
+
+
+		[TestMethod]
+		public void CB_SLA_C()
+		{
+			var result = Assembler.CompileInstruction("SLA C");
+			Is(result, 0xCB, 0x21);
+		}
+
+
+		[TestMethod]
+		public void CB_SLA_D()
+		{
+			var result = Assembler.CompileInstruction("SLA D");
+			Is(result, 0xCB, 0x22);
+		}
+
+
+		[TestMethod]
+		public void CB_SLA_E()
+		{
+			var result = Assembler.CompileInstruction("SLA E");
+			Is(result, 0xCB, 0x23);
+		}
+
+
+		[TestMethod]
+		public void CB_SLA_H()
+		{
+			var result = Assembler.CompileInstruction("SLA H");
+			Is(result, 0xCB, 0x24);
+		}
+
+
+		[TestMethod]
+		public void CB_SLA_L()
+		{
+			var result = Assembler.CompileInstruction("SLA L");
+			Is(result, 0xCB, 0x25);
+		}
+
+
+		[TestMethod]
+		public void CB_SLA_HL()
+		{
+			var result = Assembler.CompileInstruction("SLA (HL)");
+			Is(result, 0xCB, 0x26);
+		}
+
+
+		[TestMethod]
+		public void CB_SLA_A()
+		{
+			var result = Assembler.CompileInstruction("SLA A");
+			Is(result, 0xCB, 0x27);
+		}
+
+
+		[TestMethod]
+		public void CB_SRA_B()
+		{
+			var result = Assembler.CompileInstruction("SRA B");
+			Is(result, 0xCB, 0x28);
+		}
+
+
+		[TestMethod]
+		public void CB_SRA_C()
+		{
+			var result = Assembler.CompileInstruction("SRA C");
+			Is(result, 0xCB, 0x29);
+		}
+
+
+		[TestMethod]
+		public void CB_SRA_D()
+		{
+			var result = Assembler.CompileInstruction("SRA D");
+			Is(result, 0xCB, 0x2A);
+		}
+
+
+		[TestMethod]
+		public void CB_SRA_E()
+		{
+			var result = Assembler.CompileInstruction("SRA E");
+			Is(result, 0xCB, 0x2B);
+		}
+
+
+		[TestMethod]
+		public void CB_SRA_H()
+		{
+			var result = Assembler.CompileInstruction("SRA H");
+			Is(result, 0xCB, 0x2C);
+		}
+
+
+		[TestMethod]
+		public void CB_SRA_L()
+		{
+			var result = Assembler.CompileInstruction("SRA L");
+			Is(result, 0xCB, 0x2D);
+		}
+
+
+		[TestMethod]
+		public void CB_SRA_HL()
+		{
+			var result = Assembler.CompileInstruction("SRA (HL)");
+			Is(result, 0xCB, 0x2E);
+		}
+
+
+		[TestMethod]
+		public void CB_SRA_A()
+		{
+			var result = Assembler.CompileInstruction("SRA A");
+			Is(result, 0xCB, 0x2F);
+		}
+
+
+		[TestMethod]
+		public void CB_SWAP_B()
+		{
+			var result = Assembler.CompileInstruction("SWAP B");
+			Is(result, 0xCB, 0x30);
+		}
+
+
+		[TestMethod]
+		public void CB_SWAP_C()
+		{
+			var result = Assembler.CompileInstruction("SWAP C");
+			Is(result, 0xCB, 0x31);
+		}
+
+
+		[TestMethod]
+		public void CB_SWAP_D()
+		{
+			var result = Assembler.CompileInstruction("SWAP D");
+			Is(result, 0xCB, 0x32);
+		}
+
+
+		[TestMethod]
+		public void CB_SWAP_E()
+		{
+			var result = Assembler.CompileInstruction("SWAP E");
+			Is(result, 0xCB, 0x33);
+		}
+
+
+		[TestMethod]
+		public void CB_SWAP_H()
+		{
+			var result = Assembler.CompileInstruction("SWAP H");
+			Is(result, 0xCB, 0x34);
+		}
+
+
+		[TestMethod]
+		public void CB_SWAP_L()
+		{
+			var result = Assembler.CompileInstruction("SWAP L");
+			Is(result, 0xCB, 0x35);
+		}
+
+
+		[TestMethod]
+		public void CB_SWAP_HL()
+		{
+			var result = Assembler.CompileInstruction("SWAP (HL)");
+			Is(result, 0xCB, 0x36);
+		}
+
+
+		[TestMethod]
+		public void CB_SWAP_A()
+		{
+			var result = Assembler.CompileInstruction("SWAP A");
+			Is(result, 0xCB, 0x37);
+		}
+
+
+		[TestMethod]
+		public void CB_SRL_B()
+		{
+			var result = Assembler.CompileInstruction("SRL B");
+			Is(result, 0xCB, 0x38);
+		}
+
+
+		[TestMethod]
+		public void CB_SRL_C()
+		{
+			var result = Assembler.CompileInstruction("SRL C");
+			Is(result, 0xCB, 0x39);
+		}
+
+
+		[TestMethod]
+		public void CB_SRL_D()
+		{
+			var result = Assembler.CompileInstruction("SRL D");
+			Is(result, 0xCB, 0x3A);
+		}
+
+
+		[TestMethod]
+		public void CB_SRL_E()
+		{
+			var result = Assembler.CompileInstruction("SRL E");
+			Is(result, 0xCB, 0x3B);
+		}
+
+
+		[TestMethod]
+		public void CB_SRL_H()
+		{
+			var result = Assembler.CompileInstruction("SRL H");
+			Is(result, 0xCB, 0x3C);
+		}
+
+
+		[TestMethod]
+		public void CB_SRL_L()
+		{
+			var result = Assembler.CompileInstruction("SRL L");
+			Is(result, 0xCB, 0x3D);
+		}
+
+
+		[TestMethod]
+		public void CB_SRL_HL()
+		{
+			var result = Assembler.CompileInstruction("SRL (HL)");
+			Is(result, 0xCB, 0x3E);
+		}
+
+
+		[TestMethod]
+		public void CB_SRL_A()
+		{
+			var result = Assembler.CompileInstruction("SRL A");
+			Is(result, 0xCB, 0x3F);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_0_B()
+		{
+			var result = Assembler.CompileInstruction("BIT 0,B");
+			Is(result, 0xCB, 0x40);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_0_C()
+		{
+			var result = Assembler.CompileInstruction("BIT 0,C");
+			Is(result, 0xCB, 0x41);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_0_D()
+		{
+			var result = Assembler.CompileInstruction("BIT 0,D");
+			Is(result, 0xCB, 0x42);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_0_E()
+		{
+			var result = Assembler.CompileInstruction("BIT 0,E");
+			Is(result, 0xCB, 0x43);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_0_H()
+		{
+			var result = Assembler.CompileInstruction("BIT 0,H");
+			Is(result, 0xCB, 0x44);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_0_L()
+		{
+			var result = Assembler.CompileInstruction("BIT 0,L");
+			Is(result, 0xCB, 0x45);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_0_HL()
+		{
+			var result = Assembler.CompileInstruction("BIT 0,(HL)");
+			Is(result, 0xCB, 0x46);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_0_A()
+		{
+			var result = Assembler.CompileInstruction("BIT 0,A");
+			Is(result, 0xCB, 0x47);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_1_B()
+		{
+			var result = Assembler.CompileInstruction("BIT 1,B");
+			Is(result, 0xCB, 0x48);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_1_C()
+		{
+			var result = Assembler.CompileInstruction("BIT 1,C");
+			Is(result, 0xCB, 0x49);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_1_D()
+		{
+			var result = Assembler.CompileInstruction("BIT 1,D");
+			Is(result, 0xCB, 0x4A);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_1_E()
+		{
+			var result = Assembler.CompileInstruction("BIT 1,E");
+			Is(result, 0xCB, 0x4B);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_1_H()
+		{
+			var result = Assembler.CompileInstruction("BIT 1,H");
+			Is(result, 0xCB, 0x4C);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_1_L()
+		{
+			var result = Assembler.CompileInstruction("BIT 1,L");
+			Is(result, 0xCB, 0x4D);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_1_HL()
+		{
+			var result = Assembler.CompileInstruction("BIT 1,(HL)");
+			Is(result, 0xCB, 0x4E);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_1_A()
+		{
+			var result = Assembler.CompileInstruction("BIT 1,A");
+			Is(result, 0xCB, 0x4F);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_2_B()
+		{
+			var result = Assembler.CompileInstruction("BIT 2,B");
+			Is(result, 0xCB, 0x50);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_2_C()
+		{
+			var result = Assembler.CompileInstruction("BIT 2,C");
+			Is(result, 0xCB, 0x51);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_2_D()
+		{
+			var result = Assembler.CompileInstruction("BIT 2,D");
+			Is(result, 0xCB, 0x52);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_2_E()
+		{
+			var result = Assembler.CompileInstruction("BIT 2,E");
+			Is(result, 0xCB, 0x53);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_2_H()
+		{
+			var result = Assembler.CompileInstruction("BIT 2,H");
+			Is(result, 0xCB, 0x54);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_2_L()
+		{
+			var result = Assembler.CompileInstruction("BIT 2,L");
+			Is(result, 0xCB, 0x55);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_2_HL()
+		{
+			var result = Assembler.CompileInstruction("BIT 2,(HL)");
+			Is(result, 0xCB, 0x56);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_2_A()
+		{
+			var result = Assembler.CompileInstruction("BIT 2,A");
+			Is(result, 0xCB, 0x57);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_3_B()
+		{
+			var result = Assembler.CompileInstruction("BIT 3,B");
+			Is(result, 0xCB, 0x58);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_3_C()
+		{
+			var result = Assembler.CompileInstruction("BIT 3,C");
+			Is(result, 0xCB, 0x59);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_3_D()
+		{
+			var result = Assembler.CompileInstruction("BIT 3,D");
+			Is(result, 0xCB, 0x5A);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_3_E()
+		{
+			var result = Assembler.CompileInstruction("BIT 3,E");
+			Is(result, 0xCB, 0x5B);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_3_H()
+		{
+			var result = Assembler.CompileInstruction("BIT 3,H");
+			Is(result, 0xCB, 0x5C);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_3_L()
+		{
+			var result = Assembler.CompileInstruction("BIT 3,L");
+			Is(result, 0xCB, 0x5D);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_3_HL()
+		{
+			var result = Assembler.CompileInstruction("BIT 3,(HL)");
+			Is(result, 0xCB, 0x5E);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_3_A()
+		{
+			var result = Assembler.CompileInstruction("BIT 3,A");
+			Is(result, 0xCB, 0x5F);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_4_B()
+		{
+			var result = Assembler.CompileInstruction("BIT 4,B");
+			Is(result, 0xCB, 0x60);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_4_C()
+		{
+			var result = Assembler.CompileInstruction("BIT 4,C");
+			Is(result, 0xCB, 0x61);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_4_D()
+		{
+			var result = Assembler.CompileInstruction("BIT 4,D");
+			Is(result, 0xCB, 0x62);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_4_E()
+		{
+			var result = Assembler.CompileInstruction("BIT 4,E");
+			Is(result, 0xCB, 0x63);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_4_H()
+		{
+			var result = Assembler.CompileInstruction("BIT 4,H");
+			Is(result, 0xCB, 0x64);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_4_L()
+		{
+			var result = Assembler.CompileInstruction("BIT 4,L");
+			Is(result, 0xCB, 0x65);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_4_HL()
+		{
+			var result = Assembler.CompileInstruction("BIT 4,(HL)");
+			Is(result, 0xCB, 0x66);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_4_A()
+		{
+			var result = Assembler.CompileInstruction("BIT 4,A");
+			Is(result, 0xCB, 0x67);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_5_B()
+		{
+			var result = Assembler.CompileInstruction("BIT 5,B");
+			Is(result, 0xCB, 0x68);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_5_C()
+		{
+			var result = Assembler.CompileInstruction("BIT 5,C");
+			Is(result, 0xCB, 0x69);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_5_D()
+		{
+			var result = Assembler.CompileInstruction("BIT 5,D");
+			Is(result, 0xCB, 0x6A);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_5_E()
+		{
+			var result = Assembler.CompileInstruction("BIT 5,E");
+			Is(result, 0xCB, 0x6B);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_5_H()
+		{
+			var result = Assembler.CompileInstruction("BIT 5,H");
+			Is(result, 0xCB, 0x6C);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_5_L()
+		{
+			var result = Assembler.CompileInstruction("BIT 5,L");
+			Is(result, 0xCB, 0x6D);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_5_HL()
+		{
+			var result = Assembler.CompileInstruction("BIT 5,(HL)");
+			Is(result, 0xCB, 0x6E);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_5_A()
+		{
+			var result = Assembler.CompileInstruction("BIT 5,A");
+			Is(result, 0xCB, 0x6F);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_6_B()
+		{
+			var result = Assembler.CompileInstruction("BIT 6,B");
+			Is(result, 0xCB, 0x70);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_6_C()
+		{
+			var result = Assembler.CompileInstruction("BIT 6,C");
+			Is(result, 0xCB, 0x71);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_6_D()
+		{
+			var result = Assembler.CompileInstruction("BIT 6,D");
+			Is(result, 0xCB, 0x72);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_6_E()
+		{
+			var result = Assembler.CompileInstruction("BIT 6,E");
+			Is(result, 0xCB, 0x73);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_6_H()
+		{
+			var result = Assembler.CompileInstruction("BIT 6,H");
+			Is(result, 0xCB, 0x74);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_6_L()
+		{
+			var result = Assembler.CompileInstruction("BIT 6,L");
+			Is(result, 0xCB, 0x75);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_6_HL()
+		{
+			var result = Assembler.CompileInstruction("BIT 6,(HL)");
+			Is(result, 0xCB, 0x76);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_6_A()
+		{
+			var result = Assembler.CompileInstruction("BIT 6,A");
+			Is(result, 0xCB, 0x77);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_7_B()
+		{
+			var result = Assembler.CompileInstruction("BIT 7,B");
+			Is(result, 0xCB, 0x78);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_7_C()
+		{
+			var result = Assembler.CompileInstruction("BIT 7,C");
+			Is(result, 0xCB, 0x79);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_7_D()
+		{
+			var result = Assembler.CompileInstruction("BIT 7,D");
+			Is(result, 0xCB, 0x7A);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_7_E()
+		{
+			var result = Assembler.CompileInstruction("BIT 7,E");
+			Is(result, 0xCB, 0x7B);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_7_H()
+		{
+			var result = Assembler.CompileInstruction("BIT 7,H");
+			Is(result, 0xCB, 0x7C);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_7_L()
+		{
+			var result = Assembler.CompileInstruction("BIT 7,L");
+			Is(result, 0xCB, 0x7D);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_7_HL()
+		{
+			var result = Assembler.CompileInstruction("BIT 7,(HL)");
+			Is(result, 0xCB, 0x7E);
+		}
+
+
+		[TestMethod]
+		public void CB_BIT_7_A()
+		{
+			var result = Assembler.CompileInstruction("BIT 7,A");
+			Is(result, 0xCB, 0x7F);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_0_B()
+		{
+			var result = Assembler.CompileInstruction("RES 0,B");
+			Is(result, 0xCB, 0x80);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_0_C()
+		{
+			var result = Assembler.CompileInstruction("RES 0,C");
+			Is(result, 0xCB, 0x81);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_0_D()
+		{
+			var result = Assembler.CompileInstruction("RES 0,D");
+			Is(result, 0xCB, 0x82);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_0_E()
+		{
+			var result = Assembler.CompileInstruction("RES 0,E");
+			Is(result, 0xCB, 0x83);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_0_H()
+		{
+			var result = Assembler.CompileInstruction("RES 0,H");
+			Is(result, 0xCB, 0x84);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_0_L()
+		{
+			var result = Assembler.CompileInstruction("RES 0,L");
+			Is(result, 0xCB, 0x85);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_0_HL()
+		{
+			var result = Assembler.CompileInstruction("RES 0,(HL)");
+			Is(result, 0xCB, 0x86);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_0_A()
+		{
+			var result = Assembler.CompileInstruction("RES 0,A");
+			Is(result, 0xCB, 0x87);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_1_B()
+		{
+			var result = Assembler.CompileInstruction("RES 1,B");
+			Is(result, 0xCB, 0x88);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_1_C()
+		{
+			var result = Assembler.CompileInstruction("RES 1,C");
+			Is(result, 0xCB, 0x89);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_1_D()
+		{
+			var result = Assembler.CompileInstruction("RES 1,D");
+			Is(result, 0xCB, 0x8A);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_1_E()
+		{
+			var result = Assembler.CompileInstruction("RES 1,E");
+			Is(result, 0xCB, 0x8B);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_1_H()
+		{
+			var result = Assembler.CompileInstruction("RES 1,H");
+			Is(result, 0xCB, 0x8C);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_1_L()
+		{
+			var result = Assembler.CompileInstruction("RES 1,L");
+			Is(result, 0xCB, 0x8D);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_1_HL()
+		{
+			var result = Assembler.CompileInstruction("RES 1,(HL)");
+			Is(result, 0xCB, 0x8E);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_1_A()
+		{
+			var result = Assembler.CompileInstruction("RES 1,A");
+			Is(result, 0xCB, 0x8F);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_2_B()
+		{
+			var result = Assembler.CompileInstruction("RES 2,B");
+			Is(result, 0xCB, 0x90);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_2_C()
+		{
+			var result = Assembler.CompileInstruction("RES 2,C");
+			Is(result, 0xCB, 0x91);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_2_D()
+		{
+			var result = Assembler.CompileInstruction("RES 2,D");
+			Is(result, 0xCB, 0x92);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_2_E()
+		{
+			var result = Assembler.CompileInstruction("RES 2,E");
+			Is(result, 0xCB, 0x93);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_2_H()
+		{
+			var result = Assembler.CompileInstruction("RES 2,H");
+			Is(result, 0xCB, 0x94);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_2_L()
+		{
+			var result = Assembler.CompileInstruction("RES 2,L");
+			Is(result, 0xCB, 0x95);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_2_HL()
+		{
+			var result = Assembler.CompileInstruction("RES 2,(HL)");
+			Is(result, 0xCB, 0x96);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_2_A()
+		{
+			var result = Assembler.CompileInstruction("RES 2,A");
+			Is(result, 0xCB, 0x97);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_3_B()
+		{
+			var result = Assembler.CompileInstruction("RES 3,B");
+			Is(result, 0xCB, 0x98);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_3_C()
+		{
+			var result = Assembler.CompileInstruction("RES 3,C");
+			Is(result, 0xCB, 0x99);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_3_D()
+		{
+			var result = Assembler.CompileInstruction("RES 3,D");
+			Is(result, 0xCB, 0x9A);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_3_E()
+		{
+			var result = Assembler.CompileInstruction("RES 3,E");
+			Is(result, 0xCB, 0x9B);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_3_H()
+		{
+			var result = Assembler.CompileInstruction("RES 3,H");
+			Is(result, 0xCB, 0x9C);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_3_L()
+		{
+			var result = Assembler.CompileInstruction("RES 3,L");
+			Is(result, 0xCB, 0x9D);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_3_HL()
+		{
+			var result = Assembler.CompileInstruction("RES 3,(HL)");
+			Is(result, 0xCB, 0x9E);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_3_A()
+		{
+			var result = Assembler.CompileInstruction("RES 3,A");
+			Is(result, 0xCB, 0x9F);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_4_B()
+		{
+			var result = Assembler.CompileInstruction("RES 4,B");
+			Is(result, 0xCB, 0xA0);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_4_C()
+		{
+			var result = Assembler.CompileInstruction("RES 4,C");
+			Is(result, 0xCB, 0xA1);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_4_D()
+		{
+			var result = Assembler.CompileInstruction("RES 4,D");
+			Is(result, 0xCB, 0xA2);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_4_E()
+		{
+			var result = Assembler.CompileInstruction("RES 4,E");
+			Is(result, 0xCB, 0xA3);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_4_H()
+		{
+			var result = Assembler.CompileInstruction("RES 4,H");
+			Is(result, 0xCB, 0xA4);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_4_L()
+		{
+			var result = Assembler.CompileInstruction("RES 4,L");
+			Is(result, 0xCB, 0xA5);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_4_HL()
+		{
+			var result = Assembler.CompileInstruction("RES 4,(HL)");
+			Is(result, 0xCB, 0xA6);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_4_A()
+		{
+			var result = Assembler.CompileInstruction("RES 4,A");
+			Is(result, 0xCB, 0xA7);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_5_B()
+		{
+			var result = Assembler.CompileInstruction("RES 5,B");
+			Is(result, 0xCB, 0xA8);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_5_C()
+		{
+			var result = Assembler.CompileInstruction("RES 5,C");
+			Is(result, 0xCB, 0xA9);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_5_D()
+		{
+			var result = Assembler.CompileInstruction("RES 5,D");
+			Is(result, 0xCB, 0xAA);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_5_E()
+		{
+			var result = Assembler.CompileInstruction("RES 5,E");
+			Is(result, 0xCB, 0xAB);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_5_H()
+		{
+			var result = Assembler.CompileInstruction("RES 5,H");
+			Is(result, 0xCB, 0xAC);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_5_L()
+		{
+			var result = Assembler.CompileInstruction("RES 5,L");
+			Is(result, 0xCB, 0xAD);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_5_HL()
+		{
+			var result = Assembler.CompileInstruction("RES 5,(HL)");
+			Is(result, 0xCB, 0xAE);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_5_A()
+		{
+			var result = Assembler.CompileInstruction("RES 5,A");
+			Is(result, 0xCB, 0xAF);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_6_B()
+		{
+			var result = Assembler.CompileInstruction("RES 6,B");
+			Is(result, 0xCB, 0xB0);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_6_C()
+		{
+			var result = Assembler.CompileInstruction("RES 6,C");
+			Is(result, 0xCB, 0xB1);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_6_D()
+		{
+			var result = Assembler.CompileInstruction("RES 6,D");
+			Is(result, 0xCB, 0xB2);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_6_E()
+		{
+			var result = Assembler.CompileInstruction("RES 6,E");
+			Is(result, 0xCB, 0xB3);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_6_H()
+		{
+			var result = Assembler.CompileInstruction("RES 6,H");
+			Is(result, 0xCB, 0xB4);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_6_L()
+		{
+			var result = Assembler.CompileInstruction("RES 6,L");
+			Is(result, 0xCB, 0xB5);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_6_HL()
+		{
+			var result = Assembler.CompileInstruction("RES 6,(HL)");
+			Is(result, 0xCB, 0xB6);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_6_A()
+		{
+			var result = Assembler.CompileInstruction("RES 6,A");
+			Is(result, 0xCB, 0xB7);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_7_B()
+		{
+			var result = Assembler.CompileInstruction("RES 7,B");
+			Is(result, 0xCB, 0xB8);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_7_C()
+		{
+			var result = Assembler.CompileInstruction("RES 7,C");
+			Is(result, 0xCB, 0xB9);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_7_D()
+		{
+			var result = Assembler.CompileInstruction("RES 7,D");
+			Is(result, 0xCB, 0xBA);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_7_E()
+		{
+			var result = Assembler.CompileInstruction("RES 7,E");
+			Is(result, 0xCB, 0xBB);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_7_H()
+		{
+			var result = Assembler.CompileInstruction("RES 7,H");
+			Is(result, 0xCB, 0xBC);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_7_L()
+		{
+			var result = Assembler.CompileInstruction("RES 7,L");
+			Is(result, 0xCB, 0xBD);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_7_HL()
+		{
+			var result = Assembler.CompileInstruction("RES 7,(HL)");
+			Is(result, 0xCB, 0xBE);
+		}
+
+
+		[TestMethod]
+		public void CB_RES_7_A()
+		{
+			var result = Assembler.CompileInstruction("RES 7,A");
+			Is(result, 0xCB, 0xBF);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_0_B()
+		{
+			var result = Assembler.CompileInstruction("SET 0,B");
+			Is(result, 0xCB, 0xC0);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_0_C()
+		{
+			var result = Assembler.CompileInstruction("SET 0,C");
+			Is(result, 0xCB, 0xC1);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_0_D()
+		{
+			var result = Assembler.CompileInstruction("SET 0,D");
+			Is(result, 0xCB, 0xC2);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_0_E()
+		{
+			var result = Assembler.CompileInstruction("SET 0,E");
+			Is(result, 0xCB, 0xC3);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_0_H()
+		{
+			var result = Assembler.CompileInstruction("SET 0,H");
+			Is(result, 0xCB, 0xC4);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_0_L()
+		{
+			var result = Assembler.CompileInstruction("SET 0,L");
+			Is(result, 0xCB, 0xC5);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_0_HL()
+		{
+			var result = Assembler.CompileInstruction("SET 0,(HL)");
+			Is(result, 0xCB, 0xC6);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_0_A()
+		{
+			var result = Assembler.CompileInstruction("SET 0,A");
+			Is(result, 0xCB, 0xC7);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_1_B()
+		{
+			var result = Assembler.CompileInstruction("SET 1,B");
+			Is(result, 0xCB, 0xC8);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_1_C()
+		{
+			var result = Assembler.CompileInstruction("SET 1,C");
+			Is(result, 0xCB, 0xC9);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_1_D()
+		{
+			var result = Assembler.CompileInstruction("SET 1,D");
+			Is(result, 0xCB, 0xCA);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_1_E()
+		{
+			var result = Assembler.CompileInstruction("SET 1,E");
+			Is(result, 0xCB, 0xCB);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_1_H()
+		{
+			var result = Assembler.CompileInstruction("SET 1,H");
+			Is(result, 0xCB, 0xCC);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_1_L()
+		{
+			var result = Assembler.CompileInstruction("SET 1,L");
+			Is(result, 0xCB, 0xCD);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_1_HL()
+		{
+			var result = Assembler.CompileInstruction("SET 1,(HL)");
+			Is(result, 0xCB, 0xCE);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_1_A()
+		{
+			var result = Assembler.CompileInstruction("SET 1,A");
+			Is(result, 0xCB, 0xCF);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_2_B()
+		{
+			var result = Assembler.CompileInstruction("SET 2,B");
+			Is(result, 0xCB, 0xD0);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_2_C()
+		{
+			var result = Assembler.CompileInstruction("SET 2,C");
+			Is(result, 0xCB, 0xD1);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_2_D()
+		{
+			var result = Assembler.CompileInstruction("SET 2,D");
+			Is(result, 0xCB, 0xD2);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_2_E()
+		{
+			var result = Assembler.CompileInstruction("SET 2,E");
+			Is(result, 0xCB, 0xD3);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_2_H()
+		{
+			var result = Assembler.CompileInstruction("SET 2,H");
+			Is(result, 0xCB, 0xD4);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_2_L()
+		{
+			var result = Assembler.CompileInstruction("SET 2,L");
+			Is(result, 0xCB, 0xD5);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_2_HL()
+		{
+			var result = Assembler.CompileInstruction("SET 2,(HL)");
+			Is(result, 0xCB, 0xD6);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_2_A()
+		{
+			var result = Assembler.CompileInstruction("SET 2,A");
+			Is(result, 0xCB, 0xD7);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_3_B()
+		{
+			var result = Assembler.CompileInstruction("SET 3,B");
+			Is(result, 0xCB, 0xD8);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_3_C()
+		{
+			var result = Assembler.CompileInstruction("SET 3,C");
+			Is(result, 0xCB, 0xD9);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_3_D()
+		{
+			var result = Assembler.CompileInstruction("SET 3,D");
+			Is(result, 0xCB, 0xDA);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_3_E()
+		{
+			var result = Assembler.CompileInstruction("SET 3,E");
+			Is(result, 0xCB, 0xDB);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_3_H()
+		{
+			var result = Assembler.CompileInstruction("SET 3,H");
+			Is(result, 0xCB, 0xDC);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_3_L()
+		{
+			var result = Assembler.CompileInstruction("SET 3,L");
+			Is(result, 0xCB, 0xDD);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_3_HL()
+		{
+			var result = Assembler.CompileInstruction("SET 3,(HL)");
+			Is(result, 0xCB, 0xDE);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_3_A()
+		{
+			var result = Assembler.CompileInstruction("SET 3,A");
+			Is(result, 0xCB, 0xDF);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_4_B()
+		{
+			var result = Assembler.CompileInstruction("SET 4,B");
+			Is(result, 0xCB, 0xE0);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_4_C()
+		{
+			var result = Assembler.CompileInstruction("SET 4,C");
+			Is(result, 0xCB, 0xE1);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_4_D()
+		{
+			var result = Assembler.CompileInstruction("SET 4,D");
+			Is(result, 0xCB, 0xE2);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_4_E()
+		{
+			var result = Assembler.CompileInstruction("SET 4,E");
+			Is(result, 0xCB, 0xE3);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_4_H()
+		{
+			var result = Assembler.CompileInstruction("SET 4,H");
+			Is(result, 0xCB, 0xE4);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_4_L()
+		{
+			var result = Assembler.CompileInstruction("SET 4,L");
+			Is(result, 0xCB, 0xE5);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_4_HL()
+		{
+			var result = Assembler.CompileInstruction("SET 4,(HL)");
+			Is(result, 0xCB, 0xE6);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_4_A()
+		{
+			var result = Assembler.CompileInstruction("SET 4,A");
+			Is(result, 0xCB, 0xE7);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_5_B()
+		{
+			var result = Assembler.CompileInstruction("SET 5,B");
+			Is(result, 0xCB, 0xE8);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_5_C()
+		{
+			var result = Assembler.CompileInstruction("SET 5,C");
+			Is(result, 0xCB, 0xE9);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_5_D()
+		{
+			var result = Assembler.CompileInstruction("SET 5,D");
+			Is(result, 0xCB, 0xEA);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_5_E()
+		{
+			var result = Assembler.CompileInstruction("SET 5,E");
+			Is(result, 0xCB, 0xEB);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_5_H()
+		{
+			var result = Assembler.CompileInstruction("SET 5,H");
+			Is(result, 0xCB, 0xEC);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_5_L()
+		{
+			var result = Assembler.CompileInstruction("SET 5,L");
+			Is(result, 0xCB, 0xED);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_5_HL()
+		{
+			var result = Assembler.CompileInstruction("SET 5,(HL)");
+			Is(result, 0xCB, 0xEE);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_5_A()
+		{
+			var result = Assembler.CompileInstruction("SET 5,A");
+			Is(result, 0xCB, 0xEF);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_6_B()
+		{
+			var result = Assembler.CompileInstruction("SET 6,B");
+			Is(result, 0xCB, 0xF0);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_6_C()
+		{
+			var result = Assembler.CompileInstruction("SET 6,C");
+			Is(result, 0xCB, 0xF1);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_6_D()
+		{
+			var result = Assembler.CompileInstruction("SET 6,D");
+			Is(result, 0xCB, 0xF2);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_6_E()
+		{
+			var result = Assembler.CompileInstruction("SET 6,E");
+			Is(result, 0xCB, 0xF3);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_6_H()
+		{
+			var result = Assembler.CompileInstruction("SET 6,H");
+			Is(result, 0xCB, 0xF4);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_6_L()
+		{
+			var result = Assembler.CompileInstruction("SET 6,L");
+			Is(result, 0xCB, 0xF5);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_6_HL()
+		{
+			var result = Assembler.CompileInstruction("SET 6,(HL)");
+			Is(result, 0xCB, 0xF6);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_6_A()
+		{
+			var result = Assembler.CompileInstruction("SET 6,A");
+			Is(result, 0xCB, 0xF7);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_7_B()
+		{
+			var result = Assembler.CompileInstruction("SET 7,B");
+			Is(result, 0xCB, 0xF8);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_7_C()
+		{
+			var result = Assembler.CompileInstruction("SET 7,C");
+			Is(result, 0xCB, 0xF9);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_7_D()
+		{
+			var result = Assembler.CompileInstruction("SET 7,D");
+			Is(result, 0xCB, 0xFA);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_7_E()
+		{
+			var result = Assembler.CompileInstruction("SET 7,E");
+			Is(result, 0xCB, 0xFB);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_7_H()
+		{
+			var result = Assembler.CompileInstruction("SET 7,H");
+			Is(result, 0xCB, 0xFC);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_7_L()
+		{
+			var result = Assembler.CompileInstruction("SET 7,L");
+			Is(result, 0xCB, 0xFD);
+		}
+
+
+		[TestMethod]
+		public void CB_SET_7_HL()
+		{
+			var result = Assembler.CompileInstruction("SET 7,(HL)");
+			Is(result, 0xCB, 0xFE);
 		}
 	}
 }
