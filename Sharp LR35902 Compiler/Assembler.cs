@@ -43,7 +43,8 @@ namespace Sharp_LR35902_Compiler
 			{ "POP", Pop },
 			{ "JP", Jump },
 			{ "JR", JumpRelative },
-			{ "LDD", LoadAndDecrement }
+			{ "LDD", LoadAndDecrement },
+			{ "LDH", LoadHiger }
 		};
 
 		private static byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
@@ -427,12 +428,37 @@ namespace Sharp_LR35902_Compiler
 			var constantbytes = constant.ToByteArray();
 			return ListOf((byte)(0x20 + 8 * conditionindex), constantbytes[0]);
 		}
-
 		public static byte[] LoadAndDecrement(string[] oprands) {
 			if (oprands[0] == "A" && oprands[1] == "(HL)")
 				return ListOf<byte>(0x3A);
 			if (oprands[0] == "(HL)" && oprands[1] == "A")
 				return ListOf<byte>(0x32);
+
+			throw new ArgumentException("No known oprand match found");
+		}
+		public static byte[] LoadHiger(string[] oprands)
+		{
+			ushort addressoffset = 0;
+			if (oprands[1] == "A")
+			{
+				if (oprands[0] == "(C)")
+					return ListOf<byte>(0xE2);
+
+				if (TryParseConstant(TrimBrackets(oprands[0]), ref addressoffset))
+				{
+					if (!addressoffset.isByte())
+						throw new ArgumentException("Expected 8-bit offset, found 16-bit address");
+
+					return ListOf<byte>(0xE0, (byte)addressoffset);
+				}
+			}
+			else if (TryParseConstant(TrimBrackets(oprands[1]), ref addressoffset))
+			{
+				if (!addressoffset.isByte())
+					throw new ArgumentException("Expected 8-bit offset, found 16-bit address");
+
+				return ListOf<byte>(0xF0, (byte)addressoffset);
+			}
 
 			throw new ArgumentException("No known oprand match found");
 		}
