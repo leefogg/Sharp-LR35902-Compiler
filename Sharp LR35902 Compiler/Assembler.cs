@@ -49,7 +49,8 @@ namespace Sharp_LR35902_Compiler
 			{ "RL", RotateLeft},
 			{ "RR", RotateRight},
 			{ "BIT", TestBit },
-			{ "RES", ClearBit }
+			{ "RES", ClearBit },
+			{ "SET", SetBit }
 		};
 
 		// Common patterns for opcode ranges
@@ -515,7 +516,7 @@ namespace Sharp_LR35902_Compiler
 		}
 		public static byte[] TestBit(string[] oprands) => Pattern_BIT(oprands, 0x40);
 		public static byte[] ClearBit(string[] oprands) => Pattern_BIT(oprands, 0x80);
-
+		public static byte[] SetBit(string[] oprands) => Pattern_BIT(oprands, 0xC0);
 
 
 		public static void Main(string[] args)
