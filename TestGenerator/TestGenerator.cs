@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using static Common.Extensions.IEnumerableExtensions;
 
 namespace Sharp_LR35902_Compiler_Tests
 {
@@ -526,6 +524,8 @@ namespace Sharp_LR35902_Compiler_Tests
 			"SET 7,A"
 		};
 
+		private static readonly string[] registers = new[] { "B", "C", "D", "E", "H", "L", "(HL)", "A" };
+
 		public static void Main(string[] args)
 		{
 			string n = "225";
@@ -534,25 +534,17 @@ namespace Sharp_LR35902_Compiler_Tests
 			byte[] nnbytes = new byte[] { (byte)(nn & 0xFF), (byte)((nn >> 8) & 0xFF) };
 			var fileoutput = new List<string>()
 			{
-				"using System;",
-				"using System.Collections.Generic;",
 				"using Microsoft.VisualStudio.TestTools.UnitTesting;",
-				"using Sharp_LR35902_Compiler;",
-				"using Sharp_LR35902_Compiler.Extensions;",
+				"using Sharp_LR35902_Compiler.Exceptions;",
+				"using static Sharp_LR35902_Compiler.Assembler;",
 				"using static Sharp_LR35902_Compiler_Tests.Utils;",
-				"",
-				"namespace Sharp_LR35902_Compiler_Tests",
-				"{",
+				"namespace Sharp_LR35902_Compiler_Tests {",
 				"[TestClass]",
-				"public class Instructions",
-				"{"
+				"public class Instructions {",
 			};
 
 			void writeTestMethod(string instruction, byte opcode, bool isCB)
 			{
-				if (instruction == "XX")
-					return;
-
 				// Write the method
 				var numexternalbytes = instruction.Count(c => c == 'n');
 				var methodname = instruction.Replace(',', '_').Replace(' ', '_').Replace("(", "").Replace(")", "");
@@ -561,10 +553,9 @@ namespace Sharp_LR35902_Compiler_Tests
 				instruction = instruction.Replace("nn", nnstring);
 				instruction = instruction.Replace("n", n);
 
-				fileoutput.Add(Environment.NewLine);
 				fileoutput.Add("[TestMethod]");
 				fileoutput.Add("public void " + methodname + "() {");
-				fileoutput.Add($"var result = Assembler.CompileInstruction(\"{instruction}\");");
+				fileoutput.Add($"var result = CompileInstruction(\"{instruction}\");");
 				var teststring = (isCB) ? $"Is(result, 0xCB, {Dec2Hex(opcode)}" : $"Is(result, {Dec2Hex(opcode)}";
 				if (numexternalbytes == 2)
 				{
@@ -579,11 +570,99 @@ namespace Sharp_LR35902_Compiler_Tests
 				fileoutput.Add("}");
 			}
 
-			for (byte i = 0; i < 255; i++)
-				writeTestMethod(Instructions[i], i, false);
+			var instructionsopcodes = new List<string>(42);
+			void writeNegativeTests(string instruction, bool isCB)
+			{
+				var numexternalbytes = instruction.Count(c => c == 'n');
+				var basemethodname = instruction.Replace(',', '_').Replace(' ', '_').Replace("(", "").Replace(")", "");
+				if (isCB)
+					basemethodname = "CB_" + basemethodname;
+				var instructionparts = instruction
+					.Replace(',', ' ')
+					.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+				var instructionname = instructionparts[0].ToUpper();
+
+				if (instructionparts.Length > 1)
+				{
+					if (instructionsopcodes.IndexOf(instructionparts[0]) == -1)
+					{
+						fileoutput.Add("[TestMethod]");
+						fileoutput.Add("[ExpectedException(typeof(SyntaxException))]");
+						fileoutput.Add("public void " + instructionname + "_WrongNumberOfOprands() {");
+						fileoutput.Add($"CompileInstruction(\"{instructionname}\"); // No oprands");
+						fileoutput.Add("}");
+
+						instructionsopcodes.Add(instructionparts[0]);
+						Console.WriteLine(instructionparts[0]);
+					}
+				}
+
+				/* 
+				 // Commenting these out as they're not providing much are are really tricky to implement
+				// If there are any immediates, replace them with registers and see what happens
+				if (instruction.IndexOf("n") != -1)
+				{
+					var alloprandsregistersinstruction = instruction
+						.Replace("nn", "A")
+						.Replace("nn", "A")
+						.Replace("n", "A");
+
+					fileoutput.Add("[TestMethod]");
+					fileoutput.Add("[ExpectedException(typeof(SyntaxException))]");
+					fileoutput.Add("public void " + basemethodname + "_WrongOprandTypes_AllRegisters() {");
+					fileoutput.Add($"CompileInstruction(\"{alloprandsregistersinstruction}\");");
+					fileoutput.Add("}");
+				}
+
+				// If there are any registers, replace them with immediates and see what happens
+				if ((instructionparts.Length > 1 && Instructions.IndexOf(instructionparts[1]) > -1) || (instructionparts.Length == 3 && Instructions.IndexOf(instructionparts[2]) > -1))
+				{
+					var alloprandsimmediatesinstruction = instruction
+						.Replace("r", nnstring)
+						.Replace("nn", nnstring)
+						.Replace("n", nnstring);
+
+					fileoutput.Add("[TestMethod]");
+					fileoutput.Add("[ExpectedException(typeof(SyntaxException))]");
+					fileoutput.Add("public void " + basemethodname + "_WrongOprandTypes_AllImmediates() {");
+					fileoutput.Add($"CompileInstruction(\"{alloprandsimmediatesinstruction}\");");
+					fileoutput.Add("}");
+				}
+				*/
+				if (numexternalbytes == 1)
+				{
+					instruction.Replace("nn", nnstring); 
+					instruction = instruction.Replace("n", nnstring); // Purposely the wrong one
+
+					fileoutput.Add("[TestMethod]");
+					fileoutput.Add("[ExpectedException(typeof(SyntaxException))]");
+					fileoutput.Add("public void " + basemethodname + "_ImmediateTooBig() {");
+					fileoutput.Add($"CompileInstruction(\"{instruction}\");");
+					fileoutput.Add("}");
+				}
+			}
 
 			for (byte i = 0; i < 255; i++)
-				writeTestMethod(CBInstructions[i], i, true);
+			{
+				var instruction = Instructions[i];
+				if (instruction == "XX")
+					continue;
+
+				writeTestMethod(instruction, i, false);
+				writeNegativeTests(instruction, false);
+				fileoutput.Add(Environment.NewLine);
+			}
+
+			for (byte i = 0; i < 255; i++)
+			{
+				var instruction = CBInstructions[i];
+				if (instruction == "XX")
+					continue;
+
+				writeTestMethod(instruction, i, true);
+				writeNegativeTests(instruction, true);
+				fileoutput.Add(Environment.NewLine);
+			}
 
 			fileoutput.Add("}");
 			fileoutput.Add("}");

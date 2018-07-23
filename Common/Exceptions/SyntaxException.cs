@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Sharp_LR35902_Compiler.Exceptions
+namespace Common.Exceptions
 {
-	public class SyntaxException :Exception
+	public class SyntaxException : Exception
 	{
 		public SyntaxException() : base() { }
 		public SyntaxException(string reason) : base(reason) { }

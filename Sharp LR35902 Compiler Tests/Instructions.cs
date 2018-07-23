@@ -1,15 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Sharp_LR35902_Compiler_Tests.Utils;
-
+using Sharp_LR35902_Compiler.Exceptions;
 using static Sharp_LR35902_Compiler.Assembler;
-
+using static Sharp_LR35902_Compiler_Tests.Utils;
 namespace Sharp_LR35902_Compiler_Tests
 {
 	[TestClass]
 	public class Instructions
 	{
-
-
 		[TestMethod]
 		public void NOP()
 		{
@@ -23,6 +20,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("LD BC,62689");
 			Is(result, 0x01, 225, 244);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void LD_WrongNumberOfOprands()
+		{
+			CompileInstruction("LD"); // No oprands
 		}
 
 
@@ -40,6 +43,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("INC BC");
 			Is(result, 0x03);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void INC_WrongNumberOfOprands()
+		{
+			CompileInstruction("INC"); // No oprands
+		}
 
 
 		[TestMethod]
@@ -56,6 +65,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("DEC B");
 			Is(result, 0x05);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void DEC_WrongNumberOfOprands()
+		{
+			CompileInstruction("DEC"); // No oprands
+		}
 
 
 		[TestMethod]
@@ -63,6 +78,26 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("LD B,225");
 			Is(result, 0x06, 225);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void LD_B_n_ImmediateTooBig()
+		{
+			CompileInstruction("LD B,62689");
+		}
+
+
+		[TestMethod]
+		public void RLC_A()
+		{
+			var result = CompileInstruction("RLC A");
+			Is(result, 0x07);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void RLC_WrongNumberOfOprands()
+		{
+			CompileInstruction("RLC"); // No oprands
 		}
 
 
@@ -79,6 +114,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("ADD HL,BC");
 			Is(result, 0x09);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void ADD_WrongNumberOfOprands()
+		{
+			CompileInstruction("ADD"); // No oprands
 		}
 
 
@@ -119,6 +160,26 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("LD C,225");
 			Is(result, 0x0E, 225);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void LD_C_n_ImmediateTooBig()
+		{
+			CompileInstruction("LD C,62689");
+		}
+
+
+		[TestMethod]
+		public void RRC_A()
+		{
+			var result = CompileInstruction("RRC A");
+			Is(result, 0x0F);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void RRC_WrongNumberOfOprands()
+		{
+			CompileInstruction("RRC"); // No oprands
 		}
 
 
@@ -176,6 +237,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("LD D,225");
 			Is(result, 0x16, 225);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void LD_D_n_ImmediateTooBig()
+		{
+			CompileInstruction("LD D,62689");
+		}
 
 
 		[TestMethod]
@@ -184,6 +251,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("RL A");
 			Is(result, 0x17);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void RL_WrongNumberOfOprands()
+		{
+			CompileInstruction("RL"); // No oprands
+		}
 
 
 		[TestMethod]
@@ -191,6 +264,18 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("JR 225");
 			Is(result, 0x18, 225);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void JR_WrongNumberOfOprands()
+		{
+			CompileInstruction("JR"); // No oprands
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void JR_n_ImmediateTooBig()
+		{
+			CompileInstruction("JR 62689");
 		}
 
 
@@ -240,6 +325,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("LD E,225");
 			Is(result, 0x1E, 225);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void LD_E_n_ImmediateTooBig()
+		{
+			CompileInstruction("LD E,62689");
+		}
 
 
 		[TestMethod]
@@ -248,6 +339,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("RR A");
 			Is(result, 0x1F);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void RR_WrongNumberOfOprands()
+		{
+			CompileInstruction("RR"); // No oprands
+		}
 
 
 		[TestMethod]
@@ -255,6 +352,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("JR NZ,225");
 			Is(result, 0x20, 225);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void JR_NZ_n_ImmediateTooBig()
+		{
+			CompileInstruction("JR NZ,62689");
 		}
 
 
@@ -271,6 +374,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("LDI (HL),A");
 			Is(result, 0x22);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void LDI_WrongNumberOfOprands()
+		{
+			CompileInstruction("LDI"); // No oprands
 		}
 
 
@@ -304,6 +413,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("LD H,225");
 			Is(result, 0x26, 225);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void LD_H_n_ImmediateTooBig()
+		{
+			CompileInstruction("LD H,62689");
+		}
 
 
 		[TestMethod]
@@ -319,6 +434,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("JR Z,225");
 			Is(result, 0x28, 225);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void JR_Z_n_ImmediateTooBig()
+		{
+			CompileInstruction("JR Z,62689");
 		}
 
 
@@ -368,6 +489,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("LD L,225");
 			Is(result, 0x2E, 225);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void LD_L_n_ImmediateTooBig()
+		{
+			CompileInstruction("LD L,62689");
+		}
 
 
 		[TestMethod]
@@ -384,6 +511,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("JR NC,225");
 			Is(result, 0x30, 225);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void JR_NC_n_ImmediateTooBig()
+		{
+			CompileInstruction("JR NC,62689");
+		}
 
 
 		[TestMethod]
@@ -399,6 +532,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("LDD (HL),A");
 			Is(result, 0x32);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void LDD_WrongNumberOfOprands()
+		{
+			CompileInstruction("LDD"); // No oprands
 		}
 
 
@@ -432,6 +571,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("LD (HL),225");
 			Is(result, 0x36, 225);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void LD_HL_n_ImmediateTooBig()
+		{
+			CompileInstruction("LD (HL),62689");
+		}
 
 
 		[TestMethod]
@@ -447,6 +592,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("JR C,225");
 			Is(result, 0x38, 225);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void JR_C_n_ImmediateTooBig()
+		{
+			CompileInstruction("JR C,62689");
 		}
 
 
@@ -495,6 +646,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("LD A,225");
 			Is(result, 0x3E, 225);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void LD_A_n_ImmediateTooBig()
+		{
+			CompileInstruction("LD A,62689");
 		}
 
 
@@ -1088,6 +1245,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("ADC A,B");
 			Is(result, 0x88);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void ADC_WrongNumberOfOprands()
+		{
+			CompileInstruction("ADC"); // No oprands
+		}
 
 
 		[TestMethod]
@@ -1151,6 +1314,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("SUB A,B");
 			Is(result, 0x90);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void SUB_WrongNumberOfOprands()
+		{
+			CompileInstruction("SUB"); // No oprands
 		}
 
 
@@ -1216,6 +1385,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("SBC A,B");
 			Is(result, 0x98);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void SBC_WrongNumberOfOprands()
+		{
+			CompileInstruction("SBC"); // No oprands
+		}
 
 
 		[TestMethod]
@@ -1279,6 +1454,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("AND B");
 			Is(result, 0xA0);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void AND_WrongNumberOfOprands()
+		{
+			CompileInstruction("AND"); // No oprands
 		}
 
 
@@ -1344,6 +1525,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("XOR B");
 			Is(result, 0xA8);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void XOR_WrongNumberOfOprands()
+		{
+			CompileInstruction("XOR"); // No oprands
+		}
 
 
 		[TestMethod]
@@ -1407,6 +1594,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("OR B");
 			Is(result, 0xB0);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void OR_WrongNumberOfOprands()
+		{
+			CompileInstruction("OR"); // No oprands
 		}
 
 
@@ -1472,6 +1665,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("CP B");
 			Is(result, 0xB8);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void CP_WrongNumberOfOprands()
+		{
+			CompileInstruction("CP"); // No oprands
+		}
 
 
 		[TestMethod]
@@ -1536,6 +1735,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("RET NZ");
 			Is(result, 0xC0);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void RET_WrongNumberOfOprands()
+		{
+			CompileInstruction("RET"); // No oprands
+		}
 
 
 		[TestMethod]
@@ -1544,6 +1749,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("POP BC");
 			Is(result, 0xC1);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void POP_WrongNumberOfOprands()
+		{
+			CompileInstruction("POP"); // No oprands
+		}
 
 
 		[TestMethod]
@@ -1551,6 +1762,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("JP NZ,62689");
 			Is(result, 0xC2, 225, 244);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void JP_WrongNumberOfOprands()
+		{
+			CompileInstruction("JP"); // No oprands
 		}
 
 
@@ -1568,6 +1785,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("CALL NZ,62689");
 			Is(result, 0xC4, 225, 244);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void CALL_WrongNumberOfOprands()
+		{
+			CompileInstruction("CALL"); // No oprands
+		}
 
 
 		[TestMethod]
@@ -1575,6 +1798,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("PUSH BC");
 			Is(result, 0xC5);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void PUSH_WrongNumberOfOprands()
+		{
+			CompileInstruction("PUSH"); // No oprands
 		}
 
 
@@ -1584,6 +1813,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("ADD A,225");
 			Is(result, 0xC6, 225);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void ADD_A_n_ImmediateTooBig()
+		{
+			CompileInstruction("ADD A,62689");
+		}
 
 
 		[TestMethod]
@@ -1591,6 +1826,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("RST 0");
 			Is(result, 0xC7);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void RST_WrongNumberOfOprands()
+		{
+			CompileInstruction("RST"); // No oprands
 		}
 
 
@@ -1617,6 +1858,21 @@ namespace Sharp_LR35902_Compiler_Tests
 			Is(result, 0xCA, 225, 244);
 		}
 
+
+		[TestMethod]
+		public void Ext_ops()
+		{
+			var result = CompileInstruction("Ext ops");
+			Is(result, 0xCB);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void EXT_WrongNumberOfOprands()
+		{
+			CompileInstruction("EXT"); // No oprands
+		}
+
+
 		[TestMethod]
 		public void CALL_Z_nn()
 		{
@@ -1639,10 +1895,16 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("ADC A,225");
 			Is(result, 0xCE, 225);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void ADC_A_n_ImmediateTooBig()
+		{
+			CompileInstruction("ADC A,62689");
+		}
 
 
 		[TestMethod]
-		public void RST_08()
+		public void RST_8()
 		{
 			var result = CompileInstruction("RST 8");
 			Is(result, 0xCF);
@@ -1695,6 +1957,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("SUB A,225");
 			Is(result, 0xD6, 225);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void SUB_A_n_ImmediateTooBig()
+		{
+			CompileInstruction("SUB A,62689");
+		}
 
 
 		[TestMethod]
@@ -1743,6 +2011,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("SBC A,225");
 			Is(result, 0xDE, 225);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void SBC_A_n_ImmediateTooBig()
+		{
+			CompileInstruction("SBC A,62689");
+		}
 
 
 		[TestMethod]
@@ -1758,6 +2032,18 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("LDH (225),A");
 			Is(result, 0xE0, 225);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void LDH_WrongNumberOfOprands()
+		{
+			CompileInstruction("LDH"); // No oprands
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void LDH_n_A_ImmediateTooBig()
+		{
+			CompileInstruction("LDH (62689),A");
 		}
 
 
@@ -1791,6 +2077,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("AND 225");
 			Is(result, 0xE6, 225);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void AND_n_ImmediateTooBig()
+		{
+			CompileInstruction("AND 62689");
+		}
 
 
 		[TestMethod]
@@ -1806,6 +2098,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("ADD SP,225");
 			Is(result, 0xE8, 225);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void ADD_SP_n_ImmediateTooBig()
+		{
+			CompileInstruction("ADD SP,62689");
 		}
 
 
@@ -1831,6 +2129,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("XOR 225");
 			Is(result, 0xEE, 225);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void XOR_n_ImmediateTooBig()
+		{
+			CompileInstruction("XOR 62689");
+		}
 
 
 		[TestMethod]
@@ -1846,6 +2150,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("LDH A,(225)");
 			Is(result, 0xF0, 225);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void LDH_A_n_ImmediateTooBig()
+		{
+			CompileInstruction("LDH A,(62689)");
 		}
 
 
@@ -1879,6 +2189,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("OR 225");
 			Is(result, 0xF6, 225);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void OR_n_ImmediateTooBig()
+		{
+			CompileInstruction("OR 62689");
+		}
 
 
 		[TestMethod]
@@ -1894,6 +2210,18 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("LDHL SP,225");
 			Is(result, 0xF8, 225);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void LDHL_WrongNumberOfOprands()
+		{
+			CompileInstruction("LDHL"); // No oprands
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void LDHL_SP_n_ImmediateTooBig()
+		{
+			CompileInstruction("LDHL SP,62689");
 		}
 
 
@@ -1926,6 +2254,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("CP 225");
 			Is(result, 0xFE, 225);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void CP_n_ImmediateTooBig()
+		{
+			CompileInstruction("CP 62689");
 		}
 
 
@@ -1986,6 +2320,14 @@ namespace Sharp_LR35902_Compiler_Tests
 
 
 		[TestMethod]
+		public void CB_RLC_A()
+		{
+			var result = CompileInstruction("RLC A");
+			Is(result, 0xCB, 0x07);
+		}
+
+
+		[TestMethod]
 		public void CB_RRC_B()
 		{
 			var result = CompileInstruction("RRC B");
@@ -2038,6 +2380,14 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("RRC (HL)");
 			Is(result, 0xCB, 0x0E);
+		}
+
+
+		[TestMethod]
+		public void CB_RRC_A()
+		{
+			var result = CompileInstruction("RRC A");
+			Is(result, 0xCB, 0x0F);
 		}
 
 
@@ -2098,6 +2448,14 @@ namespace Sharp_LR35902_Compiler_Tests
 
 
 		[TestMethod]
+		public void CB_RL_A()
+		{
+			var result = CompileInstruction("RL A");
+			Is(result, 0xCB, 0x17);
+		}
+
+
+		[TestMethod]
 		public void CB_RR_B()
 		{
 			var result = CompileInstruction("RR B");
@@ -2152,11 +2510,26 @@ namespace Sharp_LR35902_Compiler_Tests
 			Is(result, 0xCB, 0x1E);
 		}
 
+
+		[TestMethod]
+		public void CB_RR_A()
+		{
+			var result = CompileInstruction("RR A");
+			Is(result, 0xCB, 0x1F);
+		}
+
+
 		[TestMethod]
 		public void CB_SLA_B()
 		{
 			var result = CompileInstruction("SLA B");
 			Is(result, 0xCB, 0x20);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void SLA_WrongNumberOfOprands()
+		{
+			CompileInstruction("SLA"); // No oprands
 		}
 
 
@@ -2222,6 +2595,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("SRA B");
 			Is(result, 0xCB, 0x28);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void SRA_WrongNumberOfOprands()
+		{
+			CompileInstruction("SRA"); // No oprands
+		}
 
 
 		[TestMethod]
@@ -2285,6 +2664,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("SWAP B");
 			Is(result, 0xCB, 0x30);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void SWAP_WrongNumberOfOprands()
+		{
+			CompileInstruction("SWAP"); // No oprands
 		}
 
 
@@ -2350,6 +2735,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("SRL B");
 			Is(result, 0xCB, 0x38);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void SRL_WrongNumberOfOprands()
+		{
+			CompileInstruction("SRL"); // No oprands
+		}
 
 
 		[TestMethod]
@@ -2413,6 +2804,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("BIT 0,B");
 			Is(result, 0xCB, 0x40);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void BIT_WrongNumberOfOprands()
+		{
+			CompileInstruction("BIT"); // No oprands
 		}
 
 
@@ -2926,6 +3323,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("RES 0,B");
 			Is(result, 0xCB, 0x80);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void RES_WrongNumberOfOprands()
+		{
+			CompileInstruction("RES"); // No oprands
+		}
 
 
 		[TestMethod]
@@ -3438,6 +3841,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("SET 0,B");
 			Is(result, 0xCB, 0xC0);
 		}
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void SET_WrongNumberOfOprands()
+		{
+			CompileInstruction("SET"); // No oprands
+		}
 
 
 		[TestMethod]
@@ -3934,5 +4343,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("SET 7,(HL)");
 			Is(result, 0xCB, 0xFE);
 		}
+
+
 	}
 }
