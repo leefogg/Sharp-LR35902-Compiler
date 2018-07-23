@@ -89,6 +89,17 @@ namespace Sharp_LR35902_Compiler
 
 			return ListOf<byte>(0xCB, (byte)(startopcode + registerindex));
 		}
+		private static byte[] Pattern_LineWithFastA(string[] oprands, byte rowstartopcode)
+		{
+			if (oprands.Length != 1)
+				throw new ArgumentException("Register expected");
+
+			if (oprands[0] == "A")
+				return ListOf((byte)(rowstartopcode + 7));
+
+			var registerindex = registers.IndexOf(oprands[0]);
+			return ListOf<byte>(0xCB, (byte)(rowstartopcode + registerindex));
+		}
 
 		private static byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
 		private static byte[] DisableInterrupts(string[] oprands) => ListOf<byte>(0xF3);
@@ -352,28 +363,8 @@ namespace Sharp_LR35902_Compiler
 
 			return ListOf((byte)(0xB0 + registerindex));
 		}
-		private static byte[] RotateLeft(string[] oprands)
-		{
-			if (oprands.Length != 1)
-				throw new ArgumentException("Register expected");
-
-			if (oprands[0] == "A")
-				return ListOf<byte>(0x17);
-
-			var registerindex = registers.IndexOf(oprands[0]);
-			return ListOf<byte>(0xCB, (byte)(0x10 + registerindex));
-		}
-		private static byte[] RotateRight(string[] oprands)
-		{
-			if (oprands.Length != 1)
-				throw new ArgumentException("Register expected");
-
-			if (oprands[0] == "A")
-				return ListOf<byte>(0x1F);
-
-			var registerindex = registers.IndexOf(oprands[0]);
-			return ListOf<byte>(0xCB, (byte)(0x18 + registerindex));
-		}
+		private static byte[] RotateLeft(string[] oprands) => Pattern_LineWithFastA(oprands, 0x10);
+		private static byte[] RotateRight(string[] oprands) => Pattern_LineWithFastA(oprands, 0x18);
 		private static byte[] Reset(string[] oprands)
 		{
 			var vectors = new[] {"0", "8", "10", "18", "20", "28", "30", "38" };
