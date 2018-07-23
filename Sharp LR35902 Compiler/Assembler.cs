@@ -46,6 +46,7 @@ namespace Sharp_LR35902_Compiler
 			{ "LDI", LoadAndIncrement },
 			{ "LDD", LoadAndDecrement },
 			{ "LDH", LoadHiger },
+			{ "LDHL", AddSPIntoHL }
 		};
 
 		private static byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
@@ -468,6 +469,21 @@ namespace Sharp_LR35902_Compiler
 					throw new ArgumentException("Expected 8-bit offset, found 16-bit address");
 
 				return ListOf<byte>(0xF0, (byte)addressoffset);
+			}
+
+			throw new ArgumentException("No known oprand match found");
+		}
+		public static byte[] AddSPIntoHL(string[] oprands)
+		{
+			if (oprands[0] != "SP")
+				throw new ArgumentException("Can only add 8-bit immediate to SP");
+			ushort immediate = 0;
+			if (TryParseConstant(oprands[1], ref immediate))
+			{
+				if (!immediate.isByte())
+					throw new ArgumentException("Expected 8-bit immediate, found 16-bit immediate");
+
+				return ListOf<byte>(0xF8, (byte)immediate);
 			}
 
 			throw new ArgumentException("No known oprand match found");

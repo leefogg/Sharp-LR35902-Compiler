@@ -259,7 +259,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			"PUSH AF",
 			"OR n",
 			"RST 30",
-			"LDHL SP,d",
+			"LDHL SP,n",
 			"LD SP,HL",
 			"LD A,(nn)",
 			"EI",

@@ -1907,10 +1907,10 @@ namespace Sharp_LR35902_Compiler_Tests
 
 
 		[TestMethod]
-		public void LDHL_SP_d()
+		public void LDHL_SP_n()
 		{
-			var result = Assembler.CompileInstruction("LDHL SP,d");
-			Is(result, 0xF8);
+			var result = Assembler.CompileInstruction("LDHL SP, 225");
+			Is(result, 0xF8, 225);
 		}
 
 
