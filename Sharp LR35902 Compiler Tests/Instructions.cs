@@ -66,14 +66,6 @@ namespace Sharp_LR35902_Compiler_Tests
 
 
 		[TestMethod]
-		public void RLC_A()
-		{
-			var result = Assembler.CompileInstruction("RLC A");
-			Is(result, 0x07);
-		}
-
-
-		[TestMethod]
 		public void LD_nn_SP()
 		{
 			var result = Assembler.CompileInstruction("LD (62689),SP");
@@ -126,14 +118,6 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = Assembler.CompileInstruction("LD C,225");
 			Is(result, 0x0E, 225);
-		}
-
-
-		[TestMethod]
-		public void RRC_A()
-		{
-			var result = Assembler.CompileInstruction("RRC A");
-			Is(result, 0x0F);
 		}
 
 
@@ -2117,14 +2101,6 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = Assembler.CompileInstruction("RL (HL)");
 			Is(result, 0xCB, 0x16);
-		}
-
-
-		[TestMethod]
-		public void CB_RL_A()
-		{
-			var result = Assembler.CompileInstruction("RL A");
-			Is(result, 0xCB, 0x17);
 		}
 
 
