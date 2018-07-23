@@ -48,8 +48,31 @@ namespace Sharp_LR35902_Compiler
 			// CB instructions
 			{ "RL", RotateLeft},
 			{ "RR", RotateRight},
-			{ "BIT", TestBit }
+			{ "BIT", TestBit },
+			{ "RES", ClearBit }
 		};
+
+		// Common patterns for opcode ranges
+		private static byte[] Pattern_BIT(string[] oprands, byte startopcode)
+		{
+			if (oprands.Length != 2)
+				throw new ArgumentException("Expected 2 oprands");
+
+			var registerindex = registers.IndexOf(oprands[1]);
+			if (registerindex == -1)
+				throw new ArgumentException("Expected register for oprand 2");
+
+			ushort bit = 0;
+			if (TryParseConstant(oprands[0], ref bit))
+			{
+				if (bit > 7)
+					throw new ArgumentException("Unkown bit '{oprands[0]}'. Expected bit 0-7 inclusive");
+
+				return ListOf<byte>(0xCB, (byte)(startopcode + (8 * bit) + registerindex));
+			}
+
+			throw new ArgumentException("No known oprand match found");
+		}
 
 		private static byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
 		private static byte[] DisableInterrupts(string[] oprands) => ListOf<byte>(0xF3);
@@ -490,26 +513,8 @@ namespace Sharp_LR35902_Compiler
 
 			throw new ArgumentException("No known oprand match found");
 		}
-		public static byte[] TestBit(string[] oprands)
-		{
-			if (oprands.Length != 2)
-				throw new ArgumentException("Expected 2 oprands");
-
-			var registerindex = registers.IndexOf(oprands[1]);
-			if (registerindex == -1)
-				throw new ArgumentException("Expected register for oprand 2");
-
-			ushort bit = 0;
-			if (TryParseConstant(oprands[0], ref bit))
-			{
-				if (bit > 7)
-					throw new ArgumentException("Unkown bit '{oprands[0]}'. Expected bit 0-7 inclusive");
-
-				return ListOf<byte>(0xCB, (byte)(0x40 + (8 * bit) + registerindex));
-			}
-
-			throw new ArgumentException("No known oprand match found");
-		}
+		public static byte[] TestBit(string[] oprands) => Pattern_BIT(oprands, 0x40);
+		public static byte[] ClearBit(string[] oprands) => Pattern_BIT(oprands, 0x80);
 
 
 
