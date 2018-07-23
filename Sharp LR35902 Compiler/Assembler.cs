@@ -52,7 +52,9 @@ namespace Sharp_LR35902_Compiler
 			{ "RES", ClearBit },
 			{ "SET", SetBit },
 			{ "SWAP", SwapNybbles },
-			{ "SLA", ShiftLeft }
+			{ "SLA", ShiftLeftPreserveSign },
+			{ "SRA", ShiftRightPreserveSign },
+			{ "SRL", ShiftRight }
 		};
 
 		// Common patterns for opcode ranges
@@ -531,7 +533,9 @@ namespace Sharp_LR35902_Compiler
 		public static byte[] ClearBit(string[] oprands) => Pattern_BIT(oprands, 0x80);
 		public static byte[] SetBit(string[] oprands) => Pattern_BIT(oprands, 0xC0);
 		public static byte[] SwapNybbles(string[] oprands) => Pattern_Line(oprands, 0x30);
-		public static byte[] ShiftLeft(string[] oprands) => Pattern_Line(oprands, 0x20);
+		public static byte[] ShiftLeftPreserveSign(string[] oprands) => Pattern_Line(oprands, 0x20);
+		public static byte[] ShiftRightPreserveSign(string[] oprands) => Pattern_Line(oprands, 0x28);
+		public static byte[] ShiftRight(string[] oprands) => Pattern_Line(oprands, 0x38);
 
 		public static void Main(string[] args)
 		{
