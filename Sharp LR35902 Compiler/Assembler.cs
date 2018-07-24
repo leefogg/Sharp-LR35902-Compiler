@@ -107,6 +107,26 @@ namespace Sharp_LR35902_Compiler
 			var registerindex = registers.IndexOf(oprands[0]);
 			return ListOf<byte>(0xCB, (byte)(rowstartopcode + registerindex));
 		}
+		private static byte[] Pattern_RegisterOrImmediateOnRegister(string[] oprands, byte rowstartopcode, byte nopcode)
+		{
+			if (oprands.Length != 1)
+				throw TooFewOprandsException(1);
+
+			var registerindex = registers.IndexOf(oprands[0]);
+			if (registerindex == -1)
+			{
+				ushort constant = 0;
+				if (!TryParseConstant(oprands[0], ref constant))
+					throw new ArgumentException($"Unknown register '{oprands[0]}'");
+				if (!constant.isByte())
+					throw UnexpectedInt16Exception;
+
+				return ListOf(nopcode, (byte)constant);
+			}
+
+
+			return ListOf((byte)(rowstartopcode + registerindex));
+		}
 
 		private static byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
 		private static byte[] Stop(string[] oprands) => ListOf<byte>(0x10);
@@ -322,25 +342,7 @@ namespace Sharp_LR35902_Compiler
 
 			return ListOf((byte)(0x98 + registerindex));
 		}
-		private static byte[] XOR(string[] oprands)
-		{
-			if (oprands.Length != 1)
-				throw TooFewOprandsException(1);
-
-			var registerindex = registers.IndexOf(oprands[0]);
-			if (registerindex == -1) {
-				ushort constant = 0;
-				if (!TryParseConstant(oprands[0], ref constant))
-					throw new ArgumentException($"Unknown register '{oprands[0]}'");
-				if (!constant.isByte())
-					throw UnexpectedInt16Exception;
-
-				return ListOf<byte>(0xEE, (byte)constant);
-			}
-				
-
-			return ListOf((byte)(0xA8 + registerindex));
-		}
+		private static byte[] XOR(string[] oprands) => Pattern_RegisterOrImmediateOnRegister(oprands, 0xA8, 0xEE);
 		private static byte[] Increment(string[] oprands)
 		{
 			if (oprands.Length != 1)
@@ -375,66 +377,9 @@ namespace Sharp_LR35902_Compiler
 
 			return ListOf((byte)(0x05 + 8 * registerindex));
 		}
-		private static byte[] Compare(string[] oprands)
-		{
-			if (oprands.Length != 1)
-				throw TooFewOprandsException(1);
-
-			var registerindex = registers.IndexOf(oprands[0]);
-			if (registerindex == -1)
-			{
-				ushort constant = 0;
-				if (!TryParseConstant(oprands[0], ref constant))
-					throw new ArgumentException($"Unknown register '{oprands[0]}'");
-				if (!constant.isByte())
-					throw UnexpectedInt16Exception;
-
-				return ListOf<byte>(0xFE, (byte)constant);
-			}
-
-
-			return ListOf((byte)(0xB8 + registerindex));
-		}
-		private static byte[] And(string[] oprands)
-		{
-			if (oprands.Length != 1)
-				throw TooFewOprandsException(1);
-
-			var registerindex = registers.IndexOf(oprands[0]);
-			if (registerindex == -1)
-			{
-				ushort constant = 0;
-				if (!TryParseConstant(oprands[0], ref constant))
-					throw new ArgumentException($"Unknown register '{oprands[0]}'");
-				if (!constant.isByte())
-					throw UnexpectedInt16Exception;
-
-				return ListOf<byte>(0xE6, (byte)constant);
-			}
-
-
-			return ListOf((byte)(0xA0 + registerindex));
-		}
-		private static byte[] Or(string[] oprands)
-		{
-			if (oprands.Length != 1)
-				throw TooFewOprandsException(1);
-
-			var registerindex = registers.IndexOf(oprands[0]);
-			if (registerindex == -1)
-			{
-				ushort constant = 0;
-				if (!TryParseConstant(oprands[0], ref constant))
-					throw new ArgumentException($"Unknown register '{oprands[0]}'");
-				if (!constant.isByte())
-					throw UnexpectedInt16Exception;
-
-				return ListOf<byte>(0xF6, (byte)constant);
-			}
-
-
-			return ListOf((byte)(0xB0 + registerindex));
-		}
+		private static byte[] Compare(string[] oprands) => Pattern_RegisterOrImmediateOnRegister(oprands, 0xB8, 0xFE);
+		private static byte[] And(string[] oprands) => Pattern_RegisterOrImmediateOnRegister(oprands, 0xA0, 0xE6);
+		private static byte[] Or(string[] oprands) => Pattern_RegisterOrImmediateOnRegister(oprands, 0xB0, 0xF6);
 		private static byte[] Reset(string[] oprands)
 		{
 			if (oprands.Length != 1)
@@ -475,7 +420,7 @@ namespace Sharp_LR35902_Compiler
 			if (oprands.Length != 1)
 				throw TooFewOprandsException(1);
 
-			string[] pairs = new[] { "BC", "DE", "HL", "AF" };
+			string[] pairs = new[] { "BC", "DE", "HL", "AF" };  // Different to static list
 			var pairindex = pairs.IndexOf(oprands[0]);
 			if (pairindex == -1)
 				throw new ArgumentException($"Unknown register pair '{oprands[0]}'");
@@ -609,6 +554,7 @@ namespace Sharp_LR35902_Compiler
 
 			if (oprands[0] != "SP")
 				throw new ArgumentException("Can only add 8-bit immediate to SP");
+
 			ushort immediate = 0;
 			if (TryParseConstant(oprands[1], ref immediate))
 			{
@@ -646,7 +592,6 @@ namespace Sharp_LR35902_Compiler
 				.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 			return CompileInstruction(parts[0], parts.Skip(1).ToArray());
 		}
-
 		public static byte[] CompileInstruction(string opcode, string[] oprands)
 		{
 			try
