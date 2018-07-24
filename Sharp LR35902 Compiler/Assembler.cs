@@ -16,12 +16,13 @@ namespace Sharp_LR35902_Compiler
 		private static readonly Dictionary<string, Func<string[], byte[]>> Instructions = new Dictionary<string, Func<string[], byte[]>> { 
 			{ "NOP", NoOp },
 			{ "STOP", Stop },
+			{ "HALT", Halt },
 			{ "DI", DisableInterrupts },
 			{ "EI", EnableInterrupts },
 			{ "RET", Return },
 			{ "RETI", ReturnWithInterrrupts },
+			{ "DAA", BCDAdjustA },
 			{ "LD", Load },
-			{ "HALT", Halt },
 			{ "XOR", XOR },
 			{ "ADD", Add },
 			{ "ADC", AddWithCarry },
@@ -35,7 +36,6 @@ namespace Sharp_LR35902_Compiler
 			{ "RST", Reset },
 			{ "SCF", SetCarryFlag },
 			{ "CPL", ComplementA },
-			{ "DAA", BCDAdjustA },
 			{ "CCF", ClearCarryFlag },
 			{ "CALL", Call },
 			{ "PUSH", Push },
@@ -63,7 +63,7 @@ namespace Sharp_LR35902_Compiler
 		private static ArgumentException TooFewOprandsException(int expectednumber) => new ArgumentException($"Expected {expectednumber} oprands");
 		private static ArgumentException NoOprandMatchException => new ArgumentException("No known oprand match found");
 		private static ArgumentException UnexpectedInt16Exception => throw new ArgumentException($"Unexpected 16-bit immediate, expected 8-bit immediate.");
-
+		
 		// Common patterns for opcode ranges
 		private static byte[] Pattern_BIT(string[] oprands, byte startopcode)
 		{
@@ -109,9 +109,15 @@ namespace Sharp_LR35902_Compiler
 		}
 
 		private static byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
+		private static byte[] Stop(string[] oprands) => ListOf<byte>(0x10);
+		private static byte[] BCDAdjustA(string[] oprands) => ListOf<byte>(0x27);
+		private static byte[] ComplementA(string[] oprands) => ListOf<byte>(0x2F);
+		private static byte[] SetCarryFlag(string[] oprands) => ListOf<byte>(0x37);
+		private static byte[] ClearCarryFlag(string[] oprands) => ListOf<byte>(0x3F);
+		private static byte[] Halt(string[] oprands) => ListOf<byte>(0x76);
+		private static byte[] ReturnWithInterrrupts(string[] oprands) => ListOf<byte>(0xD9);
 		private static byte[] DisableInterrupts(string[] oprands) => ListOf<byte>(0xF3);
 		private static byte[] EnableInterrupts(string[] oprands) => ListOf<byte>(0xFB);
-		private static byte[] ReturnWithInterrrupts(string[] oprands) => ListOf<byte>(0xD9);
 		private static byte[] Return(string[] oprands) {
 			if (oprands.Length > 1)
 				throw new ArgumentException("Unexpected oprands");
@@ -125,8 +131,6 @@ namespace Sharp_LR35902_Compiler
 
 			return ListOf((byte)(0xC0 + (conditionindex * 8)));
 		}
-		private static byte[] Halt(string[] oprands) => ListOf<byte>(0x76);
-		private static byte[] Stop(string[] oprands) => ListOf<byte>(0x10);
 		private static byte[] Load(string[] oprands)
 		{
 			if (oprands.Length != 2)
@@ -431,10 +435,6 @@ namespace Sharp_LR35902_Compiler
 
 			return ListOf((byte)(0xB0 + registerindex));
 		}
-		private static byte[] RotateLeftWithCarry(string[] oprands) => Pattern_LineWithFastA(oprands, 0x00);
-		private static byte[] RotateRightWithCarry(string[] oprands) => Pattern_LineWithFastA(oprands, 0x08);
-		private static byte[] RotateLeft(string[] oprands) => Pattern_LineWithFastA(oprands, 0x10);
-		private static byte[] RotateRight(string[] oprands) => Pattern_LineWithFastA(oprands, 0x18);
 		private static byte[] Reset(string[] oprands)
 		{
 			if (oprands.Length != 1)
@@ -447,10 +447,6 @@ namespace Sharp_LR35902_Compiler
 
 			return ListOf((byte)(0xC7 + 8 * vectorindex));
 		}
-		private static byte[] SetCarryFlag(string[] oprands) => ListOf<byte>(0x37);
-		private static byte[] ComplementA(string[] oprands) => ListOf<byte>(0x2F);
-		private static byte[] BCDAdjustA(string[] oprands) => ListOf<byte>(0x27);
-		private static byte[] ClearCarryFlag(string[] oprands) => ListOf<byte>(0x3F);
 		private static byte[] Call(string[] oprands)
 		{
 			if (oprands.Length == 0)
@@ -624,14 +620,19 @@ namespace Sharp_LR35902_Compiler
 
 			throw NoOprandMatchException;
 		}
-
+		// CB instructions
+		private static byte[] RotateLeftWithCarry(string[] oprands) => Pattern_LineWithFastA(oprands, 0x00);
+		private static byte[] RotateRightWithCarry(string[] oprands) => Pattern_LineWithFastA(oprands, 0x08);
+		private static byte[] RotateLeft(string[] oprands) => Pattern_LineWithFastA(oprands, 0x10);
+		private static byte[] RotateRight(string[] oprands) => Pattern_LineWithFastA(oprands, 0x18);
+		private static byte[] ShiftLeftPreserveSign(string[] oprands) => Pattern_Line(oprands, 0x20);
+		private static byte[] ShiftRightPreserveSign(string[] oprands) => Pattern_Line(oprands, 0x28);
+		private static byte[] SwapNybbles(string[] oprands) => Pattern_Line(oprands, 0x30);
+		private static byte[] ShiftRight(string[] oprands) => Pattern_Line(oprands, 0x38);
 		private static byte[] TestBit(string[] oprands) => Pattern_BIT(oprands, 0x40);
 		private static byte[] ClearBit(string[] oprands) => Pattern_BIT(oprands, 0x80);
 		private static byte[] SetBit(string[] oprands) => Pattern_BIT(oprands, 0xC0);
-		private static byte[] SwapNybbles(string[] oprands) => Pattern_Line(oprands, 0x30);
-		private static byte[] ShiftLeftPreserveSign(string[] oprands) => Pattern_Line(oprands, 0x20);
-		private static byte[] ShiftRightPreserveSign(string[] oprands) => Pattern_Line(oprands, 0x28);
-		private static byte[] ShiftRight(string[] oprands) => Pattern_Line(oprands, 0x38);
+		
 
 		public static void Main(string[] args)
 		{
@@ -663,7 +664,7 @@ namespace Sharp_LR35902_Compiler
 			}
 		}
 
-
+		
 		private static bool TryParseConstant(string constant, ref ushort result)
 		{
 			if (constant.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
