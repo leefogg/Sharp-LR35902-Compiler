@@ -585,6 +585,16 @@ namespace Sharp_LR35902_Compiler
 			
 		}
 
+		public static byte[] CompileProgram(string[] instructions)
+		{
+			var bytes = new List<byte>(instructions.Length * 2);
+
+			foreach (var instruction in instructions)
+				bytes.AddRange(CompileInstruction(instruction));
+
+			return bytes.ToArray();
+		}
+
 		public static byte[] CompileInstruction(string code) {
 			var parts = code
 				.ToUpper()

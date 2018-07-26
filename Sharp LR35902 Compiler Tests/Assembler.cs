@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sharp_LR35902_Compiler.Exceptions;
 using static Sharp_LR35902_Compiler.Assembler;
+using static Sharp_LR35902_Compiler_Tests.Utils;
 
 namespace Sharp_LR35902_Compiler_Tests
 {
@@ -74,6 +75,13 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			ushort val = 0;
 			Assert.IsFalse(TryParseConstant("0b00123012", ref val));
+		}
+
+		[TestMethod]
+		public void CompileProgram_MultipleLines()
+		{
+			var result = CompileProgram(new[]{ "EI", "LD A, 0xE1" });
+			Assert.AreEqual(3, result.Length);
 		}
 	}
 }
