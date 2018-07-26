@@ -610,18 +610,49 @@ namespace Sharp_LR35902_Compiler
 		}
 
 		
-		private static bool TryParseConstant(string constant, ref ushort result)
+		public static bool TryParseConstant(string constant, ref ushort result)
 		{
 			if (constant.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
 			{
-				var stripped = constant.Substring(2);
-				result = stripped.GetHexBytes()[0];
-				return true;
+				try
+				{
+					if (constant.Length == 2)
+						return false;
+
+					var stripped = constant.Substring(2);
+					var bytes = stripped.GetHexBytes();
+
+					result = 0;
+					for (byte i = 0; i < Math.Min(2, bytes.Length); i++)
+						result |= (ushort)(bytes[i] << i * 8);
+					return true;
+				} 
+				catch (Exception e)
+				{
+					return false;
+				}
 			}
-			else if (constant.StartsWith("0b", StringComparison.InvariantCultureIgnoreCase))
+			else if (constant.StartsWith("0b", StringComparison.InvariantCultureIgnoreCase) || constant.StartsWith("B", StringComparison.InvariantCultureIgnoreCase))
 			{
-				// TODO: implement
-				return false;
+				constant = constant.ToLower();
+				var bitsindex = constant.IndexOf("b") + 1;
+				constant = constant.Substring(bitsindex);
+
+				if (constant.Length != 8 && constant.Length != 16)
+					return false;
+
+				ushort bits = 0;
+				for (byte i=0; i<constant.Length; i++)
+				{
+					var character = constant[constant.Length - 1 - i];
+					if (character == '1')
+						bits |= (ushort)(1 << i);
+					else if (character != '0')
+						return false;
+				}
+
+				result = bits;
+				return true;
 			}
 			else
 			{
