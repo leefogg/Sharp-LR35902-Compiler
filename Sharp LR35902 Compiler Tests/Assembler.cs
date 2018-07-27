@@ -156,5 +156,30 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("LD A, x");
 			Is(result, new byte[] { 0x3E, (byte)val });
 		}
+
+		[TestMethod]
+		public void TryParseConstant_Math_Addition()
+		{
+			ushort val = 0;
+
+			Assert.IsTrue(TryParseConstant("1+1", ref val));
+			Assert.AreEqual(2, val);
+		}
+		[TestMethod]
+		public void TryParseConstant_Math_Subtraction()
+		{
+			ushort val = 0;
+
+			Assert.IsTrue(TryParseConstant("10-5", ref val));
+			Assert.AreEqual(5, val);
+		}
+		[TestMethod]
+		public void TryParseConstant_Math_WithWhitespace()
+		{
+			ushort val = 0;
+
+			Assert.IsTrue(TryParseConstant("10 - 5", ref val));
+			Assert.AreEqual(5, val);
+		}
 	}
 }

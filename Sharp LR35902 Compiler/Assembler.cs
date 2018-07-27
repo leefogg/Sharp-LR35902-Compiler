@@ -644,6 +644,8 @@ namespace Sharp_LR35902_Compiler
 
 		public static bool TryParseConstant(string constant, ref ushort result)
 		{
+			var parts = constant.SplitAndKeep(new[] { '+', '-' }).ToArray();
+			constant = parts[0];
 			if (constant.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
 			{
 				try
@@ -657,7 +659,6 @@ namespace Sharp_LR35902_Compiler
 					result = 0;
 					for (byte i = 0; i < Math.Min(2, bytes.Length); i++)
 						result |= (ushort)(bytes[i] << i * 8);
-					return true;
 				} 
 				catch (Exception e)
 				{
@@ -684,19 +685,39 @@ namespace Sharp_LR35902_Compiler
 				}
 
 				result = bits;
-				return true;
 			}
 			else
 			{
-				if (ushort.TryParse(constant, out result))
-					return true;
+				if (!ushort.TryParse(constant, out result))
+				{
 
-				if (!Definitions.ContainsKey(constant))
+					if (!Definitions.ContainsKey(constant))
+						return false;
+
+					result = Definitions[constant];
+				}
+			}
+
+			if (parts.Length > 1)
+			{
+				ushort oprand = 0;
+				if (!TryParseConstant(parts[2], ref oprand))
 					return false;
 
-				result = Definitions[constant];
-				return true;
+				switch(parts[1])
+				{
+					case "+":
+						result += oprand;
+						break;
+					case "-":
+						result -= oprand;
+						break;
+					default:
+						throw new NotImplementedException("Oprand not supported");
+				}
 			}
+
+			return true;
 		}
 
 		private static string TrimBrackets(string location) => location.Substring(1, location.Length - 2);
