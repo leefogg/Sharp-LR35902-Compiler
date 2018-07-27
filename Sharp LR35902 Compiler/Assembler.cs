@@ -9,11 +9,13 @@ namespace Sharp_LR35902_Compiler
 {
 	public class Assembler
 	{
+		private static readonly Dictionary<string, ushort> Definitions = new Dictionary<string, ushort>();
+
 		private static readonly string[] registers = new[] { "B", "C", "D", "E", "H", "L", "(HL)", "A" };
 		private static readonly string[] registerPairs = new[] { "BC", "DE", "HL", "SP" };
 		private static readonly string[] conditions = new[] { "NZ", "Z", "NC", "C" };
 
-		private static readonly Dictionary<string, Func<string[], byte[]>> Instructions = new Dictionary<string, Func<string[], byte[]>> { 
+		private static readonly Dictionary<string, Func<string[], byte[]>> Instructions = new Dictionary<string, Func<string[], byte[]>> {
 			{ "NOP", NoOp },
 			{ "STOP", Stop },
 			{ "HALT", Halt },
@@ -63,7 +65,8 @@ namespace Sharp_LR35902_Compiler
 		private static ArgumentException TooFewOprandsException(int expectednumber) => new ArgumentException($"Expected {expectednumber} oprands");
 		private static ArgumentException NoOprandMatchException => new ArgumentException("No known oprand match found");
 		private static ArgumentException UnexpectedInt16Exception => throw new ArgumentException($"Unexpected 16-bit immediate, expected 8-bit immediate.");
-		
+
+		#region Instructions
 		// Common patterns for opcode ranges
 		private static byte[] Pattern_BIT(string[] oprands, byte startopcode)
 		{
@@ -166,7 +169,7 @@ namespace Sharp_LR35902_Compiler
 					throw new ArgumentException($"Register pair '{oprands[1]}' doesn't exist");
 
 				var oprand2bytes = oprand2const.ToByteArray();
-				return new[] { (byte)(0x01 + (0x10 * pairindex)), oprand2bytes[0], oprand2bytes[1]};
+				return new[] { (byte)(0x01 + (0x10 * pairindex)), oprand2bytes[0], oprand2bytes[1] };
 			}
 
 			// Loading L into memory location at register pair
@@ -385,7 +388,7 @@ namespace Sharp_LR35902_Compiler
 			if (oprands.Length != 1)
 				throw TooFewOprandsException(1);
 
-			var vectors = new[] {"0", "8", "10", "18", "20", "28", "30", "38" };
+			var vectors = new[] { "0", "8", "10", "18", "20", "28", "30", "38" };
 			var vectorindex = vectors.IndexOf(oprands[0]);
 			if (vectorindex == -1)
 				throw new ArgumentException($"Unknown reset vector '{oprands[0]}'");
@@ -578,27 +581,37 @@ namespace Sharp_LR35902_Compiler
 		private static byte[] TestBit(string[] oprands) => Pattern_BIT(oprands, 0x40);
 		private static byte[] ClearBit(string[] oprands) => Pattern_BIT(oprands, 0x80);
 		private static byte[] SetBit(string[] oprands) => Pattern_BIT(oprands, 0xC0);
-		
+		#endregion
 
 		public static void Main(string[] args)
 		{
-			
+
 		}
 
 		public static byte[] CompileProgram(string[] instructions)
 		{
+			Definitions.Clear();
+
 			var bytes = new List<byte>(instructions.Length * 2);
 
 			foreach (var instruction in instructions)
-				bytes.AddRange(CompileInstruction(instruction));
+			{
+				var upperinstruction = instruction.ToUpper();
+				if (upperinstruction.StartsWith("#DEFINE")) {
+					var parts = upperinstruction.Split(' ');
+					SetDefintion(parts[1], parts[2]);
+					continue;
+				}
+
+				bytes.AddRange(CompileInstruction(upperinstruction));
+			}
 
 			return bytes.ToArray();
 		}
 
 		public static byte[] CompileInstruction(string code) {
 			var parts = code
-				.ToUpper()
-				.Replace(',',' ')
+				.Replace(',', ' ')
 				.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 			return CompileInstruction(parts[0], parts.Skip(1).ToArray());
 		}
@@ -612,14 +625,23 @@ namespace Sharp_LR35902_Compiler
 					throw new NotFoundException($"Instruction '{opcode}' not found");
 
 				return method(oprands);
-			} 
+			}
 			catch (ArgumentException ee)
 			{
 				throw new SyntaxException("Unable to compilemalformed instruction", ee);
 			}
 		}
 
-		
+		public static void SetDefintion(string key, string value = "0")
+		{
+			ushort ushortval = 0;
+			if (!TryParseConstant(value, ref ushortval))
+				throw new ArgumentException("Definitions may only be integer");
+
+			SetDefintion(key, ushortval);
+		}
+		public static void SetDefintion(string key, ushort value) => Definitions[key] = value;
+
 		public static bool TryParseConstant(string constant, ref ushort result)
 		{
 			if (constant.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
@@ -642,7 +664,7 @@ namespace Sharp_LR35902_Compiler
 					return false;
 				}
 			}
-			else if (constant.StartsWith("0b", StringComparison.InvariantCultureIgnoreCase) || constant.StartsWith("B", StringComparison.InvariantCultureIgnoreCase))
+			else if (constant.StartsWith("0b", StringComparison.InvariantCultureIgnoreCase))
 			{
 				constant = constant.ToLower();
 				var bitsindex = constant.IndexOf("b") + 1;
@@ -666,11 +688,18 @@ namespace Sharp_LR35902_Compiler
 			}
 			else
 			{
-				return ushort.TryParse(constant, out result);
+				if (ushort.TryParse(constant, out result))
+					return true;
+
+				if (!Definitions.ContainsKey(constant))
+					return false;
+
+				result = Definitions[constant];
+				return true;
 			}
 		}
 
 		private static string TrimBrackets(string location) => location.Substring(1, location.Length - 2);
-		public static bool IsLocation(string expression) => expression.StartsWith('(') && expression.EndsWith(')');
+		private static bool IsLocation(string expression) => expression.StartsWith('(') && expression.EndsWith(')');
 	}
 }
