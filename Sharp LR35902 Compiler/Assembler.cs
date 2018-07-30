@@ -306,22 +306,21 @@ namespace Sharp_LR35902_Compiler
 			if (oprands.Length != 2)
 				throw TooFewOprandsException(2);
 
-			if (oprands[0] == "A")
-			{
-				ushort constant = 0;
-				if (TryParseConstant(oprands[1], ref constant))
-					if (constant.isByte())
-						return ListOf<byte>(0xD6, (byte)constant);
-					else
-						throw UnexpectedInt16Exception;
-			} else
+			if (oprands[0] != "A")
 				throw new ArgumentException($"Cannot subtract into register '{oprands[0]}'. Can only subtract into register A");
 
 			var registerindex = registers.IndexOf(oprands[1]);
-			if (registerindex == -1)
-				throw new ArgumentException($"Unrecognised register '{oprands[1]}'");
+			if (registerindex > -1)
+				return ListOf((byte)(0x90 + registerindex));
 
-			return ListOf((byte)(0x90 + registerindex));
+			ushort constant = 0;
+			if (TryParseConstant(oprands[1], ref constant))
+				if (constant.isByte())
+					return ListOf<byte>(0xD6, (byte)constant);
+				else
+					throw UnexpectedInt16Exception;
+				
+			throw new ArgumentException($"Unrecognised register '{oprands[1]}'");
 		}
 		private static byte[] SubtractWithCarry(string[] oprands)
 		{
