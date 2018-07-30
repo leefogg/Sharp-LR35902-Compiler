@@ -59,6 +59,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{47d1906e-cdc0-4f4d-b527-02db8c5e80aa}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sharp LR35902 Compiler\Sharp LR35902 Compiler.csproj">
       <Project>{d23dbbc0-1dfe-4641-accc-2b17d4556ab9}</Project>
       <Name>Sharp LR35902 Compiler</Name>

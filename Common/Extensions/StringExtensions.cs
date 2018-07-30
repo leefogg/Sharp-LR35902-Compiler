@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Sharp_LR35902_Compiler.Extensions
+namespace Common.Extensions
 {
 	public static class StringExtensions
 	{

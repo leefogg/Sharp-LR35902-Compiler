@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using static Common.Extensions.IEnumerableExtensions;
 
 namespace Sharp_LR35902_Compiler_Tests
 {

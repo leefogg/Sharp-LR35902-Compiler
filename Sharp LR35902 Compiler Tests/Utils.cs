@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Sharp_LR35902_Compiler.Extensions;
+using Common.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

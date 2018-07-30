@@ -44,13 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assembler.cs" />
-    <Compile Include="Extensions\CharExtensions.cs" />
     <Compile Include="TokenType.cs" />
-    <Compile Include="Exceptions\NotFoundException.cs" />
-    <Compile Include="Exceptions\SyntaxException.cs" />
-    <Compile Include="Extensions\IEnumerableExtensions.cs" />
-    <Compile Include="Extensions\PrimitiveExtensions.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="Member.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,6 +53,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{47d1906e-cdc0-4f4d-b527-02db8c5e80aa}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

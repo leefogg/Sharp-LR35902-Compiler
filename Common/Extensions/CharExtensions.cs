@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sharp_LR35902_Compiler.Extensions
+namespace Common.Extensions
 {
 	public static class CharExtensions
 	{

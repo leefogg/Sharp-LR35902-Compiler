@@ -9,8 +9,4 @@
     <Folder Include="output\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj" />
-  </ItemGroup>
-
 </Project>

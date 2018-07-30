@@ -1,9 +1,9 @@
-﻿using Sharp_LR35902_Compiler.Extensions;
-using static Sharp_LR35902_Compiler.Extensions.IEnumerableExtensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Sharp_LR35902_Compiler.Exceptions;
+using Common.Exceptions;
+using Common.Extensions;
+using static Common.Extensions.IEnumerableExtensions;
 
 namespace Sharp_LR35902_Compiler
 {

@@ -1,5 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Sharp_LR35902_Compiler.Exceptions;
+﻿using Common.Exceptions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Sharp_LR35902_Compiler.Assembler;
 using static Sharp_LR35902_Compiler_Tests.Utils;
 namespace Sharp_LR35902_Compiler_Tests

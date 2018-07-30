@@ -12,10 +12,6 @@ namespace Sharp_LR35902_Compiler_Tests
 	[TestClass]
 	public class Lexer
 	{
-		[TestMethod]
-		public void MyTestMethod()
-		{
-			var strings = CreateAST("for (int i = 0; i != 99; i++) {");
-		}
+		
 	}
 }

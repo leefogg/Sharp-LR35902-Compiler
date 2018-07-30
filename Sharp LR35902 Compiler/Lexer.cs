@@ -1,5 +1,5 @@
-﻿using Sharp_LR35902_Compiler.Exceptions;
-using Sharp_LR35902_Compiler.Extensions;
+﻿using Common.Exceptions;
+using Common.Extensions;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
