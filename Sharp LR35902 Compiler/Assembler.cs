@@ -78,7 +78,7 @@ namespace Sharp_LR35902_Compiler
 				throw new ArgumentException("Expected register for oprand 2");
 
 			ushort bit = 0;
-			if (TryParseConstant(oprands[0], ref bit))
+			if (TryParseImmediate(oprands[0], ref bit))
 			{
 				if (bit > 7)
 					throw new ArgumentException("Unkown bit '{oprands[0]}'. Expected bit 0-7 inclusive");
@@ -118,13 +118,13 @@ namespace Sharp_LR35902_Compiler
 			var registerindex = registers.IndexOf(oprands[0]);
 			if (registerindex == -1)
 			{
-				ushort constant = 0;
-				if (!TryParseConstant(oprands[0], ref constant))
+				ushort immediate = 0;
+				if (!TryParseImmediate(oprands[0], ref immediate))
 					throw new ArgumentException($"Unknown register '{oprands[0]}'");
-				if (!constant.isByte())
+				if (!immediate.isByte())
 					throw UnexpectedInt16Exception;
 
-				return ListOf(nopcode, (byte)constant);
+				return ListOf(nopcode, (byte)immediate);
 			}
 
 
@@ -162,7 +162,7 @@ namespace Sharp_LR35902_Compiler
 			// Assigning ushort to register pair
 			// 0xn1
 			ushort oprand2const = 0;
-			if (TryParseConstant(oprands[1], ref oprand2const) && !oprand2const.isByte())
+			if (TryParseImmediate(oprands[1], ref oprand2const) && !oprand2const.isByte())
 			{
 				var pairindex = registerPairs.IndexOf(oprands[0]);
 				if (pairindex == -1)
@@ -184,11 +184,11 @@ namespace Sharp_LR35902_Compiler
 
 			var oprand1offset = registers.IndexOf(oprands[0]);
 			var oprand2offset = registers.IndexOf(oprands[1]);
-			// TODO: throw if oprand[1] isn't a constant
+			// TODO: throw if oprand[1] isn't a immediate
 			if (oprand1offset == -1)
 			{
 				ushort location = 0;
-				if (!TryParseConstant(TrimBrackets(oprands[0]), ref location))
+				if (!TryParseImmediate(TrimBrackets(oprands[0]), ref location))
 					throw new ArgumentException($"Unexpected expression '{oprands[1]}', expected uint16.");
 
 				var locationbytes = location.ToByteArray();
@@ -205,23 +205,23 @@ namespace Sharp_LR35902_Compiler
 				if (oprands[1] == "(DE)")
 					return ListOf<byte>(0x1A);
 
-				// Pointed to by constant
+				// Pointed to by immediate
 				ushort location = 0;
-				if (!TryParseConstant(TrimBrackets(oprands[1]), ref location))
+				if (!TryParseImmediate(TrimBrackets(oprands[1]), ref location))
 					throw new ArgumentException($"Unexpected expression '{oprands[1]}', expected uint16.");
 				var locationbytes = location.ToByteArray();
 				return new byte[] { 0xFA, locationbytes[0], locationbytes[1] };
 			}
-			else if (oprand1offset != -1 && oprand2offset == -1) // Loading constant into register (0xn6/0xnE)
+			else if (oprand1offset != -1 && oprand2offset == -1) // Loading immediate into register (0xn6/0xnE)
 			{
-				// Assume its a constant
+				// Assume its a immediate
 				byte start = 0x06;
 				var bytecode = start + (oprand1offset * 8);
 
-				ushort constant = 0;
-				if (!TryParseConstant(oprands[1], ref constant))
-					throw new FormatException($"Oprand 2 '{oprands[1]}' is not a valid constant");
-				return new[] { (byte)bytecode, (byte)constant };
+				ushort immediate = 0;
+				if (!TryParseImmediate(oprands[1], ref immediate))
+					throw new FormatException($"Oprand 2 '{oprands[1]}' is not a valid immediate");
+				return new[] { (byte)bytecode, (byte)immediate };
 			}
 			else // 0x40 - 0x6F
 			{
@@ -247,16 +247,16 @@ namespace Sharp_LR35902_Compiler
 
 			if (oprands[0] == "SP")
 			{
-				ushort constant = 0;
-				if (TryParseConstant(oprands[1], ref constant))
+				ushort immediate = 0;
+				if (TryParseImmediate(oprands[1], ref immediate))
 				{
-					if (!constant.isByte())
+					if (!immediate.isByte())
 						throw UnexpectedInt16Exception;
 				}
 				else
 					throw new ArgumentException($"Unexpected expression '{oprands[1]}'");
 
-				return ListOf<byte>(0xE8, (byte)constant);
+				return ListOf<byte>(0xE8, (byte)immediate);
 			}
 
 			if (oprands[0] != "A")
@@ -265,15 +265,15 @@ namespace Sharp_LR35902_Compiler
 			var registerindex = registers.IndexOf(oprands[1]);
 			if (registerindex == -1)
 			{
-				ushort constant = 0;
-				if (TryParseConstant(oprands[1], ref constant))
+				ushort immediate = 0;
+				if (TryParseImmediate(oprands[1], ref immediate))
 				{
-					if (!constant.isByte())
+					if (!immediate.isByte())
 						throw UnexpectedInt16Exception;
 				} else
 					throw new ArgumentException($"Unknown register '{oprands[1]}'");
 
-				return ListOf<byte>(0xC6, (byte)constant);
+				return ListOf<byte>(0xC6, (byte)immediate);
 			}
 
 
@@ -290,13 +290,13 @@ namespace Sharp_LR35902_Compiler
 			var registerindex = registers.IndexOf(oprands[1]);
 			if (registerindex == -1)
 			{
-				ushort constant = 0;
-				if (!TryParseConstant(oprands[1], ref constant))
+				ushort immediate = 0;
+				if (!TryParseImmediate(oprands[1], ref immediate))
 					throw new ArgumentException($"Unknown register '{oprands[1]}'");
-				if (!constant.isByte())
+				if (!immediate.isByte())
 					throw UnexpectedInt16Exception;
 
-				return ListOf<byte>(0xCE, (byte)constant);
+				return ListOf<byte>(0xCE, (byte)immediate);
 			}
 
 			return ListOf((byte)(0x88 + registerindex));
@@ -313,10 +313,10 @@ namespace Sharp_LR35902_Compiler
 			if (registerindex > -1)
 				return ListOf((byte)(0x90 + registerindex));
 
-			ushort constant = 0;
-			if (TryParseConstant(oprands[1], ref constant))
-				if (constant.isByte())
-					return ListOf<byte>(0xD6, (byte)constant);
+			ushort immediate = 0;
+			if (TryParseImmediate(oprands[1], ref immediate))
+				if (immediate.isByte())
+					return ListOf<byte>(0xD6, (byte)immediate);
 				else
 					throw UnexpectedInt16Exception;
 				
@@ -333,13 +333,13 @@ namespace Sharp_LR35902_Compiler
 			var registerindex = registers.IndexOf(oprands[1]);
 			if (registerindex == -1)
 			{
-				ushort constant = 0;
-				if (!TryParseConstant(oprands[1], ref constant))
+				ushort immediate = 0;
+				if (!TryParseImmediate(oprands[1], ref immediate))
 					throw new ArgumentException($"Unknown register '{oprands[1]}'");
-				if (!constant.isByte())
+				if (!immediate.isByte())
 					throw UnexpectedInt16Exception;
 
-				return ListOf<byte>(0xDE, (byte)constant);
+				return ListOf<byte>(0xDE, (byte)immediate);
 			}
 
 			return ListOf((byte)(0x98 + registerindex));
@@ -403,19 +403,19 @@ namespace Sharp_LR35902_Compiler
 			if (conditionindex == -1)
 			{
 				ushort address = 0;
-				if (!TryParseConstant(oprands[0], ref address))
+				if (!TryParseImmediate(oprands[0], ref address))
 					throw new ArgumentException($"Unknown expression '{oprands[0]}'");
 
 				var addressbytes = address.ToByteArray();
 				return ListOf<byte>(0xCD, addressbytes[0], addressbytes[1]);
 			}
 
-			ushort constant = 0;
-			if (!TryParseConstant(oprands[1], ref constant))
+			ushort immediate = 0;
+			if (!TryParseImmediate(oprands[1], ref immediate))
 				throw new ArgumentException($"Unknown condition '{oprands[1]}'");
 
-			var constantbytes = constant.ToByteArray();
-			return ListOf((byte)(0xC4 + 8 * conditionindex), constantbytes[0], constantbytes[1]);
+			var immediatebytes = immediate.ToByteArray();
+			return ListOf((byte)(0xC4 + 8 * conditionindex), immediatebytes[0], immediatebytes[1]);
 		}
 		private static byte[] Push(string[] oprands)
 		{
@@ -453,19 +453,19 @@ namespace Sharp_LR35902_Compiler
 			if (conditionindex == -1)
 			{
 				ushort address = 0;
-				if (!TryParseConstant(oprands[0], ref address))
+				if (!TryParseImmediate(oprands[0], ref address))
 					throw new ArgumentException($"Unknown expression '{oprands[0]}'");
 
 				var addressbytes = address.ToByteArray();
 				return ListOf<byte>(0xC3, addressbytes[0], addressbytes[1]);
 			}
 
-			ushort constant = 0;
-			if (!TryParseConstant(oprands[1], ref constant))
+			ushort immediate = 0;
+			if (!TryParseImmediate(oprands[1], ref immediate))
 				throw new ArgumentException($"Unknown condition '{oprands[1]}'");
 
-			var constantbytes = constant.ToByteArray();
-			return ListOf((byte)(0xC2 + 8 * conditionindex), constantbytes[0], constantbytes[1]);
+			var immediatebytes = immediate.ToByteArray();
+			return ListOf((byte)(0xC2 + 8 * conditionindex), immediatebytes[0], immediatebytes[1]);
 		}
 		private static byte[] JumpRelative(string[] oprands)
 		{
@@ -476,7 +476,7 @@ namespace Sharp_LR35902_Compiler
 			if (conditionindex == -1)
 			{
 				ushort address = 0;
-				if (!TryParseConstant(oprands[0], ref address))
+				if (!TryParseImmediate(oprands[0], ref address))
 					throw new ArgumentException($"Unknown expression '{oprands[0]}'");
 
 				if (!address.isByte())
@@ -486,16 +486,16 @@ namespace Sharp_LR35902_Compiler
 				return ListOf<byte>(0x18, addressbytes[0]);
 			}
 
-			ushort constant = 0;
-			if (TryParseConstant(oprands[1], ref constant))
+			ushort immediate = 0;
+			if (TryParseImmediate(oprands[1], ref immediate))
 			{
-				if (!constant.isByte())
+				if (!immediate.isByte())
 					throw UnexpectedInt16Exception;
 			} else
 				throw new ArgumentException($"Unknown condition '{oprands[1]}'");
 
-			var constantbytes = constant.ToByteArray();
-			return ListOf((byte)(0x20 + 8 * conditionindex), constantbytes[0]);
+			var immediatebytes = immediate.ToByteArray();
+			return ListOf((byte)(0x20 + 8 * conditionindex), immediatebytes[0]);
 		}
 		private static byte[] LoadAndIncrement(string[] oprands)
 		{
@@ -531,7 +531,7 @@ namespace Sharp_LR35902_Compiler
 				if (oprands[0] == "(C)")
 					return ListOf<byte>(0xE2);
 
-				if (TryParseConstant(TrimBrackets(oprands[0]), ref addressoffset))
+				if (TryParseImmediate(TrimBrackets(oprands[0]), ref addressoffset))
 				{
 					if (!addressoffset.isByte())
 						throw UnexpectedInt16Exception;
@@ -539,7 +539,7 @@ namespace Sharp_LR35902_Compiler
 					return ListOf<byte>(0xE0, (byte)addressoffset);
 				}
 			}
-			else if (TryParseConstant(TrimBrackets(oprands[1]), ref addressoffset))
+			else if (TryParseImmediate(TrimBrackets(oprands[1]), ref addressoffset))
 			{
 				if (!addressoffset.isByte())
 					throw UnexpectedInt16Exception;
@@ -558,7 +558,7 @@ namespace Sharp_LR35902_Compiler
 				throw new ArgumentException("Can only add 8-bit immediate to SP");
 
 			ushort immediate = 0;
-			if (TryParseConstant(oprands[1], ref immediate))
+			if (TryParseImmediate(oprands[1], ref immediate))
 			{
 				if (!immediate.isByte())
 					throw UnexpectedInt16Exception;
@@ -634,25 +634,25 @@ namespace Sharp_LR35902_Compiler
 		public static void SetDefintion(string key, string value = "0")
 		{
 			ushort ushortval = 0;
-			if (!TryParseConstant(value, ref ushortval))
+			if (!TryParseImmediate(value, ref ushortval))
 				throw new ArgumentException("Definitions may only be integer");
 
 			SetDefintion(key, ushortval);
 		}
 		public static void SetDefintion(string key, ushort value) => Definitions[key] = value;
 
-		public static bool TryParseConstant(string constant, ref ushort result)
+		public static bool TryParseImmediate(string immediate, ref ushort result)
 		{
-			var parts = constant.SplitAndKeep(new[] { '+', '-' }).ToArray();
-			constant = parts[0];
-			if (constant.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
+			var parts = immediate.SplitAndKeep(new[] { '+', '-' }).ToArray();
+			immediate = parts[0];
+			if (immediate.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
 			{
 				try
 				{
-					if (constant.Length == 2)
+					if (immediate.Length == 2)
 						return false;
 
-					var stripped = constant.Substring(2);
+					var stripped = immediate.Substring(2);
 					var bytes = stripped.GetHexBytes();
 
 					result = 0;
@@ -664,19 +664,19 @@ namespace Sharp_LR35902_Compiler
 					return false;
 				}
 			}
-			else if (constant.StartsWith("0b", StringComparison.InvariantCultureIgnoreCase))
+			else if (immediate.StartsWith("0b", StringComparison.InvariantCultureIgnoreCase))
 			{
-				constant = constant.ToLower();
-				var bitsindex = constant.IndexOf("b") + 1;
-				constant = constant.Substring(bitsindex);
+				immediate = immediate.ToLower();
+				var bitsindex = immediate.IndexOf("b") + 1;
+				immediate = immediate.Substring(bitsindex);
 
-				if (constant.Length != 8 && constant.Length != 16)
+				if (immediate.Length != 8 && immediate.Length != 16)
 					return false;
 
 				ushort bits = 0;
-				for (byte i=0; i<constant.Length; i++)
+				for (byte i=0; i<immediate.Length; i++)
 				{
-					var character = constant[constant.Length - 1 - i];
+					var character = immediate[immediate.Length - 1 - i];
 					if (character == '1')
 						bits |= (ushort)(1 << i);
 					else if (character != '0')
@@ -687,20 +687,20 @@ namespace Sharp_LR35902_Compiler
 			}
 			else
 			{
-				if (!ushort.TryParse(constant, out result))
+				if (!ushort.TryParse(immediate, out result))
 				{
 
-					if (!Definitions.ContainsKey(constant))
+					if (!Definitions.ContainsKey(immediate))
 						return false;
 
-					result = Definitions[constant];
+					result = Definitions[immediate];
 				}
 			}
 
 			if (parts.Length > 1)
 			{
 				ushort oprand = 0;
-				if (!TryParseConstant(parts[2], ref oprand))
+				if (!TryParseImmediate(parts[2], ref oprand))
 					return false;
 
 				switch(parts[1])

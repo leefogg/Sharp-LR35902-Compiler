@@ -20,7 +20,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			ushort val = 0;
 
-			Assert.IsTrue(TryParseConstant("0xE1", ref val));
+			Assert.IsTrue(TryParseImmediate("0xE1", ref val));
 			Assert.AreEqual(0xE1, val);
 		}
 		[TestMethod]
@@ -28,7 +28,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			ushort val = 0;
 
-			Assert.IsTrue(TryParseConstant("0xE1E1", ref val));
+			Assert.IsTrue(TryParseImmediate("0xE1E1", ref val));
 			Assert.AreEqual(0xE1E1, val);
 		}
 
@@ -37,7 +37,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			ushort val = 0;
 
-			Assert.IsTrue(TryParseConstant("0B11100001", ref val));
+			Assert.IsTrue(TryParseImmediate("0B11100001", ref val));
 			Assert.AreEqual(0B11100001, val);
 		}
 		[TestMethod]
@@ -45,7 +45,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			ushort val = 0;
 
-			Assert.IsTrue(TryParseConstant("0B1110000111100001", ref val));
+			Assert.IsTrue(TryParseImmediate("0B1110000111100001", ref val));
 			Assert.AreEqual(0b1110000111100001, val);
 		}
 		[TestMethod]
@@ -53,20 +53,20 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			ushort val = 0;
 
-			Assert.IsTrue(TryParseConstant("0b11100001", ref val));
+			Assert.IsTrue(TryParseImmediate("0b11100001", ref val));
 			Assert.AreEqual(0b11100001, val);
 		}
 		[TestMethod]
 		public void ParsesBinary_InvalidLength()
 		{
 			ushort val = 0;
-			Assert.IsFalse(TryParseConstant("0b1110000111", ref val));
+			Assert.IsFalse(TryParseImmediate("0b1110000111", ref val));
 		}
 		[TestMethod]
 		public void ParseBinary_InvalidChar()
 		{
 			ushort val = 0;
-			Assert.IsFalse(TryParseConstant("0b00123012", ref val));
+			Assert.IsFalse(TryParseImmediate("0b00123012", ref val));
 		}
 
 		[TestMethod]
@@ -83,7 +83,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			SetDefintion("C", expectedvalue);
 
 			ushort value = 0;
-			Assert.IsTrue(TryParseConstant("C", ref value));
+			Assert.IsTrue(TryParseImmediate("C", ref value));
 			Assert.AreEqual(expectedvalue, value);
 		}
 
@@ -94,7 +94,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			SetDefintion("X", 2);
 
 			ushort val = 0;
-			Assert.IsTrue(TryParseConstant("X", ref val));
+			Assert.IsTrue(TryParseImmediate("X", ref val));
 			Assert.AreEqual(2, val);
 		}
 
@@ -105,7 +105,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			CompileProgram(new[] { $"#DEFINE X {expectedvalue}" });
 
 			ushort value = 0;
-			Assert.IsTrue(TryParseConstant("X", ref value));
+			Assert.IsTrue(TryParseImmediate("X", ref value));
 			Assert.AreEqual(expectedvalue, value);
 		}
 
@@ -116,7 +116,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			CompileProgram(new[] { $"#DEFINE X 0x7F" });
 
 			ushort value = 0;
-			Assert.IsTrue(TryParseConstant("X", ref value));
+			Assert.IsTrue(TryParseImmediate("X", ref value));
 			Assert.AreEqual(expectedvalue, value);
 		}
 
@@ -126,7 +126,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			SetDefintion("B");
 
 			ushort value = 11;
-			Assert.IsTrue(TryParseConstant("B", ref value));
+			Assert.IsTrue(TryParseImmediate("B", ref value));
 			Assert.AreEqual(0, value);
 		}
 
@@ -162,7 +162,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			ushort val = 0;
 
-			Assert.IsTrue(TryParseConstant("1+1", ref val));
+			Assert.IsTrue(TryParseImmediate("1+1", ref val));
 			Assert.AreEqual(2, val);
 		}
 		[TestMethod]
@@ -170,7 +170,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			ushort val = 0;
 
-			Assert.IsTrue(TryParseConstant("10-5", ref val));
+			Assert.IsTrue(TryParseImmediate("10-5", ref val));
 			Assert.AreEqual(5, val);
 		}
 		[TestMethod]
@@ -178,7 +178,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			ushort val = 0;
 
-			Assert.IsTrue(TryParseConstant("10 - 5", ref val));
+			Assert.IsTrue(TryParseImmediate("10 - 5", ref val));
 			Assert.AreEqual(5, val);
 		}
 	}
