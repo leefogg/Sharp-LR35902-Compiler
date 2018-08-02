@@ -9,8 +9,8 @@ namespace Sharp_LR35902_Compiler
 	{
 		private static readonly Regex SplitRegex = new Regex(@"([a-z]+|\,|\(|\)|\=\=|\!\=|\=|\<|\>|\;|\+\+|\-\-|\{|\}|[0-9]|if|while|for|else+)", RegexOptions.Compiled | RegexOptions.Singleline);
 
-		public static List<Token> CreateAST(string line) => CreateAST(new[] { line });
-		public static List<Token> CreateAST(string[] lines)
+		public static List<Token> GetTokenList(string line) => GetTokenList(new[] { line });
+		public static List<Token> GetTokenList(string[] lines)
 		{
 			var list = new List<Token>();
 
@@ -60,7 +60,9 @@ namespace Sharp_LR35902_Compiler
 				case ";":
 					return TokenType.Grammar;
 				default:
-					if (value[0].IsLetter() || value[0].isNumber())
+					if (value[0].IsLetter())
+						return TokenType.Variable;
+					if (value[0].isNumber())
 						return TokenType.Immediate;
 
 					throw new SyntaxException("Unknown symbol");

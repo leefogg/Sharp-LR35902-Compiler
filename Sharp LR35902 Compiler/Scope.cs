@@ -5,7 +5,7 @@ namespace Sharp_LR35902_Compiler
 {
 	public class Scope
 	{
-		private List<Member> Members = new List<Member>();
+		private List<VariableMember> Members = new List<VariableMember>();
 		private Scope ParentScope;
 
 		public Scope() { }
@@ -14,16 +14,18 @@ namespace Sharp_LR35902_Compiler
 			ParentScope = parentscope;
 		}
 
-		public void AddMember(Member member) => Members.Add(member);
+		public void AddMember(VariableMember member) => Members.Add(member);
 
-		public Member GetLocalMember(string name) => Members.FirstOrDefault(m => m.Name == name);
-		public Member GetMember(string name)
+		public VariableMember GetLocalMember(string name) => Members.FirstOrDefault(m => m.Name == name);
+		public VariableMember GetMember(string name)
 		{
 			var localmember = GetLocalMember(name);
 			if (localmember != null)
 				return localmember;
 
-			return ParentScope.GetMember(name);
+			return ParentScope?.GetMember(name);
 		}
+
+		public bool MemberExists(string name) => GetMember(name) != null;
 	}
 }

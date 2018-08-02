@@ -124,7 +124,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		[TestMethod]
 		public void GetTokenType_VariableName()
 		{
-			Assert.AreEqual(TokenType.Immediate, GetTokenType("variable"));
+			Assert.AreEqual(TokenType.Variable, GetTokenType("variable"));
 		}
 
 		[TestMethod]
@@ -143,7 +143,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		[TestMethod]
 		public void CreateAST_IgnoreWhitespace()
 		{
-			var tokens = CreateAST("	if	");
+			var tokens = GetTokenList("	if	");
 
 			Assert.AreEqual(1, tokens.Count);
 		}

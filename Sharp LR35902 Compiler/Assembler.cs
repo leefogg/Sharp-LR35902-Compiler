@@ -627,7 +627,7 @@ namespace Sharp_LR35902_Compiler
 			}
 			catch (ArgumentException ee)
 			{
-				throw new SyntaxException("Unable to compilemalformed instruction", ee);
+				throw new SyntaxException("Unable to compile malformed instruction", ee);
 			}
 		}
 
@@ -645,56 +645,13 @@ namespace Sharp_LR35902_Compiler
 		{
 			var parts = immediate.SplitAndKeep(new[] { '+', '-' }).ToArray();
 			immediate = parts[0];
-			if (immediate.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
+
+			if (!Parser.TryParseImmediate(immediate, ref result))
 			{
-				try
-				{
-					if (immediate.Length == 2)
-						return false;
-
-					var stripped = immediate.Substring(2);
-					var bytes = stripped.GetHexBytes();
-
-					result = 0;
-					for (byte i = 0; i < Math.Min(2, bytes.Length); i++)
-						result |= (ushort)(bytes[i] << i * 8);
-				} 
-				catch (Exception e)
-				{
-					return false;
-				}
-			}
-			else if (immediate.StartsWith("0b", StringComparison.InvariantCultureIgnoreCase))
-			{
-				immediate = immediate.ToLower();
-				var bitsindex = immediate.IndexOf("b") + 1;
-				immediate = immediate.Substring(bitsindex);
-
-				if (immediate.Length != 8 && immediate.Length != 16)
+				if (!Definitions.ContainsKey(immediate))
 					return false;
 
-				ushort bits = 0;
-				for (byte i=0; i<immediate.Length; i++)
-				{
-					var character = immediate[immediate.Length - 1 - i];
-					if (character == '1')
-						bits |= (ushort)(1 << i);
-					else if (character != '0')
-						return false;
-				}
-
-				result = bits;
-			}
-			else
-			{
-				if (!ushort.TryParse(immediate, out result))
-				{
-
-					if (!Definitions.ContainsKey(immediate))
-						return false;
-
-					result = Definitions[immediate];
-				}
+				result = Definitions[immediate];
 			}
 
 			if (parts.Length > 1)

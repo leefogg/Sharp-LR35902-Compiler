@@ -4,6 +4,7 @@
 	{
 		DataType,
 		Immediate,
+		Variable,
 		Operator,
 		ControlFlow,
 		Comparison,
