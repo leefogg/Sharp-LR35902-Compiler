@@ -80,10 +80,10 @@ namespace Sharp_LR35902_Compiler_Tests
 		public void TryParseConstant_GetDefinition_FindsIt()
 		{
 			ushort expectedvalue = 0x7F00;
-			SetDefintion("C", expectedvalue);
+			SetDefintion("XX", expectedvalue);
 
 			ushort value = 0;
-			Assert.IsTrue(TryParseImmediate("C", ref value));
+			Assert.IsTrue(TryParseImmediate("XX", ref value));
 			Assert.AreEqual(expectedvalue, value);
 		}
 
