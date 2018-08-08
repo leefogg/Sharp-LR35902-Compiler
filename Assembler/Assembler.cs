@@ -319,7 +319,7 @@ namespace Sharp_LR35902_Assembler
 					return ListOf<byte>(0xD6, (byte)immediate);
 				else
 					throw UnexpectedInt16Exception;
-				
+
 			throw new ArgumentException($"Unrecognised register '{oprands[1]}'");
 		}
 		private static byte[] SubtractWithCarry(string[] oprands)
@@ -639,7 +639,12 @@ namespace Sharp_LR35902_Assembler
 
 			SetDefintion(key, ushortval);
 		}
-		public static void SetDefintion(string key, ushort value) => Definitions[key] = value;
+		public static void SetDefintion(string key, ushort value) {
+			if (Definitions.ContainsKey(key))
+				Console.WriteLine($"Warning: Redeclaration of global constant '{key}.'");
+
+			Definitions[key] = value;
+		}
 
 		public static bool TryParseImmediate(string immediate, ref ushort result)
 		{
