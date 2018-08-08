@@ -1,14 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Common.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sharp_LR35902_Compiler_Tests
 {
-	class Utils
+	public class Utils
 	{
 		public static void Is(byte[] result, byte onlybyte)
 		{

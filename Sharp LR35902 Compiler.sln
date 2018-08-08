@@ -7,9 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestGenerator", "TestGenera
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{47D1906E-CDC0-4F4D-B527-02DB8C5E80AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharp LR35902 Compiler", "Sharp LR35902 Compiler\Sharp LR35902 Compiler.csproj", "{65AD8C33-A468-43DA-9D6D-B35F22815BDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharp LR35902 Compiler", "Sharp LR35902 Compiler\Sharp LR35902 Compiler.csproj", "{65AD8C33-A468-43DA-9D6D-B35F22815BDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharp LR35902 Compiler Tests", "Sharp LR35902 Compiler Tests\Sharp LR35902 Compiler Tests.csproj", "{36A86FA1-0C60-4FEE-8E06-74C6FB7865A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharp LR35902 Compiler Tests", "Sharp LR35902 Compiler Tests\Sharp LR35902 Compiler Tests.csproj", "{36A86FA1-0C60-4FEE-8E06-74C6FB7865A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharp LR35902 Assembler", "Assembler\Sharp LR35902 Assembler.csproj", "{70F2D05E-5524-4CE7-A69B-8C893C8978E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharp LR35902 Assembler Tests", "Sharp LR35902 Assembler Tests\Sharp LR35902 Assembler Tests.csproj", "{6676F7EE-52B2-4076-BE09-2475FFFBA6B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{36A86FA1-0C60-4FEE-8E06-74C6FB7865A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36A86FA1-0C60-4FEE-8E06-74C6FB7865A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36A86FA1-0C60-4FEE-8E06-74C6FB7865A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70F2D05E-5524-4CE7-A69B-8C893C8978E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70F2D05E-5524-4CE7-A69B-8C893C8978E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70F2D05E-5524-4CE7-A69B-8C893C8978E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70F2D05E-5524-4CE7-A69B-8C893C8978E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6676F7EE-52B2-4076-BE09-2475FFFBA6B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6676F7EE-52B2-4076-BE09-2475FFFBA6B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6676F7EE-52B2-4076-BE09-2475FFFBA6B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6676F7EE-52B2-4076-BE09-2475FFFBA6B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

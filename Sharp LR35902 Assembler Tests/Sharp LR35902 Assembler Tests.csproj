@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <RootNamespace>Sharp_LR35902_Compiler_Tests</RootNamespace>
+    <RootNamespace>Sharp_LR35902_Assembler_Tests</RootNamespace>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -16,7 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Assembler\Sharp LR35902 Assembler.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
-    <ProjectReference Include="..\Sharp LR35902 Compiler\Sharp LR35902 Compiler.csproj" />
+    <ProjectReference Include="..\Sharp LR35902 Compiler Tests\Sharp LR35902 Compiler Tests.csproj" />
   </ItemGroup>
 
 </Project>

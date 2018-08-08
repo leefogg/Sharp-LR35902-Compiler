@@ -5,7 +5,7 @@ using Common.Exceptions;
 using Common.Extensions;
 using static Common.Extensions.IEnumerableExtensions;
 
-namespace Sharp_LR35902_Compiler
+namespace Sharp_LR35902_Assembler
 {
 	public class Assembler
 	{
@@ -646,7 +646,7 @@ namespace Sharp_LR35902_Compiler
 			var parts = immediate.SplitAndKeep(new[] { '+', '-' }).ToArray();
 			immediate = parts[0];
 
-			if (!Parser.TryParseImmediate(immediate, ref result))
+			if (!Sharp_LR35902_Compiler.Parser.TryParseImmediate(immediate, ref result))
 			{
 				if (!Definitions.ContainsKey(immediate))
 					return false;

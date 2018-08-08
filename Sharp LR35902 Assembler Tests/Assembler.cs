@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Sharp_LR35902_Compiler_Tests.Utils;
-using static Sharp_LR35902_Compiler.Assembler;
+using static Sharp_LR35902_Assembler.Assembler;
 using Common.Exceptions;
 
-namespace Sharp_LR35902_Compiler_Tests
+namespace Sharp_LR35902_Assembler_Tests
 {
 	[TestClass]
 	public class Assembler
