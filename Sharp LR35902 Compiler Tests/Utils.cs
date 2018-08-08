@@ -12,7 +12,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		public static void Is(byte[] result, params byte[] bytes)
 			=> listEqual(bytes, result);
 
-		public static void listEqual(byte[] left, byte[] right)
+		public static void listEqual<T>(T [] left, T[] right)
 		{
 			if (left.Length != right.Length)
 				Assert.Fail();
