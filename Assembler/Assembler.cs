@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Common.Exceptions;
 using Common.Extensions;
@@ -61,6 +62,45 @@ namespace Sharp_LR35902_Assembler
 			{ "RRC", RotateRightWithCarry },
 			{ "RLC", RotateLeftWithCarry }
 		};
+
+		public static void Main(string[] args)
+		{
+			string inputpath = null, outputpath = null;
+			for (var i=0; i<args.Length; i++)
+			{
+				switch(args[i])
+				{
+					case "-i":
+						inputpath = args[++i];
+						break;
+					case "-o":
+						outputpath = args[++i];
+						break;
+					default:
+						Console.WriteLine($"Unknown switch '{args[i]}'");
+						return;
+				}
+			}
+
+			if (inputpath == null)
+			{
+				Console.WriteLine("Input path not set");
+				return;
+			}
+			if (outputpath == null)
+			{
+				Console.WriteLine("Output path not set");
+				return;
+			}
+
+
+			var instructions = new List<string>(File.ReadAllLines(inputpath));
+			Formatter.Format(instructions);
+			Optimizer.Optimize(instructions);
+			var bytecode = CompileProgram(instructions);
+			using (var outputfile = File.Create(outputpath))
+				outputfile.Write(bytecode, 0, bytecode.Length);
+		}
 
 		private static ArgumentException TooFewOprandsException(int expectednumber) => new ArgumentException($"Expected {expectednumber} oprands");
 		private static ArgumentException NoOprandMatchException => new ArgumentException("No known oprand match found");
@@ -582,16 +622,11 @@ namespace Sharp_LR35902_Assembler
 		private static byte[] SetBit(string[] oprands) => Pattern_BIT(oprands, 0xC0);
 		#endregion
 
-		public static void Main(string[] args)
-		{
-
-		}
-
-		public static byte[] CompileProgram(string[] instructions)
+		public static byte[] CompileProgram(List<string> instructions)
 		{
 			Definitions.Clear();
 
-			var bytes = new List<byte>(instructions.Length * 2);
+			var bytes = new List<byte>(instructions.Count * 2);
 
 			foreach (var instruction in instructions)
 			{

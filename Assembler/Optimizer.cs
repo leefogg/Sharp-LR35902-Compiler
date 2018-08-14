@@ -6,21 +6,19 @@ namespace Sharp_LR35902_Assembler
 {
     public class Optimizer
     {
-		public static string[] Optimize(IEnumerable<string> lines)
+		public static void Optimize(List<string> instructions)
 		{
-			var instructions = new List<string>(lines);
-
 			// Prune
 			DeleteUnreachableCode(instructions);
 
 			// Convert
 			for (var i = 0; i < instructions.Count; i++) {
 				instructions[i] = LD_A_0_TO_XOR_A(instructions[i]);
+				// TODO: JP to JR
 			}
-
-			return instructions.ToArray();
 		}
 
+		// Deletes code between non-conditional jumps/calls and the next label
 		public static int DeleteUnreachableCode(List<string> lines)
 		{
 			var deletedlines = 0;

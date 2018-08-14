@@ -2,6 +2,7 @@
 using static Sharp_LR35902_Compiler_Tests.Utils;
 using static Sharp_LR35902_Assembler.Assembler;
 using Common.Exceptions;
+using System.Collections.Generic;
 
 namespace Sharp_LR35902_Assembler_Tests
 {
@@ -72,7 +73,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		[TestMethod]
 		public void CompileProgram_MultipleLines()
 		{
-			var result = CompileProgram(new[]{ "EI", "LD A, 0xE1" });
+			var result = CompileProgram(new List<string>(){ "EI", "LD A, 0xE1" });
 			Assert.AreEqual(3, result.Length);
 		}
 
@@ -102,7 +103,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CompileProgram_AddsDefintition()
 		{
 			ushort expectedvalue = 0x7F;
-			CompileProgram(new[] { $"#DEFINE X {expectedvalue}" });
+			CompileProgram(new List<string>() { $"#DEFINE X {expectedvalue}" });
 
 			ushort value = 0;
 			Assert.IsTrue(TryParseImmediate("X", ref value));
@@ -113,7 +114,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CompileProgram_AddsDefintition_RequiresParsing()
 		{
 			ushort expectedvalue = 0x7F;
-			CompileProgram(new[] { $"#DEFINE X 0x7F" });
+			CompileProgram(new List<string>() { $"#DEFINE X 0x7F" });
 
 			ushort value = 0;
 			Assert.IsTrue(TryParseImmediate("X", ref value));
