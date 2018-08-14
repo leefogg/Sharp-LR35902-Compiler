@@ -46,5 +46,52 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			listEqual(new[] { "LD A, 01" }, instructions.ToArray());
 		}
+
+		[TestMethod]
+		public void Format_LineBreakLabels_Breaks()
+		{
+			var instructions = new List<string>()
+			{
+				"label1:	XOR A",
+				"label2:	XOR A"
+			};
+
+			Format(instructions);
+
+			listEqual(
+				new[]
+				{
+					"label1:",
+					"XOR A",
+					"label2:",
+					"XOR A"
+				},
+				instructions.ToArray()
+			);
+		}
+
+		[TestMethod]
+		public void Format_LineBreakLabels_IgnoresCorrectLabels()
+		{
+			var instructions = new List<string>()
+			{
+				"label1:	XOR A",
+				"label2:",
+				"XOR A",
+			};
+
+			Format(instructions);
+
+			listEqual(
+				new[]
+				{
+					"label1:",
+					"XOR A",
+					"label2:",
+					"XOR A"
+				},
+				instructions.ToArray()
+			);
+		}
 	}
 }

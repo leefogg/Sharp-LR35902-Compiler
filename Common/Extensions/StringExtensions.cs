@@ -21,5 +21,7 @@ namespace Common.Extensions
 				yield return s.Substring(start);
 			}
 		}
+
+		public static bool Contains(this string self, char character) => self.IndexOf(character) != -1;
 	}
 }
