@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using static Sharp_LR35902_Assembler.Formatter;
-using static Sharp_LR35902_Compiler_Tests.Utils;
+using static Test_Common.Utils;
 
 namespace Sharp_LR35902_Assembler_Tests
 {

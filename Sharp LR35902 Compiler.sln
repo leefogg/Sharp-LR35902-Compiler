@@ -11,9 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharp LR35902 Compiler", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharp LR35902 Compiler Tests", "Sharp LR35902 Compiler Tests\Sharp LR35902 Compiler Tests.csproj", "{36A86FA1-0C60-4FEE-8E06-74C6FB7865A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharp LR35902 Assembler", "Sharp LR35902 Assembler\Sharp LR35902 Assembler.csproj", "{70F2D05E-5524-4CE7-A69B-8C893C8978E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharp LR35902 Assembler", "Sharp LR35902 Assembler\Sharp LR35902 Assembler.csproj", "{70F2D05E-5524-4CE7-A69B-8C893C8978E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharp LR35902 Assembler Tests", "Sharp LR35902 Assembler Tests\Sharp LR35902 Assembler Tests.csproj", "{6676F7EE-52B2-4076-BE09-2475FFFBA6B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharp LR35902 Assembler Tests", "Sharp LR35902 Assembler Tests\Sharp LR35902 Assembler Tests.csproj", "{6676F7EE-52B2-4076-BE09-2475FFFBA6B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test Common", "Test Common\Test Common.csproj", "{5586D261-6B4B-4B12-8099-906E24BFCF30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{6676F7EE-52B2-4076-BE09-2475FFFBA6B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6676F7EE-52B2-4076-BE09-2475FFFBA6B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6676F7EE-52B2-4076-BE09-2475FFFBA6B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5586D261-6B4B-4B12-8099-906E24BFCF30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5586D261-6B4B-4B12-8099-906E24BFCF30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5586D261-6B4B-4B12-8099-906E24BFCF30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5586D261-6B4B-4B12-8099-906E24BFCF30}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
