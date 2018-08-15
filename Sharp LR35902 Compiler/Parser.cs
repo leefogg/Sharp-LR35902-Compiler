@@ -150,7 +150,7 @@ namespace Sharp_LR35902_Compiler
 				value = ParseImmediate(immediate);
 				return true;
 			}
-			catch (Exception e)
+			catch // This is a Try* method, we expect failure and just swallow the exception. Use non Try* method if you want the exception details
 			{
 				return false;
 			}
