@@ -68,6 +68,15 @@ namespace Sharp_LR35902_Assembler
 
 		public static void Main(string[] args)
 		{
+			if (args.Length == 0 || (args.Length == 1 && (args[0] == "/?" || args[0] == "-?")))
+			{
+				Console.WriteLine("Compiles assembly code that uses the Sharp LR35902 instruction-set into a binary.");
+				Console.WriteLine();
+				Console.WriteLine("Compiler [-i inputfilepath] [-o outputfilepath]");
+				// TODO: Add any switches here
+				return;
+			}
+
 			string inputpath = null, outputpath = null;
 			for (var i=0; i<args.Length; i++)
 			{
