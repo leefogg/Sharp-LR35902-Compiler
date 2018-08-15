@@ -71,13 +71,6 @@ namespace Sharp_LR35902_Assembler_Tests
 		}
 
 		[TestMethod]
-		public void CompileProgram_MultipleLines()
-		{
-			var result = CompileProgram(new List<string>(){ "EI", "LD A, 0xE1" });
-			Assert.AreEqual(3, result.Length);
-		}
-
-		[TestMethod]
 		public void TryParseConstant_GetDefinition_FindsIt()
 		{
 			ushort expectedvalue = 0x7F00;
@@ -100,6 +93,13 @@ namespace Sharp_LR35902_Assembler_Tests
 		}
 
 		[TestMethod]
+		public void CompileProgram_MultipleLines()
+		{
+			var result = CompileProgram(new List<string>() { "EI", "LD A, 0xE1" });
+			Assert.AreEqual(3, result.Length);
+		}
+
+		[TestMethod]
 		public void CompileProgram_AddsDefintition()
 		{
 			ushort expectedvalue = 0x7F;
@@ -119,6 +119,74 @@ namespace Sharp_LR35902_Assembler_Tests
 			ushort value = 0;
 			Assert.IsTrue(TryParseImmediate("X", ref value));
 			Assert.AreEqual(expectedvalue, value);
+		}
+
+		[TestMethod]
+		public void CompileProgram_ReplacesLabelLocation_Jump()
+		{
+			var instructions = new List<string>()
+			{
+				"XOR A",
+				"jumplabel:",
+				"JP jumplabel"
+			};
+
+			var binary = CompileProgram(instructions);
+
+			Is(
+				new byte[] { 0xAF, 0xC3, 0x01, 0x00 },
+				binary
+			);
+		}
+
+		[TestMethod]
+		public void CompileProgram_ReplacesLabelLocation_Call()
+		{
+			var instructions = new List<string>()
+			{
+				"XOR A",
+				"calllabel:",
+				"CALL calllabel"
+			};
+
+			var binary = CompileProgram(instructions);
+
+			Is(
+				new byte[] { 0xAF, 0xCD, 0x01, 0x00 },
+				binary
+			);
+		}
+
+		[TestMethod]
+		public void CompileProgram_ReplacesLabelLocation_NonCaseSensitive()
+		{
+			var instructions = new List<string>()
+			{
+				"XOR A",
+				"AbCdEFDG:",
+				"JP AbCdEFDG"
+			};
+
+			var binary = CompileProgram(instructions);
+
+			Is(
+				new byte[] { 0xAF, 0xC3, 0x01, 0x00 },
+				binary
+			);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(NotFoundException))]
+		public void CompileProgram_ReplacesLabelLocation_ThrowIfNotFound()
+		{
+			var instructions = new List<string>()
+			{
+				"XOR A",
+				"top:",
+				"JP bottom"
+			};
+
+			CompileProgram(instructions);
 		}
 
 		[TestMethod]

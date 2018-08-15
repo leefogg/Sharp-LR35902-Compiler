@@ -62,6 +62,9 @@ namespace Sharp_LR35902_Assembler
 			{ "RRC", RotateRightWithCarry },
 			{ "RLC", RotateLeftWithCarry }
 		};
+		private static readonly Dictionary<string, ushort> LabelLocations = new Dictionary<string, ushort>();
+		private static readonly List<Tuple<ushort, string>> UnknownLocations = new List<Tuple<ushort, string>>(); // Tuple<location, immediateExpression>
+		private static ushort	CurrentLocation = 0;
 
 		public static void Main(string[] args)
 		{
@@ -444,7 +447,7 @@ namespace Sharp_LR35902_Assembler
 			{
 				ushort address = 0;
 				if (!TryParseImmediate(oprands[0], ref address))
-					throw new ArgumentException($"Unknown expression '{oprands[0]}'");
+					UnknownLocations.Add(new Tuple<ushort, string>((ushort)(CurrentLocation + 1), oprands[0]));
 
 				var addressbytes = address.ToByteArray();
 				return ListOf<byte>(0xCD, addressbytes[0], addressbytes[1]);
@@ -452,7 +455,7 @@ namespace Sharp_LR35902_Assembler
 
 			ushort immediate = 0;
 			if (!TryParseImmediate(oprands[1], ref immediate))
-				throw new ArgumentException($"Unknown condition '{oprands[1]}'");
+				UnknownLocations.Add(new Tuple<ushort, string>((ushort)(CurrentLocation + 1), oprands[1]));
 
 			var immediatebytes = immediate.ToByteArray();
 			return ListOf((byte)(0xC4 + 8 * conditionindex), immediatebytes[0], immediatebytes[1]);
@@ -490,21 +493,20 @@ namespace Sharp_LR35902_Assembler
 				return ListOf<byte>(0xE9);
 
 			var conditionindex = conditions.IndexOf(oprands[0]);
+			ushort address = 0;
 			if (conditionindex == -1)
 			{
-				ushort address = 0;
 				if (!TryParseImmediate(oprands[0], ref address))
-					throw new ArgumentException($"Unknown expression '{oprands[0]}'");
+					UnknownLocations.Add(new Tuple<ushort, string>((ushort)(CurrentLocation + 1), oprands[0]));
 
 				var addressbytes = address.ToByteArray();
 				return ListOf<byte>(0xC3, addressbytes[0], addressbytes[1]);
 			}
 
-			ushort immediate = 0;
-			if (!TryParseImmediate(oprands[1], ref immediate))
-				throw new ArgumentException($"Unknown condition '{oprands[1]}'");
+			if (!TryParseImmediate(oprands[1], ref address))
+				UnknownLocations.Add(new Tuple<ushort, string>((ushort)(CurrentLocation+1), oprands[1]));
 
-			var immediatebytes = immediate.ToByteArray();
+			var immediatebytes = address.ToByteArray();
 			return ListOf((byte)(0xC2 + 8 * conditionindex), immediatebytes[0], immediatebytes[1]);
 		}
 		private static byte[] JumpRelative(string[] oprands)
@@ -625,8 +627,13 @@ namespace Sharp_LR35902_Assembler
 		public static byte[] CompileProgram(List<string> instructions)
 		{
 			Definitions.Clear();
+			UnknownLocations.Clear();
+			LabelLocations.Clear();
 
-			var bytes = new List<byte>(instructions.Count * 2);
+			// Assume resulting binary will be 2x number of instructions.
+			// On average, instructions are 2-bytes long
+			// If we under-estimated, array shouldn't resize more than once
+			var bytecode = new List<byte>(instructions.Count * 2);
 
 			foreach (var instruction in instructions)
 			{
@@ -635,12 +642,35 @@ namespace Sharp_LR35902_Assembler
 					var parts = upperinstruction.Split(' ');
 					SetDefintion(parts[1], parts[2]);
 					continue;
+				} 
+				else if (instruction.EndsWith(':'))
+				{
+					var labelname = upperinstruction.Substring(0, upperinstruction.LastIndexOf(':'));
+					LabelLocations.Add(labelname, (ushort)bytecode.Count);
+					continue;
 				}
 
-				bytes.AddRange(CompileInstruction(upperinstruction));
+				var assembledinstruction = CompileInstruction(upperinstruction);
+				bytecode.AddRange(assembledinstruction);
+				CurrentLocation = (ushort)bytecode.Count;
 			}
 
-			return bytes.ToArray();
+			// Resolve unknown label locations now we should have seen them all
+			foreach (var locationdetails in UnknownLocations)
+			{
+				var binarylocation = locationdetails.Item1;
+				var labelname = locationdetails.Item2;
+
+				if (!LabelLocations.ContainsKey(labelname))
+					throw new NotFoundException($"Label {labelname} not found.");
+
+				var labellocation = LabelLocations[labelname];
+				var labellocationbytes = labellocation.ToByteArray();
+				bytecode[binarylocation] = labellocationbytes[0];
+				bytecode[binarylocation + 1] = labellocationbytes[1];
+			}
+
+			return bytecode.ToArray();
 		}
 
 		public static byte[] CompileInstruction(string code) {
@@ -683,15 +713,17 @@ namespace Sharp_LR35902_Assembler
 
 		public static bool TryParseImmediate(string immediate, ref ushort result)
 		{
+			var res = result; // Working copy. Both to avoid global writes and to ensure result isn't changed unless successful
+
 			var parts = immediate.SplitAndKeep(new[] { '+', '-' }).ToArray();
 			immediate = parts[0];
 
-			if (!Sharp_LR35902_Compiler.Parser.TryParseImmediate(immediate, ref result))
+			if (!Sharp_LR35902_Compiler.Parser.TryParseImmediate(immediate, ref res))
 			{
 				if (!Definitions.ContainsKey(immediate))
 					return false;
 
-				result = Definitions[immediate];
+				res = Definitions[immediate];
 			}
 
 			if (parts.Length > 1)
@@ -703,16 +735,17 @@ namespace Sharp_LR35902_Assembler
 				switch(parts[1])
 				{
 					case "+":
-						result += oprand;
+						res += oprand;
 						break;
 					case "-":
-						result -= oprand;
+						res -= oprand;
 						break;
 					default:
 						throw new NotImplementedException("Oprand not supported");
 				}
 			}
 
+			result = res;
 			return true;
 		}
 
