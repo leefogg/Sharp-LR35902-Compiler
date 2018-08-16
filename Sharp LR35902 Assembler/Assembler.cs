@@ -638,14 +638,14 @@ namespace Sharp_LR35902_Assembler
 
 		public static byte[] CompileProgram(List<string> instructions)
 		{
+			// Reset state
+			// TODO: Need to make this class non-static as state is persisting between tests
 			Definitions.Clear();
 			UnknownLocations.Clear();
 			LabelLocations.Clear();
+			CurrentLocation = 0;
 
-			// Assume resulting binary will be 2x number of instructions.
-			// On average, instructions are 2-bytes long
-			// If we under-estimated, array shouldn't resize more than once
-			var bytecode = new List<byte>(instructions.Count * 2);
+			var rom = new ROM();
 
 			foreach (var instruction in instructions)
 			{
@@ -658,13 +658,13 @@ namespace Sharp_LR35902_Assembler
 				else if (instruction.EndsWith(':'))
 				{
 					var labelname = upperinstruction.Substring(0, upperinstruction.LastIndexOf(':'));
-					LabelLocations.Add(labelname, (ushort)bytecode.Count);
+					LabelLocations.Add(labelname, CurrentLocation);
 					continue;
 				}
 
-				var assembledinstruction = CompileInstruction(upperinstruction);
-				bytecode.AddRange(assembledinstruction);
-				CurrentLocation = (ushort)bytecode.Count;
+				var assembledinstructions = CompileInstruction(upperinstruction);
+				for (int loc = CurrentLocation, i = 0; i<assembledinstructions.Length; loc++, i++, CurrentLocation++)
+					rom[loc] = assembledinstructions[i];
 			}
 
 			// Resolve unknown label locations now we should have seen them all
@@ -678,11 +678,11 @@ namespace Sharp_LR35902_Assembler
 
 				var labellocation = LabelLocations[labelname];
 				var labellocationbytes = labellocation.ToByteArray();
-				bytecode[binarylocation] = labellocationbytes[0];
-				bytecode[binarylocation + 1] = labellocationbytes[1];
+				rom[binarylocation] = labellocationbytes[0];
+				rom[binarylocation + 1] = labellocationbytes[1];
 			}
 
-			return bytecode.ToArray();
+			return rom;
 		}
 
 		public static byte[] CompileInstruction(string code) {

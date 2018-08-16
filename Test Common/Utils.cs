@@ -9,8 +9,16 @@ namespace Test_Common
 		{
 			listEqual(IEnumerableExtensions.ListOf(onlybyte), result);
 		}
-		public static void Is(byte[] result, params byte[] bytes)
-			=> listEqual(bytes, result);
+		public static void Is(byte[] expected, params byte[] actual)
+			=> listEqual(expected, actual);
+		public static void StartsWith(byte[] expected, byte[] actual)
+		{
+			if (expected.Length > actual.Length)
+				Assert.Fail("expected array is longer than actual array");
+
+			for (var i = 0; i < expected.Length; i++)
+				Assert.AreEqual(expected[i], actual[i]);
+		}
 
 		public static void listEqual<T>(T [] left, T[] right)
 		{

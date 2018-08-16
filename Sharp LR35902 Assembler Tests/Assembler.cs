@@ -95,8 +95,11 @@ namespace Sharp_LR35902_Assembler_Tests
 		[TestMethod]
 		public void CompileProgram_MultipleLines()
 		{
-			var result = CompileProgram(new List<string>() { "EI", "LD A, 0xE1" });
-			Assert.AreEqual(3, result.Length);
+			var result = CompileProgram(new List<string>() { "EI", "EI" });
+			StartsWith(
+				new byte[] { 0xFB, 0xFB, 0x00 },
+				result
+			);
 		}
 
 		[TestMethod]
@@ -133,7 +136,7 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			var binary = CompileProgram(instructions);
 
-			Is(
+			StartsWith(
 				new byte[] { 0xAF, 0xC3, 0x00, 0x01 },
 				binary
 			);
@@ -151,7 +154,7 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			var binary = CompileProgram(instructions);
 
-			Is(
+			StartsWith(
 				new byte[] { 0xAF, 0xCD, 0x00, 0x01 },
 				binary
 			);
@@ -169,7 +172,7 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			var binary = CompileProgram(instructions);
 
-			Is(
+			StartsWith(
 				new byte[] { 0xAF, 0xC3, 0x00, 0x01 },
 				binary
 			);
