@@ -193,6 +193,64 @@ namespace Sharp_LR35902_Assembler_Tests
 		}
 
 		[TestMethod]
+		public void CompileProgram_CompilerDirective_Org()
+		{
+			var instructions = new List<string>()
+			{
+				".ORG 0x03",
+				"EI"
+			};
+
+			var binary = CompileProgram(instructions);
+
+			StartsWith(
+				new byte[]
+				{
+					0x00,
+					0x00,
+					0x00,
+					0xFB
+				},
+				binary
+			);
+		}
+
+		[TestMethod]
+		public void CompileProgram_CompilerDirective_SupportsHash()
+		{
+			var instructions = new List<string>()
+			{
+				"#ORG 0x03",
+				"EI"
+			};
+
+			var binary = CompileProgram(instructions);
+
+			StartsWith(
+				new byte[]
+				{
+					0x00,
+					0x00,
+					0x00,
+					0xFB
+				},
+				binary
+			);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(NotFoundException))]
+		public void CompileProgram_CompilerDirective_NotFound()
+		{
+			var instructions = new List<string>()
+			{
+				"#somedirective",
+			};
+
+			CompileProgram(instructions);
+		}
+
+		[TestMethod]
 		public void TryParseConstant_GetDefinition_DefaultValue()
 		{
 			SetDefintion("B");

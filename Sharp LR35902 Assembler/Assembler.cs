@@ -660,6 +660,20 @@ namespace Sharp_LR35902_Assembler
 					var labelname = upperinstruction.Substring(0, upperinstruction.LastIndexOf(':'));
 					LabelLocations.Add(labelname, CurrentLocation);
 					continue;
+				} 
+				else if (instruction.StartsWith('.') || instruction.StartsWith('#')) // Compiler directives
+				{
+					var directive = upperinstruction.Substring(1, Math.Max(upperinstruction.IndexOf(' ')-1, 2));
+					switch (directive)
+					{
+						case "ORG":
+							var immediate = upperinstruction.Substring(upperinstruction.IndexOf(' ') + 1);
+							if (!TryParseImmediate(immediate, ref CurrentLocation))
+								throw new ArgumentException("Expected uint16 location on org instruction.");
+							continue;
+						default:
+							throw new NotFoundException($"Compiler directive '{directive}' not found.");
+					}
 				}
 
 				var assembledinstructions = CompileInstruction(upperinstruction);
