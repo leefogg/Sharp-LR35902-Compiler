@@ -9,46 +9,46 @@ namespace Sharp_LR35902_Assembler_Tests
     public class Formatter
     {
 		[TestMethod]
-		public void Format_TrimsWhitespace()
+		public void RemoveWhitespace_TrimsWhitespace()
 		{
 			var instructions = new List<string>()
 			{
 				"	 EI		"
 			};
 
-			Format(instructions);
+			RemoveWhitespaceAndAddComma(instructions);
 
 			listEqual(new[] { "EI" }, instructions.ToArray());
 		}
 
 		[TestMethod]
-		public void Format_SingleSpacesOnly()
+		public void RemoveWhitespace_SingleSpacesOnly()
 		{
 			var instructions = new List<string>()
 			{
 				"LD   A,   01"
 			};
 
-			Format(instructions);
+			RemoveWhitespaceAndAddComma(instructions);
 
 			listEqual(new[] { "LD A, 01" }, instructions.ToArray());
 		}
 
 		[TestMethod]
-		public void Format_AddsComma()
+		public void AddsComma()
 		{
 			var instructions = new List<string>()
 			{
 				"LD A 01"
 			};
 
-			Format(instructions);
+			RemoveWhitespaceAndAddComma(instructions);
 
 			listEqual(new[] { "LD A, 01" }, instructions.ToArray());
 		}
 
 		[TestMethod]
-		public void Format_LineBreakLabels_Breaks()
+		public void LineBreakLabels_Breaks()
 		{
 			var instructions = new List<string>()
 			{
@@ -56,22 +56,22 @@ namespace Sharp_LR35902_Assembler_Tests
 				"label2:	XOR A"
 			};
 
-			Format(instructions);
+			LineBreakLabels(instructions);
 
 			listEqual(
 				new[]
 				{
 					"label1:",
-					"XOR A",
+					"	XOR A",
 					"label2:",
-					"XOR A"
+					"	XOR A"
 				},
 				instructions.ToArray()
 			);
 		}
 
 		[TestMethod]
-		public void Format_LineBreakLabels_IgnoresCorrectLabels()
+		public void LineBreakLabels_IgnoresCorrectLabels()
 		{
 			var instructions = new List<string>()
 			{
@@ -80,13 +80,13 @@ namespace Sharp_LR35902_Assembler_Tests
 				"XOR A",
 			};
 
-			Format(instructions);
+			LineBreakLabels(instructions);
 
 			listEqual(
 				new[]
 				{
 					"label1:",
-					"XOR A",
+					"	XOR A",
 					"label2:",
 					"XOR A"
 				},

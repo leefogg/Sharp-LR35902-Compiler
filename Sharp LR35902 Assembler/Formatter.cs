@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Common.Extensions;
 
 namespace Sharp_LR35902_Assembler
@@ -11,7 +12,7 @@ namespace Sharp_LR35902_Assembler
 			RemoveWhitespaceAndAddComma(instructions);
 		}
 
-		private static void LineBreakLabels(List<string> instructions)
+		public static void LineBreakLabels(List<string> instructions)
 		{
 			for (var i = 0; i < instructions.Count; i++)
 			{
@@ -28,7 +29,7 @@ namespace Sharp_LR35902_Assembler
 			}
 		}
 
-		private static void RemoveWhitespaceAndAddComma(List<string> instructions)
+		public static void RemoveWhitespaceAndAddComma(List<string> instructions)
 		{
 			for (var i = 0; i < instructions.Count; i++)
 			{
