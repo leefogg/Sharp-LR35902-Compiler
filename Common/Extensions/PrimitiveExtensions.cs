@@ -12,8 +12,8 @@ namespace Common.Extensions
 		public static byte[] ToByteArray(this ushort self)
 		{
 			return new [] {
-				(byte)((self & (0xFF << (8 * 1))) >> (8 * 1)),
 				(byte)( self & (0xFF << (8 * 0))),
+				(byte)((self & (0xFF << (8 * 1))) >> (8 * 1)),
 			};
 		}
 
@@ -27,8 +27,8 @@ namespace Common.Extensions
 
 			byte[] arr = new byte[hex.Length / 2];
 
-			for (int i = 0; i < hex.Length / 2; ++i)
-				arr[i] = (byte)((GetHexVal(hex[i * 2]) << 4) + (GetHexVal(hex[(i * 2) + 1])));
+			for (int c = hex.Length-2, i=0; i < hex.Length / 2; c-=2, ++i)
+				arr[i] = (byte)((GetHexVal(hex[c]) << 4) + (GetHexVal(hex[c + 1])));
 
 			return arr;
 		}

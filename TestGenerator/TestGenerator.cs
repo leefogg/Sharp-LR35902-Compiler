@@ -561,7 +561,7 @@ namespace Sharp_LR35902_Compiler_Tests
 				teststring += Dec2Hex(opcode);
 				if (numexternalbytes == 2)
 				{
-					teststring += $", {nnbytes[1]}, {nnbytes[0]}";
+					teststring += $", {nnbytes[0]}, {nnbytes[1]}";
 				}
 				else if (numexternalbytes == 1)
 				{
