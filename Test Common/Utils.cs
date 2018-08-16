@@ -15,7 +15,7 @@ namespace Test_Common
 		public static void listEqual<T>(T [] left, T[] right)
 		{
 			if (left.Length != right.Length)
-				Assert.Fail();
+				Assert.Fail("Lists do not match in length");
 
 			for (int i = 0; i < left.Length; i++)
 				Assert.AreEqual(left[i], right[i]);

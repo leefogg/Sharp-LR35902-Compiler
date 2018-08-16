@@ -12,8 +12,8 @@ namespace Common.Extensions
 		public static byte[] ToByteArray(this ushort self)
 		{
 			return new [] {
-				(byte)( self & (0xFF << (8 * 0))),
 				(byte)((self & (0xFF << (8 * 1))) >> (8 * 1)),
+				(byte)( self & (0xFF << (8 * 0))),
 			};
 		}
 

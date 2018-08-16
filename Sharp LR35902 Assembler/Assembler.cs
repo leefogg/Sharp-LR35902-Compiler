@@ -537,7 +537,7 @@ namespace Sharp_LR35902_Assembler
 					throw new ArgumentException("Can only jump back 127 and forward 128");
 
 				var addressbytes = address.ToByteArray();
-				return ListOf<byte>(0x18, addressbytes[0]);
+				return ListOf<byte>(0x18, addressbytes[1]);
 			}
 
 			ushort immediate = 0;
@@ -549,7 +549,7 @@ namespace Sharp_LR35902_Assembler
 				throw new ArgumentException($"Unknown condition '{oprands[1]}'");
 
 			var immediatebytes = immediate.ToByteArray();
-			return ListOf((byte)(0x20 + 8 * conditionindex), immediatebytes[0]);
+			return ListOf((byte)(0x20 + 8 * conditionindex), immediatebytes[1]);
 		}
 		private static byte[] LoadAndIncrement(string[] oprands)
 		{

@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Sharp_LR35902_Assembler.Assembler;
 using static Test_Common.Utils;
-namespace Sharp_LR35902_Compiler_Tests
+namespace Sharp_LR35902_Assembler_Tests
 {
 	[TestClass]
 	public class Instructions
@@ -19,7 +19,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		public void LD_BC_nn()
 		{
 			var result = CompileInstruction("LD BC,62689");
-			Is(result, 0x01, 225, 244);
+			Is(result, 0x01, 244, 225);
 		}
 		[TestMethod]
 		[ExpectedException(typeof(SyntaxException))]
@@ -105,7 +105,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		public void LD_nn_SP()
 		{
 			var result = CompileInstruction("LD (62689),SP");
-			Is(result, 0x08, 225, 244);
+			Is(result, 0x08, 244, 225);
 		}
 
 
@@ -195,7 +195,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		public void LD_DE_nn()
 		{
 			var result = CompileInstruction("LD DE,62689");
-			Is(result, 0x11, 225, 244);
+			Is(result, 0x11, 244, 225);
 		}
 
 
@@ -365,7 +365,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		public void LD_HL_nn()
 		{
 			var result = CompileInstruction("LD HL,62689");
-			Is(result, 0x21, 225, 244);
+			Is(result, 0x21, 244, 225);
 		}
 
 
@@ -523,7 +523,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		public void LD_SP_nn()
 		{
 			var result = CompileInstruction("LD SP,62689");
-			Is(result, 0x31, 225, 244);
+			Is(result, 0x31, 244, 225);
 		}
 
 
@@ -1735,12 +1735,6 @@ namespace Sharp_LR35902_Compiler_Tests
 			var result = CompileInstruction("RET NZ");
 			Is(result, 0xC0);
 		}
-		[TestMethod]
-		[ExpectedException(typeof(SyntaxException))]
-		public void RET_WrongNumberOfOprands()
-		{
-			CompileInstruction("RET NZ 225"); // No oprands
-		}
 
 
 		[TestMethod]
@@ -1761,7 +1755,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		public void JP_NZ_nn()
 		{
 			var result = CompileInstruction("JP NZ,62689");
-			Is(result, 0xC2, 225, 244);
+			Is(result, 0xC2, 244, 225);
 		}
 		[TestMethod]
 		[ExpectedException(typeof(SyntaxException))]
@@ -1775,7 +1769,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		public void JP_nn()
 		{
 			var result = CompileInstruction("JP 62689");
-			Is(result, 0xC3, 225, 244);
+			Is(result, 0xC3, 244, 225);
 		}
 
 
@@ -1783,7 +1777,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		public void CALL_NZ_nn()
 		{
 			var result = CompileInstruction("CALL NZ,62689");
-			Is(result, 0xC4, 225, 244);
+			Is(result, 0xC4, 244, 225);
 		}
 		[TestMethod]
 		[ExpectedException(typeof(SyntaxException))]
@@ -1855,14 +1849,15 @@ namespace Sharp_LR35902_Compiler_Tests
 		public void JP_Z_nn()
 		{
 			var result = CompileInstruction("JP Z,62689");
-			Is(result, 0xCA, 225, 244);
+			Is(result, 0xCA, 244, 225);
 		}
+
 
 		[TestMethod]
 		public void CALL_Z_nn()
 		{
 			var result = CompileInstruction("CALL Z,62689");
-			Is(result, 0xCC, 225, 244);
+			Is(result, 0xCC, 244, 225);
 		}
 
 
@@ -1870,7 +1865,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		public void CALL_nn()
 		{
 			var result = CompileInstruction("CALL 62689");
-			Is(result, 0xCD, 225, 244);
+			Is(result, 0xCD, 244, 225);
 		}
 
 
@@ -1916,7 +1911,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		public void JP_NC_nn()
 		{
 			var result = CompileInstruction("JP NC,62689");
-			Is(result, 0xD2, 225, 244);
+			Is(result, 0xD2, 244, 225);
 		}
 
 
@@ -1924,7 +1919,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		public void CALL_NC_nn()
 		{
 			var result = CompileInstruction("CALL NC,62689");
-			Is(result, 0xD4, 225, 244);
+			Is(result, 0xD4, 244, 225);
 		}
 
 
@@ -1978,7 +1973,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		public void JP_C_nn()
 		{
 			var result = CompileInstruction("JP C,62689");
-			Is(result, 0xDA, 225, 244);
+			Is(result, 0xDA, 244, 225);
 		}
 
 
@@ -1986,7 +1981,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		public void CALL_C_nn()
 		{
 			var result = CompileInstruction("CALL C,62689");
-			Is(result, 0xDC, 225, 244);
+			Is(result, 0xDC, 244, 225);
 		}
 
 
@@ -2104,7 +2099,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		public void LD_nn_A()
 		{
 			var result = CompileInstruction("LD (62689),A");
-			Is(result, 0xEA, 225, 244);
+			Is(result, 0xEA, 244, 225);
 		}
 
 
@@ -2222,7 +2217,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		public void LD_A_nn()
 		{
 			var result = CompileInstruction("LD A,(62689)");
-			Is(result, 0xFA, 225, 244);
+			Is(result, 0xFA, 244, 225);
 		}
 
 
@@ -2305,6 +2300,14 @@ namespace Sharp_LR35902_Compiler_Tests
 
 
 		[TestMethod]
+		public void CB_RLC_A()
+		{
+			var result = CompileInstruction("RLC A");
+			Is(result, 0x07);
+		}
+
+
+		[TestMethod]
 		public void CB_RRC_B()
 		{
 			var result = CompileInstruction("RRC B");
@@ -2357,6 +2360,14 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("RRC (HL)");
 			Is(result, 0xCB, 0x0E);
+		}
+
+
+		[TestMethod]
+		public void CB_RRC_A()
+		{
+			var result = CompileInstruction("RRC A");
+			Is(result, 0x0F);
 		}
 
 
@@ -2415,6 +2426,15 @@ namespace Sharp_LR35902_Compiler_Tests
 			Is(result, 0xCB, 0x16);
 		}
 
+
+		[TestMethod]
+		public void CB_RL_A()
+		{
+			var result = CompileInstruction("RL A");
+			Is(result, 0x17);
+		}
+
+
 		[TestMethod]
 		public void CB_RR_B()
 		{
@@ -2468,6 +2488,14 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var result = CompileInstruction("RR (HL)");
 			Is(result, 0xCB, 0x1E);
+		}
+
+
+		[TestMethod]
+		public void CB_RR_A()
+		{
+			var result = CompileInstruction("RR A");
+			Is(result, 0x1F);
 		}
 
 

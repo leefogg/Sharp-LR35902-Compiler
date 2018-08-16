@@ -211,7 +211,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			"RET Z",
 			"RET",
 			"JP Z,nn",
-			"Ext ops",
+			"XX",
 			"CALL Z,nn",
 			"CALL nn",
 			"ADC A,n",
@@ -533,11 +533,11 @@ namespace Sharp_LR35902_Compiler_Tests
 			byte[] nnbytes = new byte[] { (byte)(nn & 0xFF), (byte)((nn >> 8) & 0xFF) };
 			var fileoutput = new List<string>()
 			{
+				"using Common.Exceptions;",
 				"using Microsoft.VisualStudio.TestTools.UnitTesting;",
-				"using Sharp_LR35902_Compiler.Exceptions;",
-				"using static Sharp_LR35902_Compiler.Assembler;",
-				"using static Sharp_LR35902_Compiler_Tests.Utils;",
-				"namespace Sharp_LR35902_Compiler_Tests {",
+				"using static Sharp_LR35902_Assembler.Assembler;",
+				"using static Test_Common.Utils;",
+				"namespace Sharp_LR35902_Assembler_Tests {",
 				"[TestClass]",
 				"public class Instructions {",
 			};
@@ -555,10 +555,13 @@ namespace Sharp_LR35902_Compiler_Tests
 				fileoutput.Add("[TestMethod]");
 				fileoutput.Add("public void " + methodname + "() {");
 				fileoutput.Add($"var result = CompileInstruction(\"{instruction}\");");
-				var teststring = (isCB) ? $"Is(result, 0xCB, {Dec2Hex(opcode)}" : $"Is(result, {Dec2Hex(opcode)}";
+				var teststring = "Is(result, ";
+				if (isCB)
+					teststring += "0xCB, ";
+				teststring += Dec2Hex(opcode);
 				if (numexternalbytes == 2)
 				{
-					teststring += $", {nnbytes[0]}, {nnbytes[1]}";
+					teststring += $", {nnbytes[1]}, {nnbytes[0]}";
 				}
 				else if (numexternalbytes == 1)
 				{

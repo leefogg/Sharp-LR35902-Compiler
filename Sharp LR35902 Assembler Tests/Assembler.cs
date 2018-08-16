@@ -134,7 +134,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			var binary = CompileProgram(instructions);
 
 			Is(
-				new byte[] { 0xAF, 0xC3, 0x01, 0x00 },
+				new byte[] { 0xAF, 0xC3, 0x00, 0x01 },
 				binary
 			);
 		}
@@ -152,7 +152,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			var binary = CompileProgram(instructions);
 
 			Is(
-				new byte[] { 0xAF, 0xCD, 0x01, 0x00 },
+				new byte[] { 0xAF, 0xCD, 0x00, 0x01 },
 				binary
 			);
 		}
@@ -170,7 +170,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			var binary = CompileProgram(instructions);
 
 			Is(
-				new byte[] { 0xAF, 0xC3, 0x01, 0x00 },
+				new byte[] { 0xAF, 0xC3, 0x00, 0x01 },
 				binary
 			);
 		}
