@@ -76,16 +76,20 @@ namespace Sharp_LR35902_Assembler
 				return;
 			}
 
+			byte optimizationlevel = 0;
 			string inputpath = null, outputpath = null;
 			for (var i=0; i<args.Length; i++)
 			{
 				switch(args[i])
 				{
-					case "-i":
+					case "-in":
 						inputpath = args[++i];
 						break;
-					case "-o":
+					case "-out":
 						outputpath = args[++i];
+						break;
+					case "-o":
+						optimizationlevel = byte.Parse(args[++i]);
 						break;
 					default:
 						Console.WriteLine($"Unknown switch '{args[i]}'");
@@ -107,7 +111,7 @@ namespace Sharp_LR35902_Assembler
 
 			var instructions = new List<string>(File.ReadAllLines(inputpath));
 			Formatter.Format(instructions);
-			Optimizer.Optimize(instructions);
+			Optimizer.Optimize(instructions, optimizationlevel);
 			var bytecode = CompileProgram(instructions);
 			using (var outputfile = File.Create(outputpath))
 				outputfile.Write(bytecode, 0, bytecode.Length);

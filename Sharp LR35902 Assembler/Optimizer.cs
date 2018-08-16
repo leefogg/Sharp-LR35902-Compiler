@@ -6,8 +6,11 @@ namespace Sharp_LR35902_Assembler
 {
     public class Optimizer
     {
-		public static void Optimize(List<string> instructions)
+		public static void Optimize(List<string> instructions, byte level)
 		{
+			if (level == 0)
+				return;
+
 			// Prune
 			DeleteUnreachableCode(instructions);
 
