@@ -663,8 +663,8 @@ namespace Sharp_LR35902_Assembler
 				}
 
 				var assembledinstructions = CompileInstruction(upperinstruction);
-				for (int loc = CurrentLocation, i = 0; i<assembledinstructions.Length; loc++, i++, CurrentLocation++)
-					rom[loc] = assembledinstructions[i];
+				for (int i = 0; i<assembledinstructions.Length; i++, CurrentLocation++)
+					rom[CurrentLocation] = assembledinstructions[i];
 			}
 
 			// Resolve unknown label locations now we should have seen them all
