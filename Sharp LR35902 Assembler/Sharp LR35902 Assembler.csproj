@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
-    <ProjectReference Include="..\Sharp LR35902 Compiler\Sharp LR35902 Compiler.csproj" />
 	<PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0" />
   </ItemGroup>
 

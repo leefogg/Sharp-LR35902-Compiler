@@ -730,7 +730,7 @@ namespace Sharp_LR35902_Assembler
 			var parts = immediate.SplitAndKeep(new[] { '+', '-' }).ToArray();
 			immediate = parts[0];
 
-			if (!Sharp_LR35902_Compiler.Parser.TryParseImmediate(immediate, ref res))
+			if (!Common.Parser.TryParseImmediate(immediate, ref res))
 			{
 				if (!Definitions.ContainsKey(immediate))
 					return false;
