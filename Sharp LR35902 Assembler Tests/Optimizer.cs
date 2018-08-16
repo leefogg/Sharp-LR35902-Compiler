@@ -62,28 +62,6 @@ namespace Sharp_LR35902_Assembler_Tests
 			});
 		}
 
-		// Will fail if DeleteUnreachableCode_CropsMiddle fails
-		[TestMethod]
-		public void DeleteUnreachableCode_SupportsCall()
-		{
-			var lines = new List<string>() {
-				"CALL SOMELABEL",
-				"NOP",
-				"NOP",
-				"ANOTHERLABEL:",
-				"DI"
-			};
-
-			var linesremoved = DeleteUnreachableCode(lines);
-
-			Assert.AreEqual(2, linesremoved);
-			listEqual(lines.ToArray(), new[] {
-				"CALL SOMELABEL",
-				"ANOTHERLABEL:",
-				"DI"
-			});
-		}
-
 		[TestMethod]
 		public void DeleteUnreachableCode_IgnoresConditional()
 		{
