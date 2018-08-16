@@ -650,12 +650,7 @@ namespace Sharp_LR35902_Assembler
 			foreach (var instruction in instructions)
 			{
 				var upperinstruction = instruction.ToUpper();
-				if (upperinstruction.StartsWith("#DEFINE")) {
-					var parts = upperinstruction.Split(' ');
-					SetDefintion(parts[1], parts[2]);
-					continue;
-				} 
-				else if (instruction.EndsWith(':'))
+				if (instruction.EndsWith(':'))
 				{
 					var labelname = upperinstruction.Substring(0, upperinstruction.LastIndexOf(':'));
 					LabelLocations.Add(labelname, CurrentLocation);
@@ -694,6 +689,11 @@ namespace Sharp_LR35902_Assembler
 							var text = instruction.Substring(instruction.IndexOf(' ') + 1);
 							for (int i = 0; i < text.Length; i++, CurrentLocation++)
 								rom[i] = (byte)text[i];
+
+							continue;
+						case "DEFINE":
+							var parts = upperinstruction.Split(' ');
+							SetDefintion(parts[1], parts[2]);
 
 							continue;
 						default:
