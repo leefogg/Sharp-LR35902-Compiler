@@ -9,7 +9,7 @@ namespace Test_Common
 		{
 			listEqual(IEnumerableExtensions.ListOf(onlybyte), result);
 		}
-		public static void Is(byte[] expected, params byte[] actual)
+		public static void Is(byte[] actual, params byte[] expected)
 			=> listEqual(expected, actual);
 		public static void StartsWith(byte[] expected, byte[] actual)
 		{
