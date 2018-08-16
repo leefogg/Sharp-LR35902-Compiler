@@ -10,8 +10,6 @@ namespace Sharp_LR35902_Assembler
 {
 	public class Assembler
 	{
-		private static readonly Dictionary<string, ushort> Definitions = new Dictionary<string, ushort>();
-
 		private static readonly string[] registers = new[] { "B", "C", "D", "E", "H", "L", "(HL)", "A" };
 		private static readonly string[] registerPairs = new[] { "BC", "DE", "HL", "SP" };
 		private static readonly string[] conditions = new[] { "NZ", "Z", "NC", "C" };
@@ -62,8 +60,9 @@ namespace Sharp_LR35902_Assembler
 			{ "RRC", RotateRightWithCarry },
 			{ "RLC", RotateLeftWithCarry }
 		};
+		private static readonly Dictionary<string, ushort> Definitions = new Dictionary<string, ushort>();
 		private static readonly Dictionary<string, ushort> LabelLocations = new Dictionary<string, ushort>();
-		private static readonly List<Tuple<ushort, string>> UnknownLocations = new List<Tuple<ushort, string>>(); // Tuple<location, immediateExpression>
+		private static readonly List<Tuple<ushort, string>> UnknownLocations = new List<Tuple<ushort, string>>(); // Tuple<location, labelname>
 		private static ushort	CurrentLocation = 0;
 
 		public static void Main(string[] args)
