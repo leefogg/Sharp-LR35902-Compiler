@@ -285,6 +285,29 @@ namespace Sharp_LR35902_Assembler_Tests
 		}
 
 		[TestMethod]
+		public void CompileProgram_CompilerDirective_Text()
+		{
+			var instructions = new List<string>()
+			{
+				".text hello",
+			};
+
+			var binary = CompileProgram(instructions);
+
+			StartsWith(
+				new byte[]
+				{
+					(byte)'h',
+					(byte)'e',
+					(byte)'l',
+					(byte)'l',
+					(byte)'o',
+				},
+				binary
+			);
+		}
+
+		[TestMethod]
 		[ExpectedException(typeof(NotFoundException))]
 		public void CompileProgram_CompilerDirective_NotFound()
 		{

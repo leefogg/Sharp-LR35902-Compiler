@@ -690,6 +690,12 @@ namespace Sharp_LR35902_Assembler
 								rom[CurrentLocation] = values[i];
 
 							continue;
+						case "TEXT":
+							var text = instruction.Substring(instruction.IndexOf(' ') + 1);
+							for (int i = 0; i < text.Length; i++, CurrentLocation++)
+								rom[i] = (byte)text[i];
+
+							continue;
 						default:
 							throw new NotFoundException($"Compiler directive '{directive}' not found.");
 					}
