@@ -671,6 +671,25 @@ namespace Sharp_LR35902_Assembler
 							if (!TryParseImmediate(immediate, ref CurrentLocation))
 								throw new ArgumentException("Expected uint16 location on org instruction.");
 							continue;
+						case "BYTE":
+							var stringvalues = instruction.Substring(instruction.IndexOf(' ') + 1).Split(' ');
+							var values = new byte[stringvalues.Length];
+							for (var i = 0; i < stringvalues.Length; i++)
+							{
+								var value = stringvalues[i]; 
+								ushort val = 0;
+								if (!TryParseImmediate(value, ref val))
+									throw new ArgumentException($"Unable to parse expression '{value}'.");
+								if (!val.isByte())
+									throw new ArgumentException("All values in BYTE directive must be uint8s.");
+
+								values[i] = (byte)val;
+							}
+
+							for (int i = 0; i < values.Length; i++, CurrentLocation++)
+								rom[CurrentLocation] = values[i];
+
+							continue;
 						default:
 							throw new NotFoundException($"Compiler directive '{directive}' not found.");
 					}

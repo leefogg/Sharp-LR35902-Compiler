@@ -3,6 +3,7 @@ using static Test_Common.Utils;
 using static Sharp_LR35902_Assembler.Assembler;
 using Common.Exceptions;
 using System.Collections.Generic;
+using System;
 
 namespace Sharp_LR35902_Assembler_Tests
 {
@@ -236,6 +237,51 @@ namespace Sharp_LR35902_Assembler_Tests
 				},
 				binary
 			);
+		}
+
+		[TestMethod]
+		public void CompileProgram_CompilerDirective_Byte()
+		{
+			var instructions = new List<string>()
+			{
+				".byte 1 0x01 0b00000001",
+			};
+
+			var binary = CompileProgram(instructions);
+
+			StartsWith(
+				new byte[]
+				{
+					0x01,
+					0x01,
+					0x01,
+				},
+				binary
+			);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public void CompileProgram_CompilerDirective_Byte_MustBe8Bit()
+		{
+			var instructions = new List<string>()
+			{
+				".byte 256",
+			};
+
+			CompileProgram(instructions);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public void CompileProgram_CompilerDirective_Byte_FailedToParseThrows()
+		{
+			var instructions = new List<string>()
+			{
+				".byte 255 x",
+			};
+
+			CompileProgram(instructions);
 		}
 
 		[TestMethod]
