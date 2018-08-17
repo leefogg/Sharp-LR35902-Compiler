@@ -304,7 +304,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(System.ArgumentException))]
+		[ExpectedException(typeof(ArgumentException))]
 		public void TryParseConstant_GetDefinition_ThrowsOnParseFail()
 		{
 			SetDefintion("VRAM", "Hi there");
