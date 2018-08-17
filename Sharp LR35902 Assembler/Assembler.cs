@@ -65,70 +65,6 @@ namespace Sharp_LR35902_Assembler
 		private static readonly List<Tuple<ushort, string>> UnknownLocations = new List<Tuple<ushort, string>>(); // Tuple<location, labelname>
 		private static ushort	CurrentLocation = 0;
 
-		public static void Main(string[] args)
-		{
-			if (args.Length == 0 || (args.Length == 1 && (args[0] == "/?" || args[0] == "-?")))
-			{
-				Console.WriteLine("Compiles assembly code that uses the Sharp LR35902 instruction-set into a binary.");
-				Console.WriteLine();
-				Console.WriteLine("Compiler [-i inputfilepath] [-o outputfilepath]");
-				// TODO: Add any switches here
-				return;
-			}
-
-			byte optimizationlevel = 0;
-			string inputpath = null, outputpath = null;
-			for (var i=0; i<args.Length; i++)
-			{
-				switch(args[i])
-				{
-					case "-in":
-						inputpath = args[++i];
-						break;
-					case "-out":
-						outputpath = args[++i];
-						break;
-					case "-o":
-						optimizationlevel = byte.Parse(args[++i]);
-						break;
-					default:
-						Console.WriteLine($"Unknown switch '{args[i]}'");
-						return;
-				}
-			}
-
-			if (inputpath == null)
-			{
-				Console.WriteLine("Input path not set");
-				return;
-			}
-			if (outputpath == null)
-			{
-				Console.WriteLine("Output path not set");
-				return;
-			}
-
-
-			var instructions = new List<string>(File.ReadAllLines(inputpath));
-			Formatter.Format(instructions);
-			Optimizer.Optimize(instructions, optimizationlevel);
-			byte[] bytecode;
-			try
-			{
-				bytecode = CompileProgram(instructions);
-				
-			} 
-			catch (Exception e)
-			{
-				Console.WriteLine(e.Message);
-				Console.WriteLine("Output file has not been written.");
-				return;
-			}
-
-			using (var outputfile = File.Create(outputpath))
-				outputfile.Write(bytecode, 0, bytecode.Length);
-		}
-
 		private static ArgumentException TooFewOprandsException(int expectednumber) => new ArgumentException($"Expected {expectednumber} oprands");
 		private static ArgumentException NoOprandMatchException => new ArgumentException("No known oprand match found");
 		private static ArgumentException UnexpectedInt16Exception => throw new ArgumentException($"Unexpected 16-bit immediate, expected 8-bit immediate.");
@@ -647,6 +583,70 @@ namespace Sharp_LR35902_Assembler
 		private static byte[] ClearBit(string[] oprands) => Pattern_BIT(oprands, 0x80);
 		private static byte[] SetBit(string[] oprands) => Pattern_BIT(oprands, 0xC0);
 		#endregion
+
+		public static void Main(string[] args)
+		{
+			if (args.Length == 0 || (args.Length == 1 && (args[0] == "/?" || args[0] == "-?")))
+			{
+				Console.WriteLine("Compiles assembly code that uses the Sharp LR35902 instruction-set into a binary.");
+				Console.WriteLine();
+				Console.WriteLine("Compiler [-i inputfilepath] [-o outputfilepath]");
+				// TODO: Add any switches here
+				return;
+			}
+
+			byte optimizationlevel = 0;
+			string inputpath = null, outputpath = null;
+			for (var i = 0; i < args.Length; i++)
+			{
+				switch (args[i])
+				{
+					case "-in":
+						inputpath = args[++i];
+						break;
+					case "-out":
+						outputpath = args[++i];
+						break;
+					case "-o":
+						optimizationlevel = byte.Parse(args[++i]);
+						break;
+					default:
+						Console.WriteLine($"Unknown switch '{args[i]}'");
+						return;
+				}
+			}
+
+			if (inputpath == null)
+			{
+				Console.WriteLine("Input path not set");
+				return;
+			}
+			if (outputpath == null)
+			{
+				Console.WriteLine("Output path not set");
+				return;
+			}
+
+
+			var instructions = new List<string>(File.ReadAllLines(inputpath));
+			Formatter.Format(instructions);
+			Optimizer.Optimize(instructions, optimizationlevel);
+			byte[] bytecode;
+			try
+			{
+				bytecode = CompileProgram(instructions);
+
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+				Console.WriteLine("Output file has not been written.");
+				return;
+			}
+
+			using (var outputfile = File.Create(outputpath))
+				outputfile.Write(bytecode, 0, bytecode.Length);
+		}
 
 		public static byte[] CompileProgram(List<string> instructions)
 		{
