@@ -9,8 +9,7 @@ namespace Common
 	{
 		public static ushort ParseImmediate(string immediate)
 		{
-			ushort result = 0;
-			if (ushort.TryParse(immediate, out result))
+			if (ushort.TryParse(immediate, out ushort result))
 				return result;
 
 			if (immediate.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))

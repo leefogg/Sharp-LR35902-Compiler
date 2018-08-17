@@ -23,7 +23,7 @@ namespace Common.Extensions
 		public static byte[] GetHexBytes(this string hex)
 		{
 			if (hex.Length % 2 == 1)
-				throw new ArgumentException("The hex code cannot have an odd number of digits");
+				throw new FormatException("The hex code cannot have an odd number of digits");
 
 			byte[] arr = new byte[hex.Length / 2];
 
