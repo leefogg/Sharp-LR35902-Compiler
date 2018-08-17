@@ -259,15 +259,16 @@ namespace Sharp_LR35902_Assembler_Tests
 		[TestMethod]
 		public void ParseDirective_Text()
 		{
-			var rom = new byte[5];
-			ushort currentlocation = 0;
+			var rom = new byte[6];
+			ushort currentlocation = 1;
 
 			ParseDirective(".text hello", rom, ref currentlocation);
 
-			Assert.AreEqual(5, currentlocation);
+			Assert.AreEqual(6, currentlocation);
 			Is(
 				new byte[]
 				{
+					0,
 					(byte)'h',
 					(byte)'e',
 					(byte)'l',

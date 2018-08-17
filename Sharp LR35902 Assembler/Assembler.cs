@@ -757,7 +757,7 @@ namespace Sharp_LR35902_Assembler
 				case "TEXT":
 					var text = instruction.Substring(instruction.IndexOf(' ') + 1);
 					for (int i = 0; i < text.Length; i++, currentlocation++)
-						rom[i] = (byte)text[i];
+						rom[currentlocation] = (byte)text[i];
 
 					break;
 				case "DEFINE":
