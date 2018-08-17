@@ -241,9 +241,11 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ParseDirective_Byte_MustBe8Bit()
 		{
 			var rom = new byte[1];
-			ushort currentlocation = 0;
+			ushort currentlocation = 1;
 
 			ParseDirective(".byte 256", rom, ref currentlocation);
+
+			Assert.AreEqual(2, currentlocation);
 		}
 
 		[TestMethod]
@@ -251,9 +253,11 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ParseDirective_Byte_FailedToParseThrows()
 		{
 			var rom = new byte[1];
-			ushort currentlocation = 0;
+			ushort currentlocation = 1;
 
 			ParseDirective(".byte 255 x", rom, ref currentlocation);
+
+			Assert.AreEqual(2, currentlocation);
 		}
 
 		[TestMethod]
