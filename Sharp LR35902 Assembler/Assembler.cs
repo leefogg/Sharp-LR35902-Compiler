@@ -112,7 +112,19 @@ namespace Sharp_LR35902_Assembler
 			var instructions = new List<string>(File.ReadAllLines(inputpath));
 			Formatter.Format(instructions);
 			Optimizer.Optimize(instructions, optimizationlevel);
-			var bytecode = CompileProgram(instructions);
+			byte[] bytecode;
+			try
+			{
+				bytecode = CompileProgram(instructions);
+				
+			} 
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+				Console.WriteLine("Output file has not been written.");
+				return;
+			}
+
 			using (var outputfile = File.Create(outputpath))
 				outputfile.Write(bytecode, 0, bytecode.Length);
 		}
@@ -645,65 +657,16 @@ namespace Sharp_LR35902_Assembler
 			LabelLocations.Clear();
 			CurrentLocation = 0;
 
-			var rom = new ROM();
-
-			foreach (var instruction in instructions)
+			byte[] rom;
+			try
 			{
-				var upperinstruction = instruction.ToUpper();
-				if (instruction.EndsWith(':'))
-				{
-					var labelname = upperinstruction.Substring(0, upperinstruction.LastIndexOf(':'));
-					LabelLocations.Add(labelname, CurrentLocation);
-					continue;
-				} 
-				else if (instruction.StartsWith('.') || instruction.StartsWith('#')) // Compiler directives
-				{
-					var directive = upperinstruction.Substring(1, Math.Max(upperinstruction.IndexOf(' ')-1, 2));
-					switch (directive)
-					{
-						case "ORG":
-							var immediate = upperinstruction.Substring(upperinstruction.IndexOf(' ') + 1);
-							if (!TryParseImmediate(immediate, ref CurrentLocation))
-								throw new ArgumentException("Expected uint16 location on org instruction.");
-							continue;
-						case "BYTE":
-							var stringvalues = instruction.Substring(instruction.IndexOf(' ') + 1).Split(' ');
-							var values = new byte[stringvalues.Length];
-							for (var i = 0; i < stringvalues.Length; i++)
-							{
-								var value = stringvalues[i]; 
-								ushort val = 0;
-								if (!TryParseImmediate(value, ref val))
-									throw new ArgumentException($"Unable to parse expression '{value}'.");
-								if (!val.isByte())
-									throw new ArgumentException("All values in BYTE directive must be uint8s.");
-
-								values[i] = (byte)val;
-							}
-
-							for (int i = 0; i < values.Length; i++, CurrentLocation++)
-								rom[CurrentLocation] = values[i];
-
-							continue;
-						case "TEXT":
-							var text = instruction.Substring(instruction.IndexOf(' ') + 1);
-							for (int i = 0; i < text.Length; i++, CurrentLocation++)
-								rom[i] = (byte)text[i];
-
-							continue;
-						case "DEFINE":
-							var parts = upperinstruction.Split(' ');
-							SetDefintion(parts[1], parts[2]);
-
-							continue;
-						default:
-							throw new NotFoundException($"Compiler directive '{directive}' not found.");
-					}
-				}
-
-				var assembledinstructions = CompileInstruction(upperinstruction);
-				for (int i = 0; i<assembledinstructions.Length; i++, CurrentLocation++)
-					rom[CurrentLocation] = assembledinstructions[i];
+				rom = getROM(instructions);
+			}
+			catch (AggregateException ex)
+			{
+				foreach (var exception in ex.InnerExceptions)
+					Console.WriteLine(exception.Message);
+				throw new Exception("One or more errors occured while compiling source code.");
 			}
 
 			// Resolve unknown label locations now we should have seen them all
@@ -722,6 +685,89 @@ namespace Sharp_LR35902_Assembler
 			}
 
 			return rom;
+		}
+
+		private static byte[] getROM(List<string> instructions)
+		{
+			var exceptions = new List<Exception>();
+			var rom = new ROM();
+
+			foreach (var instruction in instructions) { 
+				try
+				{
+					var upperinstruction = instruction.ToUpper();
+					if (instruction.EndsWith(':'))
+					{
+						var labelname = upperinstruction.Substring(0, upperinstruction.LastIndexOf(':'));
+						LabelLocations.Add(labelname, CurrentLocation);
+						continue;
+					}
+					else if (instruction.StartsWith('.') || instruction.StartsWith('#')) // Compiler directives
+					{
+						ParseDirective(instruction, rom, ref CurrentLocation);
+						continue;
+					}
+
+					var assembledinstructions = CompileInstruction(upperinstruction);
+					for (int i = 0; i < assembledinstructions.Length; i++, CurrentLocation++)
+						rom[CurrentLocation] = assembledinstructions[i];
+				} 
+				catch (Exception e)
+				{
+					exceptions.Add(e);
+				}
+			}
+
+			if (exceptions.Any())
+				throw new AggregateException(exceptions);
+
+			return rom;
+		}
+
+		public static void ParseDirective(string instruction, byte[] rom, ref ushort currentlocation)
+		{
+			var upperinstruction = instruction.ToUpper();
+			var directive = upperinstruction.Substring(1, Math.Max(upperinstruction.IndexOf(' ') - 1, 2));
+			switch (directive)
+			{
+				case "ORG":
+					var immediate = upperinstruction.Substring(upperinstruction.IndexOf(' ') + 1);
+					if (!TryParseImmediate(immediate, ref currentlocation))
+						throw new ArgumentException("Expected uint16 location on org instruction.");
+					break;
+				case "BYTE":
+					var stringvalues = instruction.Substring(instruction.IndexOf(' ') + 1).Split(' ');
+					var values = new byte[stringvalues.Length];
+					for (var i = 0; i < stringvalues.Length; i++)
+					{
+						var value = stringvalues[i];
+						ushort val = 0;
+						if (!TryParseImmediate(value, ref val))
+							throw new ArgumentException($"Unable to parse expression '{value}'.");
+						if (!val.isByte())
+							throw new ArgumentException("All values in BYTE directive must be uint8s.");
+
+						values[i] = (byte)val;
+					}
+
+					for (int i = 0; i < values.Length; i++, currentlocation++)
+						rom[currentlocation] = values[i];
+
+					break;
+				case "TEXT":
+					var text = instruction.Substring(instruction.IndexOf(' ') + 1);
+					for (int i = 0; i < text.Length; i++, currentlocation++)
+						rom[i] = (byte)text[i];
+
+					break;
+				case "DEFINE":
+					var parts = upperinstruction.Split(' ');
+					SetDefintion(parts[1], parts[2]);
+
+					break;
+				default:
+					throw new NotFoundException($"Compiler directive '{directive}' not found.");
+			}
 		}
 
 		public static byte[] CompileInstruction(string code) {

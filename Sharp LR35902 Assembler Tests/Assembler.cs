@@ -194,107 +194,78 @@ namespace Sharp_LR35902_Assembler_Tests
 		}
 
 		[TestMethod]
-		public void CompileProgram_CompilerDirective_Org()
+		public void ParseDirective_Org()
 		{
-			var instructions = new List<string>()
-			{
-				".ORG 0x03",
-				"EI"
-			};
+			var rom = new byte[1];
+			ushort currentlocation = 0;
 
-			var binary = CompileProgram(instructions);
+			ParseDirective(".ORG 0x03", rom, ref currentlocation);
 
-			StartsWith(
-				new byte[]
-				{
-					0x00,
-					0x00,
-					0x00,
-					0xFB
-				},
-				binary
-			);
+			Assert.AreEqual(0x03, currentlocation);
 		}
 
 		[TestMethod]
-		public void CompileProgram_CompilerDirective_SupportsHash()
+		public void ParseDirective_SupportsHash()
 		{
-			var instructions = new List<string>()
-			{
-				"#ORG 0x03",
-				"EI"
-			};
+			var rom = new byte[1];
+			ushort currentlocation = 0;
 
-			var binary = CompileProgram(instructions);
+			ParseDirective("#ORG 0x03", rom, ref currentlocation);
 
-			StartsWith(
-				new byte[]
-				{
-					0x00,
-					0x00,
-					0x00,
-					0xFB
-				},
-				binary
-			);
+			Assert.AreEqual(0x03, currentlocation);
 		}
 
 		[TestMethod]
-		public void CompileProgram_CompilerDirective_Byte()
+		public void ParseDirective_Byte()
 		{
-			var instructions = new List<string>()
-			{
-				".byte 1 0x01 0b00000001",
-			};
+			var rom = new byte[4];
+			ushort currentlocation = 1;
 
-			var binary = CompileProgram(instructions);
+			ParseDirective(".byte 1 0x01 0b00000001", rom, ref currentlocation);
 
-			StartsWith(
+			Assert.AreEqual(4, currentlocation);
+			Is(
 				new byte[]
 				{
+					0,
 					0x01,
 					0x01,
 					0x01,
 				},
-				binary
+				rom
 			);
 		}
 
 		[TestMethod]
 		[ExpectedException(typeof(ArgumentException))]
-		public void CompileProgram_CompilerDirective_Byte_MustBe8Bit()
+		public void ParseDirective_Byte_MustBe8Bit()
 		{
-			var instructions = new List<string>()
-			{
-				".byte 256",
-			};
+			var rom = new byte[1];
+			ushort currentlocation = 0;
 
-			CompileProgram(instructions);
+			ParseDirective(".byte 256", rom, ref currentlocation);
 		}
 
 		[TestMethod]
 		[ExpectedException(typeof(ArgumentException))]
-		public void CompileProgram_CompilerDirective_Byte_FailedToParseThrows()
+		public void ParseDirective_Byte_FailedToParseThrows()
 		{
-			var instructions = new List<string>()
-			{
-				".byte 255 x",
-			};
+			var rom = new byte[1];
+			ushort currentlocation = 0;
 
-			CompileProgram(instructions);
+			ParseDirective(".byte 255 x", rom, ref currentlocation);
 		}
 
 		[TestMethod]
-		public void CompileProgram_CompilerDirective_Text()
+		public void ParseDirective_Text()
 		{
-			var instructions = new List<string>()
-			{
-				".text hello",
-			};
+			var rom = new byte[5];
+			ushort currentlocation = 0;
 
-			var binary = CompileProgram(instructions);
+			ParseDirective(".text hello", rom, ref currentlocation);
 
-			StartsWith(
+			Assert.AreEqual(5, currentlocation);
+			Is(
 				new byte[]
 				{
 					(byte)'h',
@@ -303,7 +274,7 @@ namespace Sharp_LR35902_Assembler_Tests
 					(byte)'l',
 					(byte)'o',
 				},
-				binary
+				rom
 			);
 		}
 
@@ -311,12 +282,10 @@ namespace Sharp_LR35902_Assembler_Tests
 		[ExpectedException(typeof(NotFoundException))]
 		public void CompileProgram_CompilerDirective_NotFound()
 		{
-			var instructions = new List<string>()
-			{
-				"#somedirective",
-			};
+			var rom = new byte[0];
+			ushort currentlocation = 0;
 
-			CompileProgram(instructions);
+			ParseDirective("#somedirective", rom, ref currentlocation);
 		}
 
 		[TestMethod]
