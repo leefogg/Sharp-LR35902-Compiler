@@ -6,7 +6,7 @@ using Common.Extensions;
 namespace Sharp_LR35902_Assembler
 {
 	public class Formatter
-    {
+	{
 		private static readonly Regex WhitespaceRegex = new Regex(@"\s+", RegexOptions.Compiled);
 
 		public static void Format(List<string> instructions)
@@ -63,11 +63,11 @@ namespace Sharp_LR35902_Assembler
 				if (colonindex == -1) // Not a label
 					continue;
 				// Is a label..
-				if (colonindex == line.Length-1) // Is just a label
+				if (colonindex == line.Length - 1) // Is just a label
 					continue;
 
-				instructions[i] = line.Substring(0, colonindex+1);
-				instructions.Insert(i + 1, line.Substring(colonindex+1, line.Length - 1 - colonindex));
+				instructions[i] = line.Substring(0, colonindex + 1);
+				instructions.Insert(i + 1, line.Substring(colonindex + 1, line.Length - 1 - colonindex));
 			}
 		}
 
@@ -83,6 +83,23 @@ namespace Sharp_LR35902_Assembler
 						line = line.Substring(0, lastspace) + "," + line.Substring(lastspace, line.Length - lastspace);
 
 				instructions[i] = line;
+			}
+		}
+
+		public static void EnsureNOPAfterSTOPOrHALT(List<string> instructions)
+		{
+			for (var i=0; i<instructions.Count; i++)
+			{
+				var line = instructions[i].ToUpper();
+				if (!(line == "STOP" || line == "HALT"))
+					continue;
+
+				if (i + 1 == instructions.Count)
+					continue;
+
+				var nextline = instructions[i + 1];
+				if (nextline != "NOP")
+					instructions.Insert(i + 1, "NOP");
 			}
 		}
 	}

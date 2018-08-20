@@ -137,5 +137,111 @@ namespace Sharp_LR35902_Assembler_Tests
 				instructions.ToArray()
 			);
 		}
+
+		[TestMethod]
+		public void EnsureNOPAfterSTOPOrHALT_Halt()
+		{
+			var instructions = new List<string>()
+			{
+				"HALT",
+				"EI",
+			};
+
+			EnsureNOPAfterSTOPOrHALT(instructions);
+
+			listEqual(
+				new[]
+				{
+					"HALT",
+					"NOP",
+					"EI",
+				},
+				instructions.ToArray()
+			);
+		}
+
+		[TestMethod]
+		public void EnsureNOPAfterSTOPOrHALT_Stop()
+		{
+			var instructions = new List<string>()
+			{
+				"STOP",
+				"EI",
+			};
+
+			EnsureNOPAfterSTOPOrHALT(instructions);
+
+			listEqual(
+				new[]
+				{
+					"STOP",
+					"NOP",
+					"EI",
+				},
+				instructions.ToArray()
+			);
+		}
+
+		[TestMethod]
+		public void EnsureNOPAfterSTOPOrHALT_NotCaseSensitive()
+		{
+			var instructions = new List<string>()
+			{
+				"haLt",
+				"EI",
+			};
+
+			EnsureNOPAfterSTOPOrHALT(instructions);
+
+			listEqual(
+				new[]
+				{
+					"haLt",
+					"NOP",
+					"EI",
+				},
+				instructions.ToArray()
+			);
+		}
+
+		[TestMethod]
+		public void EnsureNOPAfterSTOPOrHALT_EOF()
+		{
+			var instructions = new List<string>()
+			{
+				"STOP",
+			};
+
+			EnsureNOPAfterSTOPOrHALT(instructions);
+
+			listEqual(
+				new[]
+				{
+					"STOP",
+				},
+				instructions.ToArray()
+			);
+		}
+
+		[TestMethod]
+		public void EnsureNOPAfterSTOPOrHALT_ExistingNOP()
+		{
+			var instructions = new List<string>()
+			{
+				"STOP",
+				"NOP"
+			};
+
+			EnsureNOPAfterSTOPOrHALT(instructions);
+
+			listEqual(
+				new[]
+				{
+					"STOP",
+					"NOP"
+				},
+				instructions.ToArray()
+			);
+		}
 	}
 }

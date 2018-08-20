@@ -589,16 +589,20 @@ namespace Sharp_LR35902_Assembler
 			{
 				Console.WriteLine("Compiles assembly code that uses the Sharp LR35902 instruction-set into a binary.");
 				Console.WriteLine();
-				Console.WriteLine("Compiler [-i inputfilepath] [-o outputfilepath]");
+				Console.WriteLine("Compiler [options] [-i inputfilepath] [-o outputfilepath]");
+				Console.WriteLine("Options:");
+				Console.WriteLine("-FHS:	Fix currupted HALTs and STOPs by ensuring a following NOP");
 				// TODO: Add any switches here
 				return;
 			}
 
 			byte optimizationlevel = 1;
 			string inputpath = null, outputpath = null;
+			var fixhaltsandstops = false;
+
 			for (var i = 0; i < args.Length; i++)
 			{
-				switch (args[i])
+				switch (args[i].ToLower())
 				{
 					case "-in":
 						inputpath = args[++i];
@@ -608,6 +612,9 @@ namespace Sharp_LR35902_Assembler
 						break;
 					case "-o":
 						optimizationlevel = byte.Parse(args[++i]);
+						break;
+					case "-fhs":
+						fixhaltsandstops = true;
 						break;
 					default:
 						Console.WriteLine($"Unknown switch '{args[i]}'");
@@ -629,6 +636,8 @@ namespace Sharp_LR35902_Assembler
 
 			var instructions = new List<string>(File.ReadAllLines(inputpath));
 			Formatter.Format(instructions);
+			if (fixhaltsandstops)
+				Formatter.EnsureNOPAfterSTOPOrHALT(instructions);
 			Optimizer.Optimize(instructions, optimizationlevel);
 			byte[] bytecode;
 			try
