@@ -42,6 +42,27 @@ namespace Sharp_LR35902_Assembler_Tests
 		}
 
 		[TestMethod]
+		public void DeleteUnreachableCode_NotCaseSensitive()
+		{
+			var lines = new List<string>() {
+				"ret",
+				"NOP",
+				"NOP",
+				"ANOTHERLABEL:",
+				"DI"
+			};
+
+			var linesremoved = DeleteUnreachableCode(lines);
+
+			Assert.AreEqual(2, linesremoved);
+			listEqual(lines.ToArray(), new[] {
+				"ret",
+				"ANOTHERLABEL:",
+				"DI"
+			});
+		}
+
+		[TestMethod]
 		public void DeleteUnreachableCode_CropsMiddle_Jump()
 		{
 			var lines = new List<string>() {

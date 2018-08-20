@@ -29,7 +29,7 @@ namespace Sharp_LR35902_Assembler
 
 			for(var i=0; i<lines.Count; i=j++)
 			{
-				var instruction = lines[i];
+				var instruction = lines[i].ToUpper();
 				// Is Jump or return
 				if (!(instruction.StartsWith("JP") || instruction.StartsWith("RET")))
 					continue;
