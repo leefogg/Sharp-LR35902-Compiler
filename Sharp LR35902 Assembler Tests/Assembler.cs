@@ -4,6 +4,7 @@ using static Sharp_LR35902_Assembler.Assembler;
 using Common.Exceptions;
 using System.Collections.Generic;
 using System;
+using Sharp_LR35902_Assembler;
 
 namespace Sharp_LR35902_Assembler_Tests
 {
@@ -196,7 +197,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		[TestMethod]
 		public void ParseDirective_Org()
 		{
-			var rom = new byte[1];
+			var rom = new ROM();
 			ushort currentlocation = 0;
 
 			ParseDirective(".ORG 0x03", rom, ref currentlocation);
@@ -207,7 +208,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		[TestMethod]
 		public void ParseDirective_SupportsHash()
 		{
-			var rom = new byte[1];
+			var rom = new ROM();
 			ushort currentlocation = 0;
 
 			ParseDirective("#ORG 0x03", rom, ref currentlocation);
@@ -218,13 +219,13 @@ namespace Sharp_LR35902_Assembler_Tests
 		[TestMethod]
 		public void ParseDirective_Byte()
 		{
-			var rom = new byte[4];
+			var rom = new ROM();
 			ushort currentlocation = 1;
 
 			ParseDirective(".byte 1 0x01 0b00000001", rom, ref currentlocation);
 
 			Assert.AreEqual(4, currentlocation);
-			Is(
+			StartsWith(
 				new byte[]
 				{
 					0,
@@ -234,13 +235,14 @@ namespace Sharp_LR35902_Assembler_Tests
 				},
 				rom
 			);
+			Assert.AreEqual(4, currentlocation);
 		}
 
 		[TestMethod]
 		[ExpectedException(typeof(ArgumentException))]
 		public void ParseDirective_Byte_MustBe8Bit()
 		{
-			var rom = new byte[1];
+			var rom = new ROM();
 			ushort currentlocation = 1;
 
 			ParseDirective(".byte 256", rom, ref currentlocation);
@@ -252,7 +254,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		[ExpectedException(typeof(ArgumentException))]
 		public void ParseDirective_Byte_FailedToParseThrows()
 		{
-			var rom = new byte[1];
+			var rom = new ROM();
 			ushort currentlocation = 1;
 
 			ParseDirective(".byte 255 x", rom, ref currentlocation);
@@ -263,13 +265,13 @@ namespace Sharp_LR35902_Assembler_Tests
 		[TestMethod]
 		public void ParseDirective_Text()
 		{
-			var rom = new byte[6];
+			var rom = new ROM();
 			ushort currentlocation = 1;
 
 			ParseDirective(".text hello", rom, ref currentlocation);
 
 			Assert.AreEqual(6, currentlocation);
-			Is(
+			StartsWith(
 				new byte[]
 				{
 					0,
@@ -281,13 +283,14 @@ namespace Sharp_LR35902_Assembler_Tests
 				},
 				rom
 			);
+			Assert.AreEqual(6, currentlocation);
 		}
 
 		[TestMethod]
 		[ExpectedException(typeof(NotFoundException))]
 		public void CompileProgram_CompilerDirective_NotFound()
 		{
-			var rom = new byte[0];
+			var rom = new ROM();
 			ushort currentlocation = 0;
 
 			ParseDirective("#somedirective", rom, ref currentlocation);
@@ -357,10 +360,11 @@ namespace Sharp_LR35902_Assembler_Tests
 		[TestMethod]
 		public void TryParseConstant_Math_WithConstant()
 		{
+			var rom = new ROM();
 			ushort currentlocation = 0;
 			ushort val = 0;
 
-			ParseDirective("#DEFINE O 77", new byte[] { }, ref currentlocation);
+			ParseDirective("#DEFINE O 77", rom, ref currentlocation);
 			Assert.IsTrue(TryParseImmediate("O + 3", ref val));
 			Assert.AreEqual(80, val);
 		}

@@ -727,7 +727,7 @@ namespace Sharp_LR35902_Assembler
 				LabelLocations.Add(labelname, location);
 		}
 
-		public static void ParseDirective(string instruction, byte[] rom, ref ushort currentlocation)
+		public static void ParseDirective(string instruction, ROM rom, ref ushort currentlocation)
 		{
 			var upperinstruction = instruction.ToUpper();
 			var directive = upperinstruction.Substring(1, Math.Max(upperinstruction.IndexOf(' ') - 1, 2));

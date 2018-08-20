@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Sharp_LR35902_Assembler
 {
-    class ROM {
+    public class ROM {
 		private byte[] bytecode = new byte[1024 * 16];
 
 		public byte this[int index] {
