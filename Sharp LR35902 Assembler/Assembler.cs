@@ -595,7 +595,7 @@ namespace Sharp_LR35902_Assembler
 				return;
 			}
 
-			byte optimizationlevel = 0;
+			byte optimizationlevel = 1;
 			string inputpath = null, outputpath = null;
 			for (var i = 0; i < args.Length; i++)
 			{
