@@ -180,7 +180,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(NotFoundException))]
+		[ExpectedException(typeof(Exception))]
 		public void CompileProgram_ReplacesLabelLocation_ThrowIfNotFound()
 		{
 			var instructions = new List<string>()
@@ -353,6 +353,25 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			Assert.IsTrue(TryParseImmediate("10 - 5", ref val));
 			Assert.AreEqual(5, val);
+		}
+		[TestMethod]
+		public void TryParseConstant_Math_WithConstant()
+		{
+			ushort currentlocation = 0;
+			ushort val = 0;
+
+			ParseDirective("#DEFINE O 77", new byte[] { }, ref currentlocation);
+			Assert.IsTrue(TryParseImmediate("O + 3", ref val));
+			Assert.AreEqual(80, val);
+		}
+		[TestMethod]
+		public void TryParseConstant_Math_WithLabel()
+		{
+			ushort val = 0;
+
+			addLabelLocation("P", 77);
+			Assert.IsTrue(TryParseImmediate("P + 3", ref val, true));
+			Assert.AreEqual(80, val);
 		}
 	}
 }

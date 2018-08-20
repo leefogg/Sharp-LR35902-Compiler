@@ -62,7 +62,6 @@ namespace Sharp_LR35902_Assembler
 		};
 		private static readonly Dictionary<string, ushort> Definitions = new Dictionary<string, ushort>();
 		private static readonly Dictionary<string, ushort> LabelLocations = new Dictionary<string, ushort>();
-		private static readonly List<Tuple<ushort, string>> UnknownLocations = new List<Tuple<ushort, string>>(); // Tuple<location, labelname>
 		private static ushort	CurrentLocation = 0;
 
 		private static ArgumentException TooFewOprandsException(int expectednumber) => new ArgumentException($"Expected {expectednumber} oprands");
@@ -406,16 +405,16 @@ namespace Sharp_LR35902_Assembler
 			if (conditionindex == -1)
 			{
 				ushort address = 0;
-				if (!TryParseImmediate(oprands[0], ref address))
-					UnknownLocations.Add(new Tuple<ushort, string>((ushort)(CurrentLocation + 1), oprands[0]));
+				if (!TryParseImmediate(oprands[0], ref address, true))
+					throw new ArgumentException($"Unknown expression '{oprands[0]}'.");
 
 				var addressbytes = address.ToByteArray();
 				return ListOf<byte>(0xCD, addressbytes[0], addressbytes[1]);
 			}
 
 			ushort immediate = 0;
-			if (!TryParseImmediate(oprands[1], ref immediate))
-				UnknownLocations.Add(new Tuple<ushort, string>((ushort)(CurrentLocation + 1), oprands[1]));
+			if (!TryParseImmediate(oprands[1], ref immediate, true))
+				throw new ArgumentException($"Unknown expression '{oprands[0]}'.");
 
 			var immediatebytes = immediate.ToByteArray();
 			return ListOf((byte)(0xC4 + 8 * conditionindex), immediatebytes[0], immediatebytes[1]);
@@ -456,15 +455,15 @@ namespace Sharp_LR35902_Assembler
 			ushort address = 0;
 			if (conditionindex == -1)
 			{
-				if (!TryParseImmediate(oprands[0], ref address))
-					UnknownLocations.Add(new Tuple<ushort, string>((ushort)(CurrentLocation + 1), oprands[0]));
+				if (!TryParseImmediate(oprands[0], ref address, true))
+					throw new ArgumentException($"Unknown expression '{oprands[0]}'.");
 
 				var addressbytes = address.ToByteArray();
 				return ListOf<byte>(0xC3, addressbytes[0], addressbytes[1]);
 			}
 
-			if (!TryParseImmediate(oprands[1], ref address))
-				UnknownLocations.Add(new Tuple<ushort, string>((ushort)(CurrentLocation+1), oprands[1]));
+			if (!TryParseImmediate(oprands[1], ref address, true))
+				throw new ArgumentException($"Unknown expression '{oprands[0]}'.");
 
 			var immediatebytes = address.ToByteArray();
 			return ListOf((byte)(0xC2 + 8 * conditionindex), immediatebytes[0], immediatebytes[1]);
@@ -653,11 +652,24 @@ namespace Sharp_LR35902_Assembler
 			// Reset state
 			// TODO: Need to make this class non-static as state is persisting between tests
 			Definitions.Clear();
-			UnknownLocations.Clear();
 			LabelLocations.Clear();
 			CurrentLocation = 0;
 
 			byte[] rom;
+			try
+			{
+				rom = getROM(instructions);
+			}
+			catch {
+				/*  Swallow all exceptions as they'll be raised on 2nd pass.
+					Doing a 2-pass assembler as we need to find label locations 
+					and we cant do that without at least knowing the length of each instruction.
+					So I assemble once and track length to populate label locations then
+					compile again with the now-known label locations.
+					This seems to be the best balance between performance to code-duplication.
+				*/
+			}
+			CurrentLocation = 0;
 			try
 			{
 				rom = getROM(instructions);
@@ -667,21 +679,6 @@ namespace Sharp_LR35902_Assembler
 				foreach (var exception in ex.InnerExceptions)
 					Console.WriteLine(exception.Message);
 				throw new Exception("One or more errors occured while compiling source code.");
-			}
-
-			// Resolve unknown label locations now we should have seen them all
-			foreach (var locationdetails in UnknownLocations)
-			{
-				var binarylocation = locationdetails.Item1;
-				var labelname = locationdetails.Item2;
-
-				if (!LabelLocations.ContainsKey(labelname))
-					throw new NotFoundException($"Label {labelname} not found.");
-
-				var labellocation = LabelLocations[labelname];
-				var labellocationbytes = labellocation.ToByteArray();
-				rom[binarylocation] = labellocationbytes[0];
-				rom[binarylocation + 1] = labellocationbytes[1];
 			}
 
 			return rom;
@@ -698,8 +695,8 @@ namespace Sharp_LR35902_Assembler
 					var upperinstruction = instruction.ToUpper();
 					if (instruction.EndsWith(':'))
 					{
-						var labelname = upperinstruction.Substring(0, upperinstruction.LastIndexOf(':'));
-						LabelLocations.Add(labelname, CurrentLocation);
+						var labelname = upperinstruction.Substring(0, upperinstruction.Length-1);
+						addLabelLocation(labelname, CurrentLocation);
 						continue;
 					}
 					else if (instruction.StartsWith('.') || instruction.StartsWith('#')) // Compiler directives
@@ -722,6 +719,12 @@ namespace Sharp_LR35902_Assembler
 				throw new AggregateException(exceptions);
 
 			return rom;
+		}
+
+		public static void addLabelLocation(string labelname, ushort location)
+		{
+			if (!LabelLocations.ContainsKey(labelname))
+				LabelLocations.Add(labelname, location);
 		}
 
 		public static void ParseDirective(string instruction, byte[] rom, ref ushort currentlocation)
@@ -808,19 +811,25 @@ namespace Sharp_LR35902_Assembler
 			Definitions[key] = value;
 		}
 
-		public static bool TryParseImmediate(string immediate, ref ushort result)
+		public static bool TryParseImmediate(string immediate, ref ushort result, bool trylabels = false)
 		{
 			var res = result; // Working copy. Both to avoid global writes and to ensure result isn't changed unless successful
 
-			var parts = immediate.SplitAndKeep(new[] { '+', '-' }).ToArray();
+			var parts = immediate
+				.SplitAndKeep(new[] { '+', '-' })
+				.Select(p => p.Trim())
+				.ToArray();
 			immediate = parts[0];
 
 			if (!Common.Parser.TryParseImmediate(immediate, ref res))
 			{
-				if (!Definitions.ContainsKey(immediate))
+				if (Definitions.ContainsKey(immediate))
+					res = Definitions[immediate];
+				else if (trylabels && LabelLocations.ContainsKey(immediate))
+					res = LabelLocations[immediate];
+				else
 					return false;
 
-				res = Definitions[immediate];
 			}
 
 			if (parts.Length > 1)
