@@ -30,8 +30,8 @@ namespace Sharp_LR35902_Assembler
 			for(var i=0; i<lines.Count; i=j++)
 			{
 				var instruction = lines[i];
-				// Is Jump
-				if (!(instruction.StartsWith("JP")))
+				// Is Jump or return
+				if (!(instruction.StartsWith("JP") || instruction.StartsWith("RET")))
 					continue;
 				// Skip conditional
 				if (instruction.LastIndexOf(' ') > instruction.IndexOf(' '))

@@ -42,7 +42,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		}
 
 		[TestMethod]
-		public void DeleteUnreachableCode_CropsMiddle()
+		public void DeleteUnreachableCode_CropsMiddle_Jump()
 		{
 			var lines = new List<string>() {
 				"JP SOMELABEL",
@@ -57,6 +57,27 @@ namespace Sharp_LR35902_Assembler_Tests
 			Assert.AreEqual(2, linesremoved);
 			listEqual(lines.ToArray(), new[] {
 				"JP SOMELABEL",
+				"ANOTHERLABEL:",
+				"DI"
+			});
+		}
+
+		[TestMethod]
+		public void DeleteUnreachableCode_CropsMiddle_Return()
+		{
+			var lines = new List<string>() {
+				"RET",
+				"NOP",
+				"NOP",
+				"ANOTHERLABEL:",
+				"DI"
+			};
+
+			var linesremoved = DeleteUnreachableCode(lines);
+
+			Assert.AreEqual(2, linesremoved);
+			listEqual(lines.ToArray(), new[] {
+				"RET",
 				"ANOTHERLABEL:",
 				"DI"
 			});
