@@ -679,6 +679,7 @@ namespace Sharp_LR35902_Assembler
 				*/
 			}
 			CurrentLocation = 0;
+			Definitions.Clear();
 			try
 			{
 				rom = getROM(instructions);
