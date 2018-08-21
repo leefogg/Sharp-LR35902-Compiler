@@ -120,6 +120,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		{
 			var instructions = new List<string>()
 			{
+				"NOP",
 				"; This is a comment",
 				"EI; Same line comment",
 				"",
@@ -130,6 +131,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			listEqual(
 				new[]
 				{
+					"NOP",
 					"",
 					"EI",
 					""

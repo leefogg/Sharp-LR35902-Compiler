@@ -26,7 +26,7 @@ namespace Sharp_LR35902_Assembler
 				var instruction = instructions[i];
 				var indexofcomment = instruction.IndexOf(';');
 				if (indexofcomment == -1)
-					return;
+					continue;
 
 				instructions[i] = instruction.Substring(0, indexofcomment);
 			}
