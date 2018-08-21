@@ -822,6 +822,9 @@ namespace Sharp_LR35902_Assembler
 
 		public static bool TryParseImmediate(string immediate, ref ushort result, bool trylabels = false)
 		{
+			if (string.IsNullOrEmpty(immediate))
+				return false;
+
 			var res = result; // Working copy. Both to avoid global writes and to ensure result isn't changed unless successful
 
 			var parts = immediate
