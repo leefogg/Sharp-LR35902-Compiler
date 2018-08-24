@@ -181,13 +181,13 @@ namespace Sharp_LR35902_Assembler
 					throw new ArgumentException("Unexpected oprands");
 
 				if (oprands.Length == 0)
-					return ListOf<byte>(0xC9);
+					return new Return().Compile();
 
 				var conditionindex = Conditions.IndexOf(oprands[0]);
 				if (conditionindex == -1)
 					throw new ArgumentException($"Unexpected condition '{oprands[0]}'");
 
-				return ListOf((byte)(0xC0 + (conditionindex * 8)));
+				return new ConditionalReturn((Condition)conditionindex).Compile();
 			}
 			byte[] Load(string[] oprands)
 			{
