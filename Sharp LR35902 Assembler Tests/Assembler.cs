@@ -413,7 +413,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			ushort val = 0;
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
 
-			assembler.addLabelLocation("P", 77);
+			assembler.AddLabelLocation("P", 77);
 			Assert.IsTrue(assembler.TryParseImmediate("P + 3", ref val, true));
 			Assert.AreEqual(80, val);
 		}

@@ -709,7 +709,7 @@ namespace Sharp_LR35902_Assembler
 					if (instruction.EndsWith(':'))
 					{
 						var labelname = upperinstruction.Substring(0, upperinstruction.Length-1);
-						addLabelLocation(labelname, CurrentLocation);
+						AddLabelLocation(labelname, CurrentLocation);
 						continue;
 					}
 					else if (instruction.StartsWith('.') || instruction.StartsWith('#')) // Compiler directives
@@ -734,7 +734,7 @@ namespace Sharp_LR35902_Assembler
 			return rom;
 		}
 
-		public void addLabelLocation(string labelname, ushort location)
+		public void AddLabelLocation(string labelname, ushort location)
 		{
 			if (!LabelLocations.ContainsKey(labelname))
 				LabelLocations.Add(labelname, location);
