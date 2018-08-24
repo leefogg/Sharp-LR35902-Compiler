@@ -554,7 +554,8 @@ namespace Sharp_LR35902_Compiler_Tests
 
 				fileoutput.Add("[TestMethod]");
 				fileoutput.Add("public void " + methodname + "() {");
-				fileoutput.Add($"var result = CompileInstruction(\"{instruction}\");");
+				fileoutput.Add("var assembler = new Sharp_LR35902_Assembler.Assembler();");
+				fileoutput.Add($"var result = assembler.CompileInstruction(\"{instruction}\");");
 				var teststring = "Is(result, ";
 				if (isCB)
 					teststring += "0xCB, ";
@@ -591,7 +592,8 @@ namespace Sharp_LR35902_Compiler_Tests
 						fileoutput.Add("[TestMethod]");
 						fileoutput.Add("[ExpectedException(typeof(SyntaxException))]");
 						fileoutput.Add("public void " + instructionname + "_WrongNumberOfOprands() {");
-						fileoutput.Add($"CompileInstruction(\"{instructionname}\"); // No oprands");
+						fileoutput.Add("var assembler = new Sharp_LR35902_Assembler.Assembler();");
+						fileoutput.Add($"assembler.CompileInstruction(\"{instructionname}\"); // No oprands");
 						fileoutput.Add("}");
 
 						instructionsopcodes.Add(instructionparts[0]);
@@ -639,7 +641,8 @@ namespace Sharp_LR35902_Compiler_Tests
 					fileoutput.Add("[TestMethod]");
 					fileoutput.Add("[ExpectedException(typeof(SyntaxException))]");
 					fileoutput.Add("public void " + basemethodname + "_ImmediateTooBig() {");
-					fileoutput.Add($"CompileInstruction(\"{instruction}\");");
+					fileoutput.Add("var assembler = new Sharp_LR35902_Assembler.Assembler();");
+					fileoutput.Add($"assembler.CompileInstruction(\"{instruction}\");");
 					fileoutput.Add("}");
 				}
 			}

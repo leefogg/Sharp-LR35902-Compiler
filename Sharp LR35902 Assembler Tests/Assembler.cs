@@ -15,7 +15,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		[ExpectedException(typeof(NotFoundException))]
 		public void UnrecognizedInstruction()
 		{
-			CompileInstruction("Something strange");
+			new Sharp_LR35902_Assembler.Assembler().CompileInstruction("Something strange");
 		}
 
 		[TestMethod]
@@ -23,7 +23,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		{
 			ushort val = 0;
 
-			Assert.IsTrue(TryParseImmediate("0xE1", ref val));
+			Assert.IsTrue(new Sharp_LR35902_Assembler.Assembler().TryParseImmediate("0xE1", ref val));
 			Assert.AreEqual(0xE1, val);
 		}
 		[TestMethod]
@@ -31,7 +31,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		{
 			ushort val = 0;
 
-			Assert.IsTrue(TryParseImmediate("0xE1E1", ref val));
+			Assert.IsTrue(new Sharp_LR35902_Assembler.Assembler().TryParseImmediate("0xE1E1", ref val));
 			Assert.AreEqual(0xE1E1, val);
 		}
 
@@ -40,7 +40,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		{
 			ushort val = 0;
 
-			Assert.IsTrue(TryParseImmediate("0B11100001", ref val));
+			Assert.IsTrue(new Sharp_LR35902_Assembler.Assembler().TryParseImmediate("0B11100001", ref val));
 			Assert.AreEqual(0B11100001, val);
 		}
 		[TestMethod]
@@ -48,7 +48,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		{
 			ushort val = 0;
 
-			Assert.IsTrue(TryParseImmediate("0B1110000111100001", ref val));
+			Assert.IsTrue(new Sharp_LR35902_Assembler.Assembler().TryParseImmediate("0B1110000111100001", ref val));
 			Assert.AreEqual(0b1110000111100001, val);
 		}
 		[TestMethod]
@@ -56,48 +56,52 @@ namespace Sharp_LR35902_Assembler_Tests
 		{
 			ushort val = 0;
 
-			Assert.IsTrue(TryParseImmediate("0b11100001", ref val));
+			Assert.IsTrue(new Sharp_LR35902_Assembler.Assembler().TryParseImmediate("0b11100001", ref val));
 			Assert.AreEqual(0b11100001, val);
 		}
 		[TestMethod]
 		public void ParsesBinary_InvalidLength()
 		{
 			ushort val = 0;
-			Assert.IsFalse(TryParseImmediate("0b1110000111", ref val));
+			Assert.IsFalse(new Sharp_LR35902_Assembler.Assembler().TryParseImmediate("0b1110000111", ref val));
 		}
 		[TestMethod]
 		public void ParseBinary_InvalidChar()
 		{
 			ushort val = 0;
-			Assert.IsFalse(TryParseImmediate("0b00123012", ref val));
+			Assert.IsFalse(new Sharp_LR35902_Assembler.Assembler().TryParseImmediate("0b00123012", ref val));
 		}
 
 		[TestMethod]
 		public void TryParseConstant_GetDefinition_FindsIt()
 		{
 			ushort expectedvalue = 0x7F00;
-			SetDefintion("XX", expectedvalue);
+			var assembler = new Sharp_LR35902_Assembler.Assembler();
+
+			assembler.SetDefintion("XX", expectedvalue);
 
 			ushort value = 0;
-			Assert.IsTrue(TryParseImmediate("XX", ref value));
+			Assert.IsTrue(assembler.TryParseImmediate("XX", ref value));
 			Assert.AreEqual(expectedvalue, value);
 		}
 
 		[TestMethod]
 		public void AddDefinition_Overrides()
 		{
-			SetDefintion("X", 1);
-			SetDefintion("X", 2);
+			var assembler = new Sharp_LR35902_Assembler.Assembler();
+
+			assembler.SetDefintion("X", 1);
+			assembler.SetDefintion("X", 2);
 
 			ushort val = 0;
-			Assert.IsTrue(TryParseImmediate("X", ref val));
+			Assert.IsTrue(assembler.TryParseImmediate("X", ref val));
 			Assert.AreEqual(2, val);
 		}
 
 		[TestMethod]
 		public void CompileProgram_MultipleLines()
 		{
-			var result = CompileProgram(new List<string>() { "EI", "EI" });
+			var result = new Sharp_LR35902_Assembler.Assembler().CompileProgram(new List<string>() { "EI", "EI" });
 			StartsWith(
 				new byte[] { 0xFB, 0xFB, 0x00 },
 				result
@@ -108,10 +112,12 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CompileProgram_AddsDefintition()
 		{
 			ushort expectedvalue = 0x7F;
-			CompileProgram(new List<string>() { $"#DEFINE X {expectedvalue}" });
+			var assembler = new Sharp_LR35902_Assembler.Assembler();
+
+			assembler.CompileProgram(new List<string>() { $"#DEFINE X {expectedvalue}" });
 
 			ushort value = 0;
-			Assert.IsTrue(TryParseImmediate("X", ref value));
+			Assert.IsTrue(assembler.TryParseImmediate("X", ref value));
 			Assert.AreEqual(expectedvalue, value);
 		}
 
@@ -119,10 +125,12 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CompileProgram_AddsDefintition_RequiresParsing()
 		{
 			ushort expectedvalue = 0x7F;
-			CompileProgram(new List<string>() { $"#DEFINE X 0x7F" });
+			var assembler = new Sharp_LR35902_Assembler.Assembler();
+
+			assembler.CompileProgram(new List<string>() { $"#DEFINE X 0x7F" });
 
 			ushort value = 0;
-			Assert.IsTrue(TryParseImmediate("X", ref value));
+			Assert.IsTrue(assembler.TryParseImmediate("X", ref value));
 			Assert.AreEqual(expectedvalue, value);
 		}
 
@@ -136,7 +144,7 @@ namespace Sharp_LR35902_Assembler_Tests
 				"JP jumplabel"
 			};
 
-			var binary = CompileProgram(instructions);
+			var binary = new Sharp_LR35902_Assembler.Assembler().CompileProgram(instructions);
 
 			StartsWith(
 				new byte[] { 0xAF, 0xC3, 0x01, 0x00 },
@@ -154,7 +162,7 @@ namespace Sharp_LR35902_Assembler_Tests
 				"CALL calllabel"
 			};
 
-			var binary = CompileProgram(instructions);
+			var binary = new Sharp_LR35902_Assembler.Assembler().CompileProgram(instructions);
 
 			StartsWith(
 				new byte[] { 0xAF, 0xCD, 0x01, 0x00 },
@@ -172,7 +180,7 @@ namespace Sharp_LR35902_Assembler_Tests
 				"JP AbCdEFDG"
 			};
 
-			var binary = CompileProgram(instructions);
+			var binary = new Sharp_LR35902_Assembler.Assembler().CompileProgram(instructions);
 
 			StartsWith(
 				new byte[] { 0xAF, 0xC3, 0x01, 0x00 },
@@ -191,7 +199,7 @@ namespace Sharp_LR35902_Assembler_Tests
 				"JP bottom"
 			};
 
-			CompileProgram(instructions);
+			new Sharp_LR35902_Assembler.Assembler().CompileProgram(instructions);
 		}
 
 		[TestMethod]
@@ -200,7 +208,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			var rom = new ROM();
 			ushort currentlocation = 0;
 
-			ParseDirective(".ORG 0x03", rom, ref currentlocation);
+			new Sharp_LR35902_Assembler.Assembler().ParseDirective(".ORG 0x03", rom, ref currentlocation);
 
 			Assert.AreEqual(0x03, currentlocation);
 		}
@@ -211,7 +219,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			var rom = new ROM();
 			ushort currentlocation = 0;
 
-			ParseDirective("#ORG 0x03", rom, ref currentlocation);
+			new Sharp_LR35902_Assembler.Assembler().ParseDirective("#ORG 0x03", rom, ref currentlocation);
 
 			Assert.AreEqual(0x03, currentlocation);
 		}
@@ -222,7 +230,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			var rom = new ROM();
 			ushort currentlocation = 1;
 
-			ParseDirective(".byte 1 0x01 0b00000001", rom, ref currentlocation);
+			new Sharp_LR35902_Assembler.Assembler().ParseDirective(".byte 1 0x01 0b00000001", rom, ref currentlocation);
 
 			Assert.AreEqual(4, currentlocation);
 			StartsWith(
@@ -245,7 +253,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			var rom = new ROM();
 			ushort currentlocation = 1;
 
-			ParseDirective(".byte 256", rom, ref currentlocation);
+			new Sharp_LR35902_Assembler.Assembler().ParseDirective(".byte 256", rom, ref currentlocation);
 
 			Assert.AreEqual(2, currentlocation);
 		}
@@ -257,7 +265,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			var rom = new ROM();
 			ushort currentlocation = 1;
 
-			ParseDirective(".byte 255 x", rom, ref currentlocation);
+			new Sharp_LR35902_Assembler.Assembler().ParseDirective(".byte 255 x", rom, ref currentlocation);
 
 			Assert.AreEqual(2, currentlocation);
 		}
@@ -268,7 +276,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			var rom = new ROM();
 			ushort currentlocation = 1;
 
-			ParseDirective(".text hello", rom, ref currentlocation);
+			new Sharp_LR35902_Assembler.Assembler().ParseDirective(".text hello", rom, ref currentlocation);
 
 			Assert.AreEqual(6, currentlocation);
 			StartsWith(
@@ -293,16 +301,18 @@ namespace Sharp_LR35902_Assembler_Tests
 			var rom = new ROM();
 			ushort currentlocation = 0;
 
-			ParseDirective("#somedirective", rom, ref currentlocation);
+			new Sharp_LR35902_Assembler.Assembler().ParseDirective("#somedirective", rom, ref currentlocation);
 		}
 
 		[TestMethod]
 		public void TryParseConstant_GetDefinition_DefaultValue()
 		{
-			SetDefintion("B");
+			var assembler = new Sharp_LR35902_Assembler.Assembler();
+
+			assembler.SetDefintion("B");
 
 			ushort value = 11;
-			Assert.IsTrue(TryParseImmediate("B", ref value));
+			Assert.IsTrue(assembler.TryParseImmediate("B", ref value));
 			Assert.AreEqual(0, value);
 		}
 
@@ -310,16 +320,18 @@ namespace Sharp_LR35902_Assembler_Tests
 		[ExpectedException(typeof(ArgumentException))]
 		public void TryParseConstant_GetDefinition_ThrowsOnParseFail()
 		{
-			SetDefintion("VRAM", "Hi there");
+			new Sharp_LR35902_Assembler.Assembler().SetDefintion("VRAM", "Hi there");
 		}
 
 		[TestMethod]
 		public void CompileInstruction_FindsDefinition()
 		{
 			ushort val = 11;
-			SetDefintion("X", val);
+			var assembler = new Sharp_LR35902_Assembler.Assembler();
 
-			var result = CompileInstruction("LD A, X");
+			assembler.SetDefintion("X", val);
+
+			var result = assembler.CompileInstruction("LD A, X");
 			Is(result, new byte[] { 0x3E, (byte)val });
 		}
 
@@ -327,9 +339,11 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CompileInstruction_FindsDefinition_CaseInsensitive()
 		{
 			ushort val = 11;
-			SetDefintion("x", val);
+			var assembler = new Sharp_LR35902_Assembler.Assembler();
 
-			var result = CompileInstruction("LD A, x");
+			assembler.SetDefintion("x", val);
+
+			var result = assembler.CompileInstruction("LD A, x");
 			Is(result, new byte[] { 0x3E, (byte)val });
 		}
 
@@ -338,7 +352,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		{
 			ushort val = 0;
 
-			Assert.IsTrue(TryParseImmediate("1+1", ref val));
+			Assert.IsTrue(new Sharp_LR35902_Assembler.Assembler().TryParseImmediate("1+1", ref val));
 			Assert.AreEqual(2, val);
 		}
 		[TestMethod]
@@ -346,7 +360,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		{
 			ushort val = 0;
 
-			Assert.IsTrue(TryParseImmediate("10-5", ref val));
+			Assert.IsTrue(new Sharp_LR35902_Assembler.Assembler().TryParseImmediate("10-5", ref val));
 			Assert.AreEqual(5, val);
 		}
 		[TestMethod]
@@ -354,7 +368,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		{
 			ushort val = 0;
 
-			Assert.IsTrue(TryParseImmediate("10 - 5", ref val));
+			Assert.IsTrue(new Sharp_LR35902_Assembler.Assembler().TryParseImmediate("10 - 5", ref val));
 			Assert.AreEqual(5, val);
 		}
 		[TestMethod]
@@ -363,18 +377,20 @@ namespace Sharp_LR35902_Assembler_Tests
 			var rom = new ROM();
 			ushort currentlocation = 0;
 			ushort val = 0;
+			var assembler = new Sharp_LR35902_Assembler.Assembler();
 
-			ParseDirective("#DEFINE O 77", rom, ref currentlocation);
-			Assert.IsTrue(TryParseImmediate("O + 3", ref val));
+			assembler.ParseDirective("#DEFINE O 77", rom, ref currentlocation);
+			Assert.IsTrue(assembler.TryParseImmediate("O + 3", ref val));
 			Assert.AreEqual(80, val);
 		}
 		[TestMethod]
 		public void TryParseConstant_Math_WithLabel()
 		{
 			ushort val = 0;
+			var assembler = new Sharp_LR35902_Assembler.Assembler();
 
-			addLabelLocation("P", 77);
-			Assert.IsTrue(TryParseImmediate("P + 3", ref val, true));
+			assembler.addLabelLocation("P", 77);
+			Assert.IsTrue(assembler.TryParseImmediate("P + 3", ref val, true));
 			Assert.AreEqual(80, val);
 		}
 	}
