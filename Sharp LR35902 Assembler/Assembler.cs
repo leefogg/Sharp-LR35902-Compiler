@@ -22,8 +22,7 @@ namespace Sharp_LR35902_Assembler
 		private static ArgumentException TooFewOprandsException(int expectednumber) => new ArgumentException($"Expected {expectednumber} oprands");
 		private static ArgumentException NoOprandMatchException => new ArgumentException("No known oprand match found");
 		private static ArgumentException UnexpectedInt16Exception => throw new ArgumentException($"Unexpected 16-bit immediate, expected 8-bit immediate.");
-
-		#region Instructions
+		
 		// Common patterns for opcode ranges
 		private byte[] Pattern_BIT(string[] oprands, byte startopcode)
 		{
@@ -87,9 +86,6 @@ namespace Sharp_LR35902_Assembler
 
 			return ListOf((byte)(rowstartopcode + registerindex));
 		}
-
-		
-		#endregion
 
 		public static void Main(string[] args)
 		{
