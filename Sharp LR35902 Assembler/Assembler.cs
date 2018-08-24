@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Common.Exceptions;
 using Common.Extensions;
+using Sharp_LR35902_Assembler.InstructionVarients;
 using static Common.Extensions.IEnumerableExtensions;
 
 namespace Sharp_LR35902_Assembler
@@ -202,19 +203,18 @@ namespace Sharp_LR35902_Assembler
 					if (pairindex == -1)
 						throw new ArgumentException($"Register pair '{oprands[1]}' doesn't exist");
 
-					var oprand2bytes = oprand2const.ToByteArray();
-					return new[] { (byte)(0x01 + (0x10 * pairindex)), oprand2bytes[0], oprand2bytes[1] };
+					return new LoadRegisterIntoMemoryAddressFromRegisterPair(oprand2const, (RegisterPair)pairindex).Compile();
 				}
 
-				// Loading L into memory location at register pair
+				// Loading A into memory location at register pair
 				if (oprands[0] == "(BC)")
-					return ListOf<byte>(0x02);
+					return new LoadAIntoMemoryAddressAtBC().Compile();
 				if (oprands[0] == "(DE)")
-					return ListOf<byte>(0x12);
+					return new LoadAIntoMemoryAddressAtDE().Compile();
 
 				// Loading HL into SP
 				if (oprands[0] == "SP" && oprands[1] == "HL")
-					return ListOf<byte>(0xF9);
+					return new LoadHLIntoSP().Compile();
 
 				var oprand1offset = Registers.IndexOf(oprands[0]);
 				var oprand2offset = Registers.IndexOf(oprands[1]);
@@ -225,44 +225,36 @@ namespace Sharp_LR35902_Assembler
 					if (!TryParseImmediate(TrimBrackets(oprands[0]), ref location))
 						throw new ArgumentException($"Unexpected expression '{oprands[1]}', expected uint16.");
 
-					var locationbytes = location.ToByteArray();
 					if (oprands[1] == "A")
-						return ListOf<byte>(0xEA, locationbytes[0], locationbytes[1]);
+						return new LoadAIntoMemoryAddress(location).Compile();
 					if (oprands[1] == "SP")
-						return ListOf<byte>(0x08, locationbytes[0], locationbytes[1]);
+						return new LoadSPIntoMemoryAddress(location).Compile();
 				}
 				if (oprands[0] == "A" && oprand2offset == -1 && IsLocation(oprands[1])) // Loading memory value into A
 				{
 					// Pointed to by register pair
-					if (oprands[1] == "(BC)")
-						return ListOf<byte>(0x0A);
-					if (oprands[1] == "(DE)")
-						return ListOf<byte>(0x1A);
+					if (oprands[1] == "(BC)" || oprands[1] == "(DE)")
+						return new LoadMemoryValueFromRegisterPairIntoA((RegisterPair)RegisterPairs.IndexOf(TrimBrackets(oprands[1]))).Compile();
 
 					// Pointed to by immediate
 					ushort location = 0;
 					if (!TryParseImmediate(TrimBrackets(oprands[1]), ref location))
 						throw new ArgumentException($"Unexpected expression '{oprands[1]}', expected uint16.");
-					var locationbytes = location.ToByteArray();
-					return new byte[] { 0xFA, locationbytes[0], locationbytes[1] };
+
+					return new LoadMemoryValueFromImmediateIntoA(location).Compile();
 				}
 				else if (oprand1offset != -1 && oprand2offset == -1) // Loading immediate into register (0xn6/0xnE)
 				{
 					// Assume its a immediate
-					byte start = 0x06;
-					var bytecode = start + (oprand1offset * 8);
-
 					ushort immediate = 0;
 					if (!TryParseImmediate(oprands[1], ref immediate))
 						throw new FormatException($"Oprand 2 '{oprands[1]}' is not a valid immediate");
-					return new[] { (byte)bytecode, (byte)immediate };
+					return new LoadImmediateIntoRegister((byte)immediate, (Register)oprand1offset).Compile();
 				}
 				else // 0x40 - 0x6F
 				{
 					// Both oprands are registers
-					byte topleft = 0x40;
-					var bytecode = topleft + (oprand1offset * Registers.Length) + oprand2offset;
-					return new[] { ((byte)bytecode) };
+					return new LoadRegisterIntoRegister((Register)oprand1offset, (Register)oprand2offset).Compile();
 				}
 			}
 			byte[] Add(string[] oprands)
