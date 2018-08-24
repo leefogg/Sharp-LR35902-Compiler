@@ -865,7 +865,7 @@ namespace Sharp_LR35902_Assembler
 						res -= oprand;
 						break;
 					default:
-						throw new NotImplementedException("Oprand not supported");
+						throw new NotImplementedException($"Operator '{parts[1]}' not supported");
 				}
 			}
 
