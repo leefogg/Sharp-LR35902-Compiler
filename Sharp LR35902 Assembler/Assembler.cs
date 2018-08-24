@@ -165,16 +165,16 @@ namespace Sharp_LR35902_Assembler
 
 		public Assembler()
 		{
-			byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
-			byte[] Stop(string[] oprands) => ListOf<byte>(0x10);
-			byte[] BCDAdjustA(string[] oprands) => ListOf<byte>(0x27);
-			byte[] ComplementA(string[] oprands) => ListOf<byte>(0x2F);
-			byte[] SetCarryFlag(string[] oprands) => ListOf<byte>(0x37);
-			byte[] ClearCarryFlag(string[] oprands) => ListOf<byte>(0x3F);
-			byte[] Halt(string[] oprands) => ListOf<byte>(0x76);
-			byte[] ReturnWithInterrrupts(string[] oprands) => ListOf<byte>(0xD9);
-			byte[] DisableInterrupts(string[] oprands) => ListOf<byte>(0xF3);
-			byte[] EnableInterrupts(string[] oprands) => ListOf<byte>(0xFB);
+			byte[] NoOp(string[] oprands) => new NoOp().Compile();
+			byte[] Stop(string[] oprands) => new Stop().Compile();
+			byte[] BCDAdjustA(string[] oprands) => new BCDAdjustA().Compile();
+			byte[] ComplementA(string[] oprands) => new ComplementA().Compile();
+			byte[] SetCarryFlag(string[] oprands) => new SetCarryFlag().Compile();
+			byte[] ClearCarryFlag(string[] oprands) => new ClearCarryFlag().Compile();
+			byte[] Halt(string[] oprands) => new Halt().Compile();
+			byte[] ReturnWithInterrrupts(string[] oprands) => new ReturnWithInterrupts().Compile();
+			byte[] DisableInterrupts(string[] oprands) => new DisableInterrupts().Compile();
+			byte[] EnableInterrupts(string[] oprands) => new EnableInterrupts().Compile();
 			byte[] Return(string[] oprands)
 			{
 				if (oprands.Length > 1)
