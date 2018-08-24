@@ -836,10 +836,12 @@ namespace Sharp_LR35902_Assembler
 			var parts = immediate
 				.SplitAndKeep(new[] { '+', '-' })
 				.Select(p => p.Trim())
-				.ToArray();
+				.ToList();
 			immediate = parts[0];
 
-			if (!Common.Parser.TryParseImmediate(immediate, ref res))
+			if (parts.Count > 1)
+				res = parseExpression(parts, trylabels);
+			else if (!Common.Parser.TryParseImmediate(immediate, ref res))
 			{
 				if (Definitions.ContainsKey(immediate))
 					res = Definitions[immediate];
@@ -847,30 +849,49 @@ namespace Sharp_LR35902_Assembler
 					res = LabelLocations[immediate];
 				else
 					return false;
-
-			}
-
-			if (parts.Length > 1)
-			{
-				ushort oprand = 0;
-				if (!TryParseImmediate(parts[2], ref oprand))
-					return false;
-
-				switch(parts[1])
-				{
-					case "+":
-						res += oprand;
-						break;
-					case "-":
-						res -= oprand;
-						break;
-					default:
-						throw new NotImplementedException($"Operator '{parts[1]}' not supported");
-				}
 			}
 
 			result = res;
 			return true;
+		}
+
+		private ushort parseExpression(List<string> parts, bool trylabels)
+		{
+			if (parts.Count < 3 || (parts.Count - 3) % 2 == 1)
+				throw new ArgumentException("Unbalanced expression");
+
+			while (parts.Count >= 3)
+			{
+				var left = parts[0];
+				var op = parts[1];
+				var right = parts[2];
+
+				ushort leftushort = 0;
+				if (!TryParseImmediate(left, ref leftushort, trylabels))
+					throw new FormatException($"Unable to parse expression '{left}' to uint16.");
+				ushort rightushort = 0;
+				if (!TryParseImmediate(right, ref rightushort, trylabels))
+					throw new FormatException($"Unable to parse expression '{rightushort}' to uint16.");
+				
+				switch (op)
+				{
+					case "+":
+						leftushort += rightushort;
+						break;
+					case "-":
+						leftushort -= rightushort;
+						break;
+					default:
+						throw new NotImplementedException($"Operator '{parts[1]}' not supported");
+				}
+
+				parts.RemoveRange(0, 3);
+				parts.Insert(0, leftushort.ToString());
+			}
+
+			// The expression has collapsed. 
+			// parts[0] has alread been successfully parsed so its safe
+			return Common.Parser.ParseImmediate(parts[0]);
 		}
 
 		private static string TrimBrackets(string location) => location.Substring(1, location.Length - 2);

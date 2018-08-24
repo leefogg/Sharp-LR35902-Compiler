@@ -364,6 +364,30 @@ namespace Sharp_LR35902_Assembler_Tests
 			Assert.AreEqual(5, val);
 		}
 		[TestMethod]
+		public void TryParseConstant_Math_TwoOperators()
+		{
+			ushort val = 0;
+
+			Assert.IsTrue(new Sharp_LR35902_Assembler.Assembler().TryParseImmediate("10-5+1", ref val));
+			Assert.AreEqual(6, val);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public void TryParseConstant_Math_Unblanced()
+		{
+			ushort val = 0;
+
+			new Sharp_LR35902_Assembler.Assembler().TryParseImmediate("10-", ref val);
+		}
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public void TryParseConstant_Math_Unblanced2()
+		{
+			ushort val = 0;
+
+			new Sharp_LR35902_Assembler.Assembler().TryParseImmediate("10-3+", ref val);
+		}
+		[TestMethod]
 		public void TryParseConstant_Math_WithWhitespace()
 		{
 			ushort val = 0;
