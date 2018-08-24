@@ -10,14 +10,14 @@ namespace Sharp_LR35902_Assembler
 {
 	public class Assembler
 	{
-		private static readonly string[] registers = new[] { "B", "C", "D", "E", "H", "L", "(HL)", "A" };
-		private static readonly string[] registerPairs = new[] { "BC", "DE", "HL", "SP" };
-		private static readonly string[] conditions = new[] { "NZ", "Z", "NC", "C" };
+		private static readonly string[] Reisters = new[] { "B", "C", "D", "E", "H", "L", "(HL)", "A" };
+		private static readonly string[] RegisterPairs = new[] { "BC", "DE", "HL", "SP" };
+		private static readonly string[] Conditions = new[] { "NZ", "Z", "NC", "C" };
 
 		private readonly Dictionary<string, Func<string[], byte[]>> Instructions;
 		private readonly Dictionary<string, ushort> Definitions = new Dictionary<string, ushort>();
 		private readonly Dictionary<string, ushort> LabelLocations = new Dictionary<string, ushort>();
-		private ushort	CurrentLocation = 0;
+		private ushort	 CurrentLocation = 0;
 
 		private static ArgumentException TooFewOprandsException(int expectednumber) => new ArgumentException($"Expected {expectednumber} oprands");
 		private static ArgumentException NoOprandMatchException => new ArgumentException("No known oprand match found");
@@ -29,7 +29,7 @@ namespace Sharp_LR35902_Assembler
 			if (oprands.Length != 2)
 				throw TooFewOprandsException(2);
 
-			var registerindex = registers.IndexOf(oprands[1]);
+			var registerindex = Reisters.IndexOf(oprands[1]);
 			if (registerindex == -1)
 				throw new ArgumentException("Expected register for oprand 2");
 
@@ -49,7 +49,7 @@ namespace Sharp_LR35902_Assembler
 			if (oprands.Length != 1)
 				throw new ArgumentException("Expected 1 register oprand");
 
-			var registerindex = registers.IndexOf(oprands[0]);
+			var registerindex = Reisters.IndexOf(oprands[0]);
 			if (registerindex == -1)
 				throw new ArgumentException("Oprand 1 is not a register");
 
@@ -63,7 +63,7 @@ namespace Sharp_LR35902_Assembler
 			if (oprands[0] == "A")
 				return ListOf((byte)(rowstartopcode + 7));
 
-			var registerindex = registers.IndexOf(oprands[0]);
+			var registerindex = Reisters.IndexOf(oprands[0]);
 			return ListOf<byte>(0xCB, (byte)(rowstartopcode + registerindex));
 		}
 		private byte[] Pattern_RegisterOrImmediateOnRegister(string[] oprands, byte rowstartopcode, byte nopcode)
@@ -71,7 +71,7 @@ namespace Sharp_LR35902_Assembler
 			if (oprands.Length != 1)
 				throw TooFewOprandsException(1);
 
-			var registerindex = registers.IndexOf(oprands[0]);
+			var registerindex = Reisters.IndexOf(oprands[0]);
 			if (registerindex == -1)
 			{
 				ushort immediate = 0;
@@ -182,7 +182,7 @@ namespace Sharp_LR35902_Assembler
 				if (oprands.Length == 0)
 					return ListOf<byte>(0xC9);
 
-				var conditionindex = conditions.IndexOf(oprands[0]);
+				var conditionindex = Conditions.IndexOf(oprands[0]);
 				if (conditionindex == -1)
 					throw new ArgumentException($"Unexpected condition '{oprands[0]}'");
 
@@ -198,7 +198,7 @@ namespace Sharp_LR35902_Assembler
 				ushort oprand2const = 0;
 				if (TryParseImmediate(oprands[1], ref oprand2const) && !oprand2const.isByte())
 				{
-					var pairindex = registerPairs.IndexOf(oprands[0]);
+					var pairindex = RegisterPairs.IndexOf(oprands[0]);
 					if (pairindex == -1)
 						throw new ArgumentException($"Register pair '{oprands[1]}' doesn't exist");
 
@@ -216,8 +216,8 @@ namespace Sharp_LR35902_Assembler
 				if (oprands[0] == "SP" && oprands[1] == "HL")
 					return ListOf<byte>(0xF9);
 
-				var oprand1offset = registers.IndexOf(oprands[0]);
-				var oprand2offset = registers.IndexOf(oprands[1]);
+				var oprand1offset = Reisters.IndexOf(oprands[0]);
+				var oprand2offset = Reisters.IndexOf(oprands[1]);
 				// TODO: throw if oprand[1] isn't a immediate
 				if (oprand1offset == -1)
 				{
@@ -261,7 +261,7 @@ namespace Sharp_LR35902_Assembler
 				{
 					// Both oprands are registers
 					byte topleft = 0x40;
-					var bytecode = topleft + (oprand1offset * registers.Length) + oprand2offset;
+					var bytecode = topleft + (oprand1offset * Reisters.Length) + oprand2offset;
 					return new[] { ((byte)bytecode) };
 				}
 			}
@@ -272,7 +272,7 @@ namespace Sharp_LR35902_Assembler
 
 				if (oprands[0] == "HL")
 				{
-					var pairindex = registerPairs.IndexOf(oprands[1]);
+					var pairindex = RegisterPairs.IndexOf(oprands[1]);
 					if (pairindex == -1)
 						throw new ArgumentException($"Unrecognised register pair '{oprands[1]}'");
 
@@ -296,7 +296,7 @@ namespace Sharp_LR35902_Assembler
 				if (oprands[0] != "A")
 					throw new ArgumentException($"Cannot add into register '{oprands[0]}'. Can only add into register A and HL");
 
-				var registerindex = registers.IndexOf(oprands[1]);
+				var registerindex = Reisters.IndexOf(oprands[1]);
 				if (registerindex == -1)
 				{
 					ushort immediate = 0;
@@ -322,7 +322,7 @@ namespace Sharp_LR35902_Assembler
 				if (oprands[0] != "A")
 					throw new ArgumentException($"Cannot add into register '{oprands[0]}'. Can only add into register A");
 
-				var registerindex = registers.IndexOf(oprands[1]);
+				var registerindex = Reisters.IndexOf(oprands[1]);
 				if (registerindex == -1)
 				{
 					ushort immediate = 0;
@@ -344,7 +344,7 @@ namespace Sharp_LR35902_Assembler
 				if (oprands[0] != "A")
 					throw new ArgumentException($"Cannot subtract into register '{oprands[0]}'. Can only subtract into register A");
 
-				var registerindex = registers.IndexOf(oprands[1]);
+				var registerindex = Reisters.IndexOf(oprands[1]);
 				if (registerindex > -1)
 					return ListOf((byte)(0x90 + registerindex));
 
@@ -365,7 +365,7 @@ namespace Sharp_LR35902_Assembler
 				if (oprands[0] != "A")
 					throw new ArgumentException($"Cannot subtract into register '{oprands[0]}'. Can only subtract into register A");
 
-				var registerindex = registers.IndexOf(oprands[1]);
+				var registerindex = Reisters.IndexOf(oprands[1]);
 				if (registerindex == -1)
 				{
 					ushort immediate = 0;
@@ -385,10 +385,10 @@ namespace Sharp_LR35902_Assembler
 				if (oprands.Length != 1)
 					throw TooFewOprandsException(1);
 
-				var registerindex = registers.IndexOf(oprands[0]);
+				var registerindex = Reisters.IndexOf(oprands[0]);
 				if (registerindex == -1)
 				{
-					var pairindex = registerPairs.IndexOf(oprands[0]);
+					var pairindex = RegisterPairs.IndexOf(oprands[0]);
 					if (pairindex == -1)
 						throw new ArgumentException($"Unknown register '{oprands[0]}'");
 
@@ -402,10 +402,10 @@ namespace Sharp_LR35902_Assembler
 				if (oprands.Length != 1)
 					throw TooFewOprandsException(1);
 
-				var registerindex = registers.IndexOf(oprands[0]);
+				var registerindex = Reisters.IndexOf(oprands[0]);
 				if (registerindex == -1)
 				{
-					var pairindex = registerPairs.IndexOf(oprands[0]);
+					var pairindex = RegisterPairs.IndexOf(oprands[0]);
 					if (pairindex == -1)
 						throw new ArgumentException($"Unknown register '{oprands[0]}'");
 
@@ -434,7 +434,7 @@ namespace Sharp_LR35902_Assembler
 				if (oprands.Length == 0)
 					throw new ArgumentException("Expected at least 1 oprand");
 
-				var conditionindex = conditions.IndexOf(oprands[0]);
+				var conditionindex = Conditions.IndexOf(oprands[0]);
 				if (conditionindex == -1)
 				{
 					ushort address = 0;
@@ -484,7 +484,7 @@ namespace Sharp_LR35902_Assembler
 				if (oprands[0] == "(HL)")
 					return ListOf<byte>(0xE9);
 
-				var conditionindex = conditions.IndexOf(oprands[0]);
+				var conditionindex = Conditions.IndexOf(oprands[0]);
 				ushort address = 0;
 				if (conditionindex == -1)
 				{
@@ -506,7 +506,7 @@ namespace Sharp_LR35902_Assembler
 				if (oprands.Length == 0)
 					throw new ArgumentException("Expected at least 1 oprand");
 
-				var conditionindex = conditions.IndexOf(oprands[0]);
+				var conditionindex = Conditions.IndexOf(oprands[0]);
 				if (conditionindex == -1)
 				{
 					ushort address = 0;
