@@ -35,16 +35,16 @@ namespace Sharp_LR35902_Assembler_Tests
 		}
 
 		[TestMethod]
-		public void AddsComma()
+		public void RemoveComma_Removes()
 		{
 			var instructions = new List<string>()
 			{
-				"LD A 01"
+				"LD A,01"
 			};
 
-			AddComma(instructions);
+			RemoveComma(instructions);
 
-			listEqual(new[] { "LD A, 01" }, instructions.ToArray());
+			listEqual(new[] { "LD A 01" }, instructions.ToArray());
 		}
 
 		[TestMethod]

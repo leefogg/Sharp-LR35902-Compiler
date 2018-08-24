@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Common.Extensions;
+using System.Linq;
 
 namespace Sharp_LR35902_Assembler
 {
@@ -13,11 +12,16 @@ namespace Sharp_LR35902_Assembler
 		{
 			RemoveComments(instructions);
 			LineBreakLabels(instructions);
-			RemoveWhitespace(instructions);
+			RemoveComma(instructions);
+			RemoveWhitespace(instructions); // Isn't needed but good for consistant formatting for debugging
 			RemoveBlankLines(instructions);
-			AddComma(instructions);
 		}
 
+		public static void RemoveComma(List<string> instructions)
+		{
+			for (var i = 0; i < instructions.Count; i++)
+				instructions[i] = instructions[i].Replace(',', ' ');
+		}
 
 		public static void RemoveComments(List<string> instructions)
 		{
@@ -68,21 +72,6 @@ namespace Sharp_LR35902_Assembler
 
 				instructions[i] = line.Substring(0, colonindex + 1);
 				instructions.Insert(i + 1, line.Substring(colonindex + 1, line.Length - 1 - colonindex));
-			}
-		}
-
-		public static void AddComma(List<string> instructions)
-		{
-			for (var i = 0; i < instructions.Count; i++)
-			{
-				var line = instructions[i];
-
-				var lastspace = line.LastIndexOf(' ');
-				if (lastspace > line.IndexOf(' '))
-					if (line[lastspace - 1] != ',')
-						line = line.Substring(0, lastspace) + "," + line.Substring(lastspace, line.Length - lastspace);
-
-				instructions[i] = line;
 			}
 		}
 

@@ -20,7 +20,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_BC_nn()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD BC,62689");
+			var result = assembler.CompileInstruction("LD BC 62689");
 			Is(result, 0x01, 225, 244);
 		}
 		[TestMethod]
@@ -36,7 +36,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_BC_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD (BC),A");
+			var result = assembler.CompileInstruction("LD (BC) A");
 			Is(result, 0x02);
 		}
 
@@ -86,7 +86,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_B_n()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD B,225");
+			var result = assembler.CompileInstruction("LD B 225");
 			Is(result, 0x06, 225);
 		}
 		[TestMethod]
@@ -118,7 +118,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_nn_SP()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD (62689),SP");
+			var result = assembler.CompileInstruction("LD (62689) SP");
 			Is(result, 0x08, 225, 244);
 		}
 
@@ -127,7 +127,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADD_HL_BC()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADD HL,BC");
+			var result = assembler.CompileInstruction("ADD HL BC");
 			Is(result, 0x09);
 		}
 		[TestMethod]
@@ -143,7 +143,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_A_BC()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD A,(BC)");
+			var result = assembler.CompileInstruction("LD A (BC)");
 			Is(result, 0x0A);
 		}
 
@@ -179,7 +179,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_C_n()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD C,225");
+			var result = assembler.CompileInstruction("LD C 225");
 			Is(result, 0x0E, 225);
 		}
 		[TestMethod]
@@ -220,7 +220,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_DE_nn()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD DE,62689");
+			var result = assembler.CompileInstruction("LD DE 62689");
 			Is(result, 0x11, 225, 244);
 		}
 
@@ -229,7 +229,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_DE_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD (DE),A");
+			var result = assembler.CompileInstruction("LD (DE) A");
 			Is(result, 0x12);
 		}
 
@@ -265,7 +265,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_D_n()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD D,225");
+			var result = assembler.CompileInstruction("LD D 225");
 			Is(result, 0x16, 225);
 		}
 		[TestMethod]
@@ -320,7 +320,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADD_HL_DE()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADD HL,DE");
+			var result = assembler.CompileInstruction("ADD HL DE");
 			Is(result, 0x19);
 		}
 
@@ -329,7 +329,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_A_DE()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD A,(DE)");
+			var result = assembler.CompileInstruction("LD A (DE)");
 			Is(result, 0x1A);
 		}
 
@@ -365,7 +365,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_E_n()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD E,225");
+			var result = assembler.CompileInstruction("LD E 225");
 			Is(result, 0x1E, 225);
 		}
 		[TestMethod]
@@ -397,7 +397,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void JR_NZ_n()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("JR NZ,225");
+			var result = assembler.CompileInstruction("JR NZ 225");
 			Is(result, 0x20, 225);
 		}
 		[TestMethod]
@@ -413,7 +413,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_HL_nn()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD HL,62689");
+			var result = assembler.CompileInstruction("LD HL 62689");
 			Is(result, 0x21, 225, 244);
 		}
 
@@ -422,7 +422,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LDI_HL_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LDI (HL),A");
+			var result = assembler.CompileInstruction("LDI (HL) A");
 			Is(result, 0x22);
 		}
 		[TestMethod]
@@ -465,7 +465,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_H_n()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD H,225");
+			var result = assembler.CompileInstruction("LD H 225");
 			Is(result, 0x26, 225);
 		}
 		[TestMethod]
@@ -490,7 +490,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void JR_Z_n()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("JR Z,225");
+			var result = assembler.CompileInstruction("JR Z 225");
 			Is(result, 0x28, 225);
 		}
 		[TestMethod]
@@ -506,7 +506,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADD_HL_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADD HL,HL");
+			var result = assembler.CompileInstruction("ADD HL HL");
 			Is(result, 0x29);
 		}
 
@@ -515,7 +515,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LDI_A_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LDI A,(HL)");
+			var result = assembler.CompileInstruction("LDI A (HL)");
 			Is(result, 0x2A);
 		}
 
@@ -551,7 +551,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_L_n()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD L,225");
+			var result = assembler.CompileInstruction("LD L 225");
 			Is(result, 0x2E, 225);
 		}
 		[TestMethod]
@@ -576,7 +576,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void JR_NC_n()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("JR NC,225");
+			var result = assembler.CompileInstruction("JR NC 225");
 			Is(result, 0x30, 225);
 		}
 		[TestMethod]
@@ -592,7 +592,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_SP_nn()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD SP,62689");
+			var result = assembler.CompileInstruction("LD SP 62689");
 			Is(result, 0x31, 225, 244);
 		}
 
@@ -601,7 +601,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LDD_HL_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LDD (HL),A");
+			var result = assembler.CompileInstruction("LDD (HL) A");
 			Is(result, 0x32);
 		}
 		[TestMethod]
@@ -644,7 +644,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_HL_n()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD (HL),225");
+			var result = assembler.CompileInstruction("LD (HL) 225");
 			Is(result, 0x36, 225);
 		}
 		[TestMethod]
@@ -669,7 +669,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void JR_C_n()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("JR C,225");
+			var result = assembler.CompileInstruction("JR C 225");
 			Is(result, 0x38, 225);
 		}
 		[TestMethod]
@@ -685,7 +685,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADD_HL_SP()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADD HL,SP");
+			var result = assembler.CompileInstruction("ADD HL SP");
 			Is(result, 0x39);
 		}
 
@@ -694,7 +694,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LDD_A_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LDD A,(HL)");
+			var result = assembler.CompileInstruction("LDD A (HL)");
 			Is(result, 0x3A);
 		}
 
@@ -730,7 +730,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_A_n()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD A,225");
+			var result = assembler.CompileInstruction("LD A 225");
 			Is(result, 0x3E, 225);
 		}
 		[TestMethod]
@@ -755,7 +755,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_B_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD B,B");
+			var result = assembler.CompileInstruction("LD B B");
 			Is(result, 0x40);
 		}
 
@@ -764,7 +764,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_B_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD B,C");
+			var result = assembler.CompileInstruction("LD B C");
 			Is(result, 0x41);
 		}
 
@@ -773,7 +773,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_B_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD B,D");
+			var result = assembler.CompileInstruction("LD B D");
 			Is(result, 0x42);
 		}
 
@@ -782,7 +782,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_B_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD B,E");
+			var result = assembler.CompileInstruction("LD B E");
 			Is(result, 0x43);
 		}
 
@@ -791,7 +791,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_B_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD B,H");
+			var result = assembler.CompileInstruction("LD B H");
 			Is(result, 0x44);
 		}
 
@@ -800,7 +800,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_B_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD B,L");
+			var result = assembler.CompileInstruction("LD B L");
 			Is(result, 0x45);
 		}
 
@@ -809,7 +809,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_B_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD B,(HL)");
+			var result = assembler.CompileInstruction("LD B (HL)");
 			Is(result, 0x46);
 		}
 
@@ -818,7 +818,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_B_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD B,A");
+			var result = assembler.CompileInstruction("LD B A");
 			Is(result, 0x47);
 		}
 
@@ -827,7 +827,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_C_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD C,B");
+			var result = assembler.CompileInstruction("LD C B");
 			Is(result, 0x48);
 		}
 
@@ -836,7 +836,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_C_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD C,C");
+			var result = assembler.CompileInstruction("LD C C");
 			Is(result, 0x49);
 		}
 
@@ -845,7 +845,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_C_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD C,D");
+			var result = assembler.CompileInstruction("LD C D");
 			Is(result, 0x4A);
 		}
 
@@ -854,7 +854,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_C_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD C,E");
+			var result = assembler.CompileInstruction("LD C E");
 			Is(result, 0x4B);
 		}
 
@@ -863,7 +863,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_C_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD C,H");
+			var result = assembler.CompileInstruction("LD C H");
 			Is(result, 0x4C);
 		}
 
@@ -872,7 +872,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_C_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD C,L");
+			var result = assembler.CompileInstruction("LD C L");
 			Is(result, 0x4D);
 		}
 
@@ -881,7 +881,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_C_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD C,(HL)");
+			var result = assembler.CompileInstruction("LD C (HL)");
 			Is(result, 0x4E);
 		}
 
@@ -890,7 +890,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_C_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD C,A");
+			var result = assembler.CompileInstruction("LD C A");
 			Is(result, 0x4F);
 		}
 
@@ -899,7 +899,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_D_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD D,B");
+			var result = assembler.CompileInstruction("LD D B");
 			Is(result, 0x50);
 		}
 
@@ -908,7 +908,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_D_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD D,C");
+			var result = assembler.CompileInstruction("LD D C");
 			Is(result, 0x51);
 		}
 
@@ -917,7 +917,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_D_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD D,D");
+			var result = assembler.CompileInstruction("LD D D");
 			Is(result, 0x52);
 		}
 
@@ -926,7 +926,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_D_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD D,E");
+			var result = assembler.CompileInstruction("LD D E");
 			Is(result, 0x53);
 		}
 
@@ -935,7 +935,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_D_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD D,H");
+			var result = assembler.CompileInstruction("LD D H");
 			Is(result, 0x54);
 		}
 
@@ -944,7 +944,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_D_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD D,L");
+			var result = assembler.CompileInstruction("LD D L");
 			Is(result, 0x55);
 		}
 
@@ -953,7 +953,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_D_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD D,(HL)");
+			var result = assembler.CompileInstruction("LD D (HL)");
 			Is(result, 0x56);
 		}
 
@@ -962,7 +962,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_D_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD D,A");
+			var result = assembler.CompileInstruction("LD D A");
 			Is(result, 0x57);
 		}
 
@@ -971,7 +971,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_E_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD E,B");
+			var result = assembler.CompileInstruction("LD E B");
 			Is(result, 0x58);
 		}
 
@@ -980,7 +980,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_E_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD E,C");
+			var result = assembler.CompileInstruction("LD E C");
 			Is(result, 0x59);
 		}
 
@@ -989,7 +989,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_E_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD E,D");
+			var result = assembler.CompileInstruction("LD E D");
 			Is(result, 0x5A);
 		}
 
@@ -998,7 +998,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_E_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD E,E");
+			var result = assembler.CompileInstruction("LD E E");
 			Is(result, 0x5B);
 		}
 
@@ -1007,7 +1007,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_E_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD E,H");
+			var result = assembler.CompileInstruction("LD E H");
 			Is(result, 0x5C);
 		}
 
@@ -1016,7 +1016,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_E_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD E,L");
+			var result = assembler.CompileInstruction("LD E L");
 			Is(result, 0x5D);
 		}
 
@@ -1025,7 +1025,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_E_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD E,(HL)");
+			var result = assembler.CompileInstruction("LD E (HL)");
 			Is(result, 0x5E);
 		}
 
@@ -1034,7 +1034,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_E_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD E,A");
+			var result = assembler.CompileInstruction("LD E A");
 			Is(result, 0x5F);
 		}
 
@@ -1043,7 +1043,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_H_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD H,B");
+			var result = assembler.CompileInstruction("LD H B");
 			Is(result, 0x60);
 		}
 
@@ -1052,7 +1052,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_H_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD H,C");
+			var result = assembler.CompileInstruction("LD H C");
 			Is(result, 0x61);
 		}
 
@@ -1061,7 +1061,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_H_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD H,D");
+			var result = assembler.CompileInstruction("LD H D");
 			Is(result, 0x62);
 		}
 
@@ -1070,7 +1070,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_H_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD H,E");
+			var result = assembler.CompileInstruction("LD H E");
 			Is(result, 0x63);
 		}
 
@@ -1079,7 +1079,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_H_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD H,H");
+			var result = assembler.CompileInstruction("LD H H");
 			Is(result, 0x64);
 		}
 
@@ -1088,7 +1088,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_H_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD H,L");
+			var result = assembler.CompileInstruction("LD H L");
 			Is(result, 0x65);
 		}
 
@@ -1097,7 +1097,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_H_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD H,(HL)");
+			var result = assembler.CompileInstruction("LD H (HL)");
 			Is(result, 0x66);
 		}
 
@@ -1106,7 +1106,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_H_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD H,A");
+			var result = assembler.CompileInstruction("LD H A");
 			Is(result, 0x67);
 		}
 
@@ -1115,7 +1115,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_L_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD L,B");
+			var result = assembler.CompileInstruction("LD L B");
 			Is(result, 0x68);
 		}
 
@@ -1124,7 +1124,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_L_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD L,C");
+			var result = assembler.CompileInstruction("LD L C");
 			Is(result, 0x69);
 		}
 
@@ -1133,7 +1133,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_L_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD L,D");
+			var result = assembler.CompileInstruction("LD L D");
 			Is(result, 0x6A);
 		}
 
@@ -1142,7 +1142,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_L_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD L,E");
+			var result = assembler.CompileInstruction("LD L E");
 			Is(result, 0x6B);
 		}
 
@@ -1151,7 +1151,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_L_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD L,H");
+			var result = assembler.CompileInstruction("LD L H");
 			Is(result, 0x6C);
 		}
 
@@ -1160,7 +1160,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_L_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD L,L");
+			var result = assembler.CompileInstruction("LD L L");
 			Is(result, 0x6D);
 		}
 
@@ -1169,7 +1169,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_L_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD L,(HL)");
+			var result = assembler.CompileInstruction("LD L (HL)");
 			Is(result, 0x6E);
 		}
 
@@ -1178,7 +1178,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_L_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD L,A");
+			var result = assembler.CompileInstruction("LD L A");
 			Is(result, 0x6F);
 		}
 
@@ -1187,7 +1187,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_HL_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD (HL),B");
+			var result = assembler.CompileInstruction("LD (HL) B");
 			Is(result, 0x70);
 		}
 
@@ -1196,7 +1196,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_HL_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD (HL),C");
+			var result = assembler.CompileInstruction("LD (HL) C");
 			Is(result, 0x71);
 		}
 
@@ -1205,7 +1205,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_HL_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD (HL),D");
+			var result = assembler.CompileInstruction("LD (HL) D");
 			Is(result, 0x72);
 		}
 
@@ -1214,7 +1214,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_HL_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD (HL),E");
+			var result = assembler.CompileInstruction("LD (HL) E");
 			Is(result, 0x73);
 		}
 
@@ -1223,7 +1223,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_HL_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD (HL),H");
+			var result = assembler.CompileInstruction("LD (HL) H");
 			Is(result, 0x74);
 		}
 
@@ -1232,7 +1232,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_HL_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD (HL),L");
+			var result = assembler.CompileInstruction("LD (HL) L");
 			Is(result, 0x75);
 		}
 
@@ -1250,7 +1250,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_HL_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD (HL),A");
+			var result = assembler.CompileInstruction("LD (HL) A");
 			Is(result, 0x77);
 		}
 
@@ -1259,7 +1259,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_A_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD A,B");
+			var result = assembler.CompileInstruction("LD A B");
 			Is(result, 0x78);
 		}
 
@@ -1268,7 +1268,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_A_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD A,C");
+			var result = assembler.CompileInstruction("LD A C");
 			Is(result, 0x79);
 		}
 
@@ -1277,7 +1277,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_A_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD A,D");
+			var result = assembler.CompileInstruction("LD A D");
 			Is(result, 0x7A);
 		}
 
@@ -1286,7 +1286,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_A_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD A,E");
+			var result = assembler.CompileInstruction("LD A E");
 			Is(result, 0x7B);
 		}
 
@@ -1295,7 +1295,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_A_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD A,H");
+			var result = assembler.CompileInstruction("LD A H");
 			Is(result, 0x7C);
 		}
 
@@ -1304,7 +1304,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_A_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD A,L");
+			var result = assembler.CompileInstruction("LD A L");
 			Is(result, 0x7D);
 		}
 
@@ -1313,7 +1313,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_A_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD A,(HL)");
+			var result = assembler.CompileInstruction("LD A (HL)");
 			Is(result, 0x7E);
 		}
 
@@ -1322,7 +1322,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_A_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD A,A");
+			var result = assembler.CompileInstruction("LD A A");
 			Is(result, 0x7F);
 		}
 
@@ -1331,7 +1331,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADD_A_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADD A,B");
+			var result = assembler.CompileInstruction("ADD A B");
 			Is(result, 0x80);
 		}
 
@@ -1340,7 +1340,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADD_A_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADD A,C");
+			var result = assembler.CompileInstruction("ADD A C");
 			Is(result, 0x81);
 		}
 
@@ -1349,7 +1349,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADD_A_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADD A,D");
+			var result = assembler.CompileInstruction("ADD A D");
 			Is(result, 0x82);
 		}
 
@@ -1358,7 +1358,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADD_A_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADD A,E");
+			var result = assembler.CompileInstruction("ADD A E");
 			Is(result, 0x83);
 		}
 
@@ -1367,7 +1367,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADD_A_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADD A,H");
+			var result = assembler.CompileInstruction("ADD A H");
 			Is(result, 0x84);
 		}
 
@@ -1376,7 +1376,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADD_A_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADD A,L");
+			var result = assembler.CompileInstruction("ADD A L");
 			Is(result, 0x85);
 		}
 
@@ -1385,7 +1385,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADD_A_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADD A,(HL)");
+			var result = assembler.CompileInstruction("ADD A (HL)");
 			Is(result, 0x86);
 		}
 
@@ -1394,7 +1394,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADD_A_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADD A,A");
+			var result = assembler.CompileInstruction("ADD A A");
 			Is(result, 0x87);
 		}
 
@@ -1403,7 +1403,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADC_A_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADC A,B");
+			var result = assembler.CompileInstruction("ADC A B");
 			Is(result, 0x88);
 		}
 		[TestMethod]
@@ -1419,7 +1419,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADC_A_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADC A,C");
+			var result = assembler.CompileInstruction("ADC A C");
 			Is(result, 0x89);
 		}
 
@@ -1428,7 +1428,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADC_A_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADC A,D");
+			var result = assembler.CompileInstruction("ADC A D");
 			Is(result, 0x8A);
 		}
 
@@ -1437,7 +1437,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADC_A_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADC A,E");
+			var result = assembler.CompileInstruction("ADC A E");
 			Is(result, 0x8B);
 		}
 
@@ -1446,7 +1446,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADC_A_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADC A,H");
+			var result = assembler.CompileInstruction("ADC A H");
 			Is(result, 0x8C);
 		}
 
@@ -1455,7 +1455,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADC_A_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADC A,L");
+			var result = assembler.CompileInstruction("ADC A L");
 			Is(result, 0x8D);
 		}
 
@@ -1464,7 +1464,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADC_A_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADC A,(HL)");
+			var result = assembler.CompileInstruction("ADC A (HL)");
 			Is(result, 0x8E);
 		}
 
@@ -1473,7 +1473,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADC_A_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADC A,A");
+			var result = assembler.CompileInstruction("ADC A A");
 			Is(result, 0x8F);
 		}
 
@@ -1482,7 +1482,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void SUB_A_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SUB A,B");
+			var result = assembler.CompileInstruction("SUB A B");
 			Is(result, 0x90);
 		}
 		[TestMethod]
@@ -1498,7 +1498,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void SUB_A_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SUB A,C");
+			var result = assembler.CompileInstruction("SUB A C");
 			Is(result, 0x91);
 		}
 
@@ -1507,7 +1507,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void SUB_A_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SUB A,D");
+			var result = assembler.CompileInstruction("SUB A D");
 			Is(result, 0x92);
 		}
 
@@ -1516,7 +1516,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void SUB_A_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SUB A,E");
+			var result = assembler.CompileInstruction("SUB A E");
 			Is(result, 0x93);
 		}
 
@@ -1525,7 +1525,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void SUB_A_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SUB A,H");
+			var result = assembler.CompileInstruction("SUB A H");
 			Is(result, 0x94);
 		}
 
@@ -1534,7 +1534,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void SUB_A_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SUB A,L");
+			var result = assembler.CompileInstruction("SUB A L");
 			Is(result, 0x95);
 		}
 
@@ -1543,7 +1543,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void SUB_A_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SUB A,(HL)");
+			var result = assembler.CompileInstruction("SUB A (HL)");
 			Is(result, 0x96);
 		}
 
@@ -1552,7 +1552,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void SUB_A_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SUB A,A");
+			var result = assembler.CompileInstruction("SUB A A");
 			Is(result, 0x97);
 		}
 
@@ -1561,7 +1561,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void SBC_A_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SBC A,B");
+			var result = assembler.CompileInstruction("SBC A B");
 			Is(result, 0x98);
 		}
 		[TestMethod]
@@ -1577,7 +1577,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void SBC_A_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SBC A,C");
+			var result = assembler.CompileInstruction("SBC A C");
 			Is(result, 0x99);
 		}
 
@@ -1586,7 +1586,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void SBC_A_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SBC A,D");
+			var result = assembler.CompileInstruction("SBC A D");
 			Is(result, 0x9A);
 		}
 
@@ -1595,7 +1595,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void SBC_A_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SBC A,E");
+			var result = assembler.CompileInstruction("SBC A E");
 			Is(result, 0x9B);
 		}
 
@@ -1604,7 +1604,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void SBC_A_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SBC A,H");
+			var result = assembler.CompileInstruction("SBC A H");
 			Is(result, 0x9C);
 		}
 
@@ -1613,7 +1613,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void SBC_A_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SBC A,L");
+			var result = assembler.CompileInstruction("SBC A L");
 			Is(result, 0x9D);
 		}
 
@@ -1622,7 +1622,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void SBC_A_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SBC A,(HL)");
+			var result = assembler.CompileInstruction("SBC A (HL)");
 			Is(result, 0x9E);
 		}
 
@@ -1631,7 +1631,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void SBC_A_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SBC A,A");
+			var result = assembler.CompileInstruction("SBC A A");
 			Is(result, 0x9F);
 		}
 
@@ -1960,7 +1960,6 @@ namespace Sharp_LR35902_Assembler_Tests
 			Is(result, 0xC0);
 		}
 
-
 		[TestMethod]
 		public void POP_BC()
 		{
@@ -1981,7 +1980,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void JP_NZ_nn()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("JP NZ,62689");
+			var result = assembler.CompileInstruction("JP NZ 62689");
 			Is(result, 0xC2, 225, 244);
 		}
 		[TestMethod]
@@ -2006,7 +2005,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CALL_NZ_nn()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("CALL NZ,62689");
+			var result = assembler.CompileInstruction("CALL NZ 62689");
 			Is(result, 0xC4, 225, 244);
 		}
 		[TestMethod]
@@ -2038,7 +2037,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADD_A_n()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADD A,225");
+			var result = assembler.CompileInstruction("ADD A 225");
 			Is(result, 0xC6, 225);
 		}
 		[TestMethod]
@@ -2088,7 +2087,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void JP_Z_nn()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("JP Z,62689");
+			var result = assembler.CompileInstruction("JP Z 62689");
 			Is(result, 0xCA, 225, 244);
 		}
 
@@ -2097,7 +2096,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CALL_Z_nn()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("CALL Z,62689");
+			var result = assembler.CompileInstruction("CALL Z 62689");
 			Is(result, 0xCC, 225, 244);
 		}
 
@@ -2115,7 +2114,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADC_A_n()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADC A,225");
+			var result = assembler.CompileInstruction("ADC A 225");
 			Is(result, 0xCE, 225);
 		}
 		[TestMethod]
@@ -2158,7 +2157,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void JP_NC_nn()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("JP NC,62689");
+			var result = assembler.CompileInstruction("JP NC 62689");
 			Is(result, 0xD2, 225, 244);
 		}
 
@@ -2167,7 +2166,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CALL_NC_nn()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("CALL NC,62689");
+			var result = assembler.CompileInstruction("CALL NC 62689");
 			Is(result, 0xD4, 225, 244);
 		}
 
@@ -2185,7 +2184,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void SUB_A_n()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SUB A,225");
+			var result = assembler.CompileInstruction("SUB A 225");
 			Is(result, 0xD6, 225);
 		}
 		[TestMethod]
@@ -2228,7 +2227,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void JP_C_nn()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("JP C,62689");
+			var result = assembler.CompileInstruction("JP C 62689");
 			Is(result, 0xDA, 225, 244);
 		}
 
@@ -2237,7 +2236,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CALL_C_nn()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("CALL C,62689");
+			var result = assembler.CompileInstruction("CALL C 62689");
 			Is(result, 0xDC, 225, 244);
 		}
 
@@ -2246,7 +2245,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void SBC_A_n()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SBC A,225");
+			var result = assembler.CompileInstruction("SBC A 225");
 			Is(result, 0xDE, 225);
 		}
 		[TestMethod]
@@ -2271,7 +2270,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LDH_n_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LDH (225),A");
+			var result = assembler.CompileInstruction("LDH (225) A");
 			Is(result, 0xE0, 225);
 		}
 		[TestMethod]
@@ -2303,7 +2302,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LDH_C_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LDH (C),A");
+			var result = assembler.CompileInstruction("LDH (C) A");
 			Is(result, 0xE2);
 		}
 
@@ -2346,7 +2345,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void ADD_SP_n()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("ADD SP,225");
+			var result = assembler.CompileInstruction("ADD SP 225");
 			Is(result, 0xE8, 225);
 		}
 		[TestMethod]
@@ -2371,7 +2370,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_nn_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD (62689),A");
+			var result = assembler.CompileInstruction("LD (62689) A");
 			Is(result, 0xEA, 225, 244);
 		}
 
@@ -2405,7 +2404,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LDH_A_n()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LDH A,(225)");
+			var result = assembler.CompileInstruction("LDH A (225)");
 			Is(result, 0xF0, 225);
 		}
 		[TestMethod]
@@ -2473,7 +2472,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LDHL_SP_n()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LDHL SP,225");
+			var result = assembler.CompileInstruction("LDHL SP 225");
 			Is(result, 0xF8, 225);
 		}
 		[TestMethod]
@@ -2496,7 +2495,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_SP_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD SP,HL");
+			var result = assembler.CompileInstruction("LD SP HL");
 			Is(result, 0xF9);
 		}
 
@@ -2505,7 +2504,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void LD_A_nn()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("LD A,(62689)");
+			var result = assembler.CompileInstruction("LD A (62689)");
 			Is(result, 0xFA, 225, 244);
 		}
 
@@ -3143,7 +3142,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_0_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 0,B");
+			var result = assembler.CompileInstruction("BIT 0 B");
 			Is(result, 0xCB, 0x40);
 		}
 		[TestMethod]
@@ -3159,7 +3158,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_0_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 0,C");
+			var result = assembler.CompileInstruction("BIT 0 C");
 			Is(result, 0xCB, 0x41);
 		}
 
@@ -3168,7 +3167,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_0_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 0,D");
+			var result = assembler.CompileInstruction("BIT 0 D");
 			Is(result, 0xCB, 0x42);
 		}
 
@@ -3177,7 +3176,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_0_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 0,E");
+			var result = assembler.CompileInstruction("BIT 0 E");
 			Is(result, 0xCB, 0x43);
 		}
 
@@ -3186,7 +3185,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_0_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 0,H");
+			var result = assembler.CompileInstruction("BIT 0 H");
 			Is(result, 0xCB, 0x44);
 		}
 
@@ -3195,7 +3194,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_0_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 0,L");
+			var result = assembler.CompileInstruction("BIT 0 L");
 			Is(result, 0xCB, 0x45);
 		}
 
@@ -3204,7 +3203,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_0_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 0,(HL)");
+			var result = assembler.CompileInstruction("BIT 0 (HL)");
 			Is(result, 0xCB, 0x46);
 		}
 
@@ -3213,7 +3212,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_0_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 0,A");
+			var result = assembler.CompileInstruction("BIT 0 A");
 			Is(result, 0xCB, 0x47);
 		}
 
@@ -3222,7 +3221,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_1_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 1,B");
+			var result = assembler.CompileInstruction("BIT 1 B");
 			Is(result, 0xCB, 0x48);
 		}
 
@@ -3231,7 +3230,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_1_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 1,C");
+			var result = assembler.CompileInstruction("BIT 1 C");
 			Is(result, 0xCB, 0x49);
 		}
 
@@ -3240,7 +3239,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_1_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 1,D");
+			var result = assembler.CompileInstruction("BIT 1 D");
 			Is(result, 0xCB, 0x4A);
 		}
 
@@ -3249,7 +3248,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_1_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 1,E");
+			var result = assembler.CompileInstruction("BIT 1 E");
 			Is(result, 0xCB, 0x4B);
 		}
 
@@ -3258,7 +3257,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_1_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 1,H");
+			var result = assembler.CompileInstruction("BIT 1 H");
 			Is(result, 0xCB, 0x4C);
 		}
 
@@ -3267,7 +3266,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_1_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 1,L");
+			var result = assembler.CompileInstruction("BIT 1 L");
 			Is(result, 0xCB, 0x4D);
 		}
 
@@ -3276,7 +3275,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_1_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 1,(HL)");
+			var result = assembler.CompileInstruction("BIT 1 (HL)");
 			Is(result, 0xCB, 0x4E);
 		}
 
@@ -3285,7 +3284,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_1_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 1,A");
+			var result = assembler.CompileInstruction("BIT 1 A");
 			Is(result, 0xCB, 0x4F);
 		}
 
@@ -3294,7 +3293,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_2_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 2,B");
+			var result = assembler.CompileInstruction("BIT 2 B");
 			Is(result, 0xCB, 0x50);
 		}
 
@@ -3303,7 +3302,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_2_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 2,C");
+			var result = assembler.CompileInstruction("BIT 2 C");
 			Is(result, 0xCB, 0x51);
 		}
 
@@ -3312,7 +3311,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_2_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 2,D");
+			var result = assembler.CompileInstruction("BIT 2 D");
 			Is(result, 0xCB, 0x52);
 		}
 
@@ -3321,7 +3320,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_2_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 2,E");
+			var result = assembler.CompileInstruction("BIT 2 E");
 			Is(result, 0xCB, 0x53);
 		}
 
@@ -3330,7 +3329,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_2_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 2,H");
+			var result = assembler.CompileInstruction("BIT 2 H");
 			Is(result, 0xCB, 0x54);
 		}
 
@@ -3339,7 +3338,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_2_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 2,L");
+			var result = assembler.CompileInstruction("BIT 2 L");
 			Is(result, 0xCB, 0x55);
 		}
 
@@ -3348,7 +3347,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_2_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 2,(HL)");
+			var result = assembler.CompileInstruction("BIT 2 (HL)");
 			Is(result, 0xCB, 0x56);
 		}
 
@@ -3357,7 +3356,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_2_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 2,A");
+			var result = assembler.CompileInstruction("BIT 2 A");
 			Is(result, 0xCB, 0x57);
 		}
 
@@ -3366,7 +3365,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_3_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 3,B");
+			var result = assembler.CompileInstruction("BIT 3 B");
 			Is(result, 0xCB, 0x58);
 		}
 
@@ -3375,7 +3374,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_3_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 3,C");
+			var result = assembler.CompileInstruction("BIT 3 C");
 			Is(result, 0xCB, 0x59);
 		}
 
@@ -3384,7 +3383,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_3_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 3,D");
+			var result = assembler.CompileInstruction("BIT 3 D");
 			Is(result, 0xCB, 0x5A);
 		}
 
@@ -3393,7 +3392,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_3_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 3,E");
+			var result = assembler.CompileInstruction("BIT 3 E");
 			Is(result, 0xCB, 0x5B);
 		}
 
@@ -3402,7 +3401,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_3_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 3,H");
+			var result = assembler.CompileInstruction("BIT 3 H");
 			Is(result, 0xCB, 0x5C);
 		}
 
@@ -3411,7 +3410,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_3_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 3,L");
+			var result = assembler.CompileInstruction("BIT 3 L");
 			Is(result, 0xCB, 0x5D);
 		}
 
@@ -3420,7 +3419,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_3_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 3,(HL)");
+			var result = assembler.CompileInstruction("BIT 3 (HL)");
 			Is(result, 0xCB, 0x5E);
 		}
 
@@ -3429,7 +3428,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_3_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 3,A");
+			var result = assembler.CompileInstruction("BIT 3 A");
 			Is(result, 0xCB, 0x5F);
 		}
 
@@ -3438,7 +3437,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_4_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 4,B");
+			var result = assembler.CompileInstruction("BIT 4 B");
 			Is(result, 0xCB, 0x60);
 		}
 
@@ -3447,7 +3446,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_4_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 4,C");
+			var result = assembler.CompileInstruction("BIT 4 C");
 			Is(result, 0xCB, 0x61);
 		}
 
@@ -3456,7 +3455,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_4_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 4,D");
+			var result = assembler.CompileInstruction("BIT 4 D");
 			Is(result, 0xCB, 0x62);
 		}
 
@@ -3465,7 +3464,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_4_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 4,E");
+			var result = assembler.CompileInstruction("BIT 4 E");
 			Is(result, 0xCB, 0x63);
 		}
 
@@ -3474,7 +3473,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_4_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 4,H");
+			var result = assembler.CompileInstruction("BIT 4 H");
 			Is(result, 0xCB, 0x64);
 		}
 
@@ -3483,7 +3482,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_4_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 4,L");
+			var result = assembler.CompileInstruction("BIT 4 L");
 			Is(result, 0xCB, 0x65);
 		}
 
@@ -3492,7 +3491,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_4_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 4,(HL)");
+			var result = assembler.CompileInstruction("BIT 4 (HL)");
 			Is(result, 0xCB, 0x66);
 		}
 
@@ -3501,7 +3500,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_4_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 4,A");
+			var result = assembler.CompileInstruction("BIT 4 A");
 			Is(result, 0xCB, 0x67);
 		}
 
@@ -3510,7 +3509,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_5_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 5,B");
+			var result = assembler.CompileInstruction("BIT 5 B");
 			Is(result, 0xCB, 0x68);
 		}
 
@@ -3519,7 +3518,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_5_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 5,C");
+			var result = assembler.CompileInstruction("BIT 5 C");
 			Is(result, 0xCB, 0x69);
 		}
 
@@ -3528,7 +3527,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_5_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 5,D");
+			var result = assembler.CompileInstruction("BIT 5 D");
 			Is(result, 0xCB, 0x6A);
 		}
 
@@ -3537,7 +3536,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_5_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 5,E");
+			var result = assembler.CompileInstruction("BIT 5 E");
 			Is(result, 0xCB, 0x6B);
 		}
 
@@ -3546,7 +3545,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_5_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 5,H");
+			var result = assembler.CompileInstruction("BIT 5 H");
 			Is(result, 0xCB, 0x6C);
 		}
 
@@ -3555,7 +3554,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_5_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 5,L");
+			var result = assembler.CompileInstruction("BIT 5 L");
 			Is(result, 0xCB, 0x6D);
 		}
 
@@ -3564,7 +3563,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_5_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 5,(HL)");
+			var result = assembler.CompileInstruction("BIT 5 (HL)");
 			Is(result, 0xCB, 0x6E);
 		}
 
@@ -3573,7 +3572,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_5_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 5,A");
+			var result = assembler.CompileInstruction("BIT 5 A");
 			Is(result, 0xCB, 0x6F);
 		}
 
@@ -3582,7 +3581,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_6_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 6,B");
+			var result = assembler.CompileInstruction("BIT 6 B");
 			Is(result, 0xCB, 0x70);
 		}
 
@@ -3591,7 +3590,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_6_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 6,C");
+			var result = assembler.CompileInstruction("BIT 6 C");
 			Is(result, 0xCB, 0x71);
 		}
 
@@ -3600,7 +3599,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_6_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 6,D");
+			var result = assembler.CompileInstruction("BIT 6 D");
 			Is(result, 0xCB, 0x72);
 		}
 
@@ -3609,7 +3608,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_6_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 6,E");
+			var result = assembler.CompileInstruction("BIT 6 E");
 			Is(result, 0xCB, 0x73);
 		}
 
@@ -3618,7 +3617,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_6_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 6,H");
+			var result = assembler.CompileInstruction("BIT 6 H");
 			Is(result, 0xCB, 0x74);
 		}
 
@@ -3627,7 +3626,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_6_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 6,L");
+			var result = assembler.CompileInstruction("BIT 6 L");
 			Is(result, 0xCB, 0x75);
 		}
 
@@ -3636,7 +3635,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_6_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 6,(HL)");
+			var result = assembler.CompileInstruction("BIT 6 (HL)");
 			Is(result, 0xCB, 0x76);
 		}
 
@@ -3645,7 +3644,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_6_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 6,A");
+			var result = assembler.CompileInstruction("BIT 6 A");
 			Is(result, 0xCB, 0x77);
 		}
 
@@ -3654,7 +3653,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_7_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 7,B");
+			var result = assembler.CompileInstruction("BIT 7 B");
 			Is(result, 0xCB, 0x78);
 		}
 
@@ -3663,7 +3662,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_7_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 7,C");
+			var result = assembler.CompileInstruction("BIT 7 C");
 			Is(result, 0xCB, 0x79);
 		}
 
@@ -3672,7 +3671,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_7_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 7,D");
+			var result = assembler.CompileInstruction("BIT 7 D");
 			Is(result, 0xCB, 0x7A);
 		}
 
@@ -3681,7 +3680,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_7_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 7,E");
+			var result = assembler.CompileInstruction("BIT 7 E");
 			Is(result, 0xCB, 0x7B);
 		}
 
@@ -3690,7 +3689,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_7_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 7,H");
+			var result = assembler.CompileInstruction("BIT 7 H");
 			Is(result, 0xCB, 0x7C);
 		}
 
@@ -3699,7 +3698,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_7_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 7,L");
+			var result = assembler.CompileInstruction("BIT 7 L");
 			Is(result, 0xCB, 0x7D);
 		}
 
@@ -3708,7 +3707,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_7_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 7,(HL)");
+			var result = assembler.CompileInstruction("BIT 7 (HL)");
 			Is(result, 0xCB, 0x7E);
 		}
 
@@ -3717,7 +3716,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_BIT_7_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("BIT 7,A");
+			var result = assembler.CompileInstruction("BIT 7 A");
 			Is(result, 0xCB, 0x7F);
 		}
 
@@ -3726,7 +3725,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_0_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 0,B");
+			var result = assembler.CompileInstruction("RES 0 B");
 			Is(result, 0xCB, 0x80);
 		}
 		[TestMethod]
@@ -3742,7 +3741,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_0_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 0,C");
+			var result = assembler.CompileInstruction("RES 0 C");
 			Is(result, 0xCB, 0x81);
 		}
 
@@ -3751,7 +3750,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_0_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 0,D");
+			var result = assembler.CompileInstruction("RES 0 D");
 			Is(result, 0xCB, 0x82);
 		}
 
@@ -3760,7 +3759,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_0_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 0,E");
+			var result = assembler.CompileInstruction("RES 0 E");
 			Is(result, 0xCB, 0x83);
 		}
 
@@ -3769,7 +3768,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_0_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 0,H");
+			var result = assembler.CompileInstruction("RES 0 H");
 			Is(result, 0xCB, 0x84);
 		}
 
@@ -3778,7 +3777,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_0_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 0,L");
+			var result = assembler.CompileInstruction("RES 0 L");
 			Is(result, 0xCB, 0x85);
 		}
 
@@ -3787,7 +3786,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_0_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 0,(HL)");
+			var result = assembler.CompileInstruction("RES 0 (HL)");
 			Is(result, 0xCB, 0x86);
 		}
 
@@ -3796,7 +3795,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_0_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 0,A");
+			var result = assembler.CompileInstruction("RES 0 A");
 			Is(result, 0xCB, 0x87);
 		}
 
@@ -3805,7 +3804,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_1_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 1,B");
+			var result = assembler.CompileInstruction("RES 1 B");
 			Is(result, 0xCB, 0x88);
 		}
 
@@ -3814,7 +3813,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_1_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 1,C");
+			var result = assembler.CompileInstruction("RES 1 C");
 			Is(result, 0xCB, 0x89);
 		}
 
@@ -3823,7 +3822,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_1_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 1,D");
+			var result = assembler.CompileInstruction("RES 1 D");
 			Is(result, 0xCB, 0x8A);
 		}
 
@@ -3832,7 +3831,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_1_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 1,E");
+			var result = assembler.CompileInstruction("RES 1 E");
 			Is(result, 0xCB, 0x8B);
 		}
 
@@ -3841,7 +3840,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_1_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 1,H");
+			var result = assembler.CompileInstruction("RES 1 H");
 			Is(result, 0xCB, 0x8C);
 		}
 
@@ -3850,7 +3849,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_1_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 1,L");
+			var result = assembler.CompileInstruction("RES 1 L");
 			Is(result, 0xCB, 0x8D);
 		}
 
@@ -3859,7 +3858,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_1_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 1,(HL)");
+			var result = assembler.CompileInstruction("RES 1 (HL)");
 			Is(result, 0xCB, 0x8E);
 		}
 
@@ -3868,7 +3867,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_1_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 1,A");
+			var result = assembler.CompileInstruction("RES 1 A");
 			Is(result, 0xCB, 0x8F);
 		}
 
@@ -3877,7 +3876,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_2_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 2,B");
+			var result = assembler.CompileInstruction("RES 2 B");
 			Is(result, 0xCB, 0x90);
 		}
 
@@ -3886,7 +3885,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_2_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 2,C");
+			var result = assembler.CompileInstruction("RES 2 C");
 			Is(result, 0xCB, 0x91);
 		}
 
@@ -3895,7 +3894,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_2_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 2,D");
+			var result = assembler.CompileInstruction("RES 2 D");
 			Is(result, 0xCB, 0x92);
 		}
 
@@ -3904,7 +3903,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_2_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 2,E");
+			var result = assembler.CompileInstruction("RES 2 E");
 			Is(result, 0xCB, 0x93);
 		}
 
@@ -3913,7 +3912,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_2_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 2,H");
+			var result = assembler.CompileInstruction("RES 2 H");
 			Is(result, 0xCB, 0x94);
 		}
 
@@ -3922,7 +3921,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_2_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 2,L");
+			var result = assembler.CompileInstruction("RES 2 L");
 			Is(result, 0xCB, 0x95);
 		}
 
@@ -3931,7 +3930,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_2_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 2,(HL)");
+			var result = assembler.CompileInstruction("RES 2 (HL)");
 			Is(result, 0xCB, 0x96);
 		}
 
@@ -3940,7 +3939,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_2_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 2,A");
+			var result = assembler.CompileInstruction("RES 2 A");
 			Is(result, 0xCB, 0x97);
 		}
 
@@ -3949,7 +3948,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_3_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 3,B");
+			var result = assembler.CompileInstruction("RES 3 B");
 			Is(result, 0xCB, 0x98);
 		}
 
@@ -3958,7 +3957,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_3_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 3,C");
+			var result = assembler.CompileInstruction("RES 3 C");
 			Is(result, 0xCB, 0x99);
 		}
 
@@ -3967,7 +3966,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_3_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 3,D");
+			var result = assembler.CompileInstruction("RES 3 D");
 			Is(result, 0xCB, 0x9A);
 		}
 
@@ -3976,7 +3975,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_3_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 3,E");
+			var result = assembler.CompileInstruction("RES 3 E");
 			Is(result, 0xCB, 0x9B);
 		}
 
@@ -3985,7 +3984,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_3_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 3,H");
+			var result = assembler.CompileInstruction("RES 3 H");
 			Is(result, 0xCB, 0x9C);
 		}
 
@@ -3994,7 +3993,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_3_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 3,L");
+			var result = assembler.CompileInstruction("RES 3 L");
 			Is(result, 0xCB, 0x9D);
 		}
 
@@ -4003,7 +4002,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_3_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 3,(HL)");
+			var result = assembler.CompileInstruction("RES 3 (HL)");
 			Is(result, 0xCB, 0x9E);
 		}
 
@@ -4012,7 +4011,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_3_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 3,A");
+			var result = assembler.CompileInstruction("RES 3 A");
 			Is(result, 0xCB, 0x9F);
 		}
 
@@ -4021,7 +4020,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_4_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 4,B");
+			var result = assembler.CompileInstruction("RES 4 B");
 			Is(result, 0xCB, 0xA0);
 		}
 
@@ -4030,7 +4029,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_4_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 4,C");
+			var result = assembler.CompileInstruction("RES 4 C");
 			Is(result, 0xCB, 0xA1);
 		}
 
@@ -4039,7 +4038,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_4_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 4,D");
+			var result = assembler.CompileInstruction("RES 4 D");
 			Is(result, 0xCB, 0xA2);
 		}
 
@@ -4048,7 +4047,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_4_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 4,E");
+			var result = assembler.CompileInstruction("RES 4 E");
 			Is(result, 0xCB, 0xA3);
 		}
 
@@ -4057,7 +4056,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_4_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 4,H");
+			var result = assembler.CompileInstruction("RES 4 H");
 			Is(result, 0xCB, 0xA4);
 		}
 
@@ -4066,7 +4065,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_4_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 4,L");
+			var result = assembler.CompileInstruction("RES 4 L");
 			Is(result, 0xCB, 0xA5);
 		}
 
@@ -4075,7 +4074,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_4_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 4,(HL)");
+			var result = assembler.CompileInstruction("RES 4 (HL)");
 			Is(result, 0xCB, 0xA6);
 		}
 
@@ -4084,7 +4083,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_4_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 4,A");
+			var result = assembler.CompileInstruction("RES 4 A");
 			Is(result, 0xCB, 0xA7);
 		}
 
@@ -4093,7 +4092,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_5_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 5,B");
+			var result = assembler.CompileInstruction("RES 5 B");
 			Is(result, 0xCB, 0xA8);
 		}
 
@@ -4102,7 +4101,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_5_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 5,C");
+			var result = assembler.CompileInstruction("RES 5 C");
 			Is(result, 0xCB, 0xA9);
 		}
 
@@ -4111,7 +4110,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_5_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 5,D");
+			var result = assembler.CompileInstruction("RES 5 D");
 			Is(result, 0xCB, 0xAA);
 		}
 
@@ -4120,7 +4119,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_5_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 5,E");
+			var result = assembler.CompileInstruction("RES 5 E");
 			Is(result, 0xCB, 0xAB);
 		}
 
@@ -4129,7 +4128,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_5_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 5,H");
+			var result = assembler.CompileInstruction("RES 5 H");
 			Is(result, 0xCB, 0xAC);
 		}
 
@@ -4138,7 +4137,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_5_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 5,L");
+			var result = assembler.CompileInstruction("RES 5 L");
 			Is(result, 0xCB, 0xAD);
 		}
 
@@ -4147,7 +4146,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_5_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 5,(HL)");
+			var result = assembler.CompileInstruction("RES 5 (HL)");
 			Is(result, 0xCB, 0xAE);
 		}
 
@@ -4156,7 +4155,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_5_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 5,A");
+			var result = assembler.CompileInstruction("RES 5 A");
 			Is(result, 0xCB, 0xAF);
 		}
 
@@ -4165,7 +4164,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_6_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 6,B");
+			var result = assembler.CompileInstruction("RES 6 B");
 			Is(result, 0xCB, 0xB0);
 		}
 
@@ -4174,7 +4173,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_6_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 6,C");
+			var result = assembler.CompileInstruction("RES 6 C");
 			Is(result, 0xCB, 0xB1);
 		}
 
@@ -4183,7 +4182,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_6_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 6,D");
+			var result = assembler.CompileInstruction("RES 6 D");
 			Is(result, 0xCB, 0xB2);
 		}
 
@@ -4192,7 +4191,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_6_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 6,E");
+			var result = assembler.CompileInstruction("RES 6 E");
 			Is(result, 0xCB, 0xB3);
 		}
 
@@ -4201,7 +4200,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_6_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 6,H");
+			var result = assembler.CompileInstruction("RES 6 H");
 			Is(result, 0xCB, 0xB4);
 		}
 
@@ -4210,7 +4209,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_6_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 6,L");
+			var result = assembler.CompileInstruction("RES 6 L");
 			Is(result, 0xCB, 0xB5);
 		}
 
@@ -4219,7 +4218,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_6_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 6,(HL)");
+			var result = assembler.CompileInstruction("RES 6 (HL)");
 			Is(result, 0xCB, 0xB6);
 		}
 
@@ -4228,7 +4227,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_6_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 6,A");
+			var result = assembler.CompileInstruction("RES 6 A");
 			Is(result, 0xCB, 0xB7);
 		}
 
@@ -4237,7 +4236,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_7_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 7,B");
+			var result = assembler.CompileInstruction("RES 7 B");
 			Is(result, 0xCB, 0xB8);
 		}
 
@@ -4246,7 +4245,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_7_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 7,C");
+			var result = assembler.CompileInstruction("RES 7 C");
 			Is(result, 0xCB, 0xB9);
 		}
 
@@ -4255,7 +4254,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_7_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 7,D");
+			var result = assembler.CompileInstruction("RES 7 D");
 			Is(result, 0xCB, 0xBA);
 		}
 
@@ -4264,7 +4263,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_7_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 7,E");
+			var result = assembler.CompileInstruction("RES 7 E");
 			Is(result, 0xCB, 0xBB);
 		}
 
@@ -4273,7 +4272,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_7_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 7,H");
+			var result = assembler.CompileInstruction("RES 7 H");
 			Is(result, 0xCB, 0xBC);
 		}
 
@@ -4282,7 +4281,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_7_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 7,L");
+			var result = assembler.CompileInstruction("RES 7 L");
 			Is(result, 0xCB, 0xBD);
 		}
 
@@ -4291,7 +4290,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_7_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 7,(HL)");
+			var result = assembler.CompileInstruction("RES 7 (HL)");
 			Is(result, 0xCB, 0xBE);
 		}
 
@@ -4300,7 +4299,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_RES_7_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("RES 7,A");
+			var result = assembler.CompileInstruction("RES 7 A");
 			Is(result, 0xCB, 0xBF);
 		}
 
@@ -4309,7 +4308,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_0_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 0,B");
+			var result = assembler.CompileInstruction("SET 0 B");
 			Is(result, 0xCB, 0xC0);
 		}
 		[TestMethod]
@@ -4325,7 +4324,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_0_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 0,C");
+			var result = assembler.CompileInstruction("SET 0 C");
 			Is(result, 0xCB, 0xC1);
 		}
 
@@ -4334,7 +4333,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_0_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 0,D");
+			var result = assembler.CompileInstruction("SET 0 D");
 			Is(result, 0xCB, 0xC2);
 		}
 
@@ -4343,7 +4342,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_0_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 0,E");
+			var result = assembler.CompileInstruction("SET 0 E");
 			Is(result, 0xCB, 0xC3);
 		}
 
@@ -4352,7 +4351,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_0_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 0,H");
+			var result = assembler.CompileInstruction("SET 0 H");
 			Is(result, 0xCB, 0xC4);
 		}
 
@@ -4361,7 +4360,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_0_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 0,L");
+			var result = assembler.CompileInstruction("SET 0 L");
 			Is(result, 0xCB, 0xC5);
 		}
 
@@ -4370,7 +4369,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_0_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 0,(HL)");
+			var result = assembler.CompileInstruction("SET 0 (HL)");
 			Is(result, 0xCB, 0xC6);
 		}
 
@@ -4379,7 +4378,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_0_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 0,A");
+			var result = assembler.CompileInstruction("SET 0 A");
 			Is(result, 0xCB, 0xC7);
 		}
 
@@ -4388,7 +4387,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_1_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 1,B");
+			var result = assembler.CompileInstruction("SET 1 B");
 			Is(result, 0xCB, 0xC8);
 		}
 
@@ -4397,7 +4396,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_1_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 1,C");
+			var result = assembler.CompileInstruction("SET 1 C");
 			Is(result, 0xCB, 0xC9);
 		}
 
@@ -4406,7 +4405,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_1_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 1,D");
+			var result = assembler.CompileInstruction("SET 1 D");
 			Is(result, 0xCB, 0xCA);
 		}
 
@@ -4415,7 +4414,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_1_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 1,E");
+			var result = assembler.CompileInstruction("SET 1 E");
 			Is(result, 0xCB, 0xCB);
 		}
 
@@ -4424,7 +4423,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_1_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 1,H");
+			var result = assembler.CompileInstruction("SET 1 H");
 			Is(result, 0xCB, 0xCC);
 		}
 
@@ -4433,7 +4432,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_1_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 1,L");
+			var result = assembler.CompileInstruction("SET 1 L");
 			Is(result, 0xCB, 0xCD);
 		}
 
@@ -4442,7 +4441,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_1_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 1,(HL)");
+			var result = assembler.CompileInstruction("SET 1 (HL)");
 			Is(result, 0xCB, 0xCE);
 		}
 
@@ -4451,7 +4450,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_1_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 1,A");
+			var result = assembler.CompileInstruction("SET 1 A");
 			Is(result, 0xCB, 0xCF);
 		}
 
@@ -4460,7 +4459,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_2_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 2,B");
+			var result = assembler.CompileInstruction("SET 2 B");
 			Is(result, 0xCB, 0xD0);
 		}
 
@@ -4469,7 +4468,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_2_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 2,C");
+			var result = assembler.CompileInstruction("SET 2 C");
 			Is(result, 0xCB, 0xD1);
 		}
 
@@ -4478,7 +4477,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_2_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 2,D");
+			var result = assembler.CompileInstruction("SET 2 D");
 			Is(result, 0xCB, 0xD2);
 		}
 
@@ -4487,7 +4486,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_2_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 2,E");
+			var result = assembler.CompileInstruction("SET 2 E");
 			Is(result, 0xCB, 0xD3);
 		}
 
@@ -4496,7 +4495,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_2_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 2,H");
+			var result = assembler.CompileInstruction("SET 2 H");
 			Is(result, 0xCB, 0xD4);
 		}
 
@@ -4505,7 +4504,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_2_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 2,L");
+			var result = assembler.CompileInstruction("SET 2 L");
 			Is(result, 0xCB, 0xD5);
 		}
 
@@ -4514,7 +4513,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_2_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 2,(HL)");
+			var result = assembler.CompileInstruction("SET 2 (HL)");
 			Is(result, 0xCB, 0xD6);
 		}
 
@@ -4523,7 +4522,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_2_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 2,A");
+			var result = assembler.CompileInstruction("SET 2 A");
 			Is(result, 0xCB, 0xD7);
 		}
 
@@ -4532,7 +4531,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_3_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 3,B");
+			var result = assembler.CompileInstruction("SET 3 B");
 			Is(result, 0xCB, 0xD8);
 		}
 
@@ -4541,7 +4540,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_3_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 3,C");
+			var result = assembler.CompileInstruction("SET 3 C");
 			Is(result, 0xCB, 0xD9);
 		}
 
@@ -4550,7 +4549,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_3_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 3,D");
+			var result = assembler.CompileInstruction("SET 3 D");
 			Is(result, 0xCB, 0xDA);
 		}
 
@@ -4559,7 +4558,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_3_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 3,E");
+			var result = assembler.CompileInstruction("SET 3 E");
 			Is(result, 0xCB, 0xDB);
 		}
 
@@ -4568,7 +4567,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_3_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 3,H");
+			var result = assembler.CompileInstruction("SET 3 H");
 			Is(result, 0xCB, 0xDC);
 		}
 
@@ -4577,7 +4576,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_3_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 3,L");
+			var result = assembler.CompileInstruction("SET 3 L");
 			Is(result, 0xCB, 0xDD);
 		}
 
@@ -4586,7 +4585,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_3_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 3,(HL)");
+			var result = assembler.CompileInstruction("SET 3 (HL)");
 			Is(result, 0xCB, 0xDE);
 		}
 
@@ -4595,7 +4594,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_3_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 3,A");
+			var result = assembler.CompileInstruction("SET 3 A");
 			Is(result, 0xCB, 0xDF);
 		}
 
@@ -4604,7 +4603,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_4_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 4,B");
+			var result = assembler.CompileInstruction("SET 4 B");
 			Is(result, 0xCB, 0xE0);
 		}
 
@@ -4613,7 +4612,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_4_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 4,C");
+			var result = assembler.CompileInstruction("SET 4 C");
 			Is(result, 0xCB, 0xE1);
 		}
 
@@ -4622,7 +4621,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_4_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 4,D");
+			var result = assembler.CompileInstruction("SET 4 D");
 			Is(result, 0xCB, 0xE2);
 		}
 
@@ -4631,7 +4630,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_4_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 4,E");
+			var result = assembler.CompileInstruction("SET 4 E");
 			Is(result, 0xCB, 0xE3);
 		}
 
@@ -4640,7 +4639,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_4_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 4,H");
+			var result = assembler.CompileInstruction("SET 4 H");
 			Is(result, 0xCB, 0xE4);
 		}
 
@@ -4649,7 +4648,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_4_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 4,L");
+			var result = assembler.CompileInstruction("SET 4 L");
 			Is(result, 0xCB, 0xE5);
 		}
 
@@ -4658,7 +4657,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_4_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 4,(HL)");
+			var result = assembler.CompileInstruction("SET 4 (HL)");
 			Is(result, 0xCB, 0xE6);
 		}
 
@@ -4667,7 +4666,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_4_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 4,A");
+			var result = assembler.CompileInstruction("SET 4 A");
 			Is(result, 0xCB, 0xE7);
 		}
 
@@ -4676,7 +4675,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_5_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 5,B");
+			var result = assembler.CompileInstruction("SET 5 B");
 			Is(result, 0xCB, 0xE8);
 		}
 
@@ -4685,7 +4684,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_5_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 5,C");
+			var result = assembler.CompileInstruction("SET 5 C");
 			Is(result, 0xCB, 0xE9);
 		}
 
@@ -4694,7 +4693,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_5_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 5,D");
+			var result = assembler.CompileInstruction("SET 5 D");
 			Is(result, 0xCB, 0xEA);
 		}
 
@@ -4703,7 +4702,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_5_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 5,E");
+			var result = assembler.CompileInstruction("SET 5 E");
 			Is(result, 0xCB, 0xEB);
 		}
 
@@ -4712,7 +4711,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_5_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 5,H");
+			var result = assembler.CompileInstruction("SET 5 H");
 			Is(result, 0xCB, 0xEC);
 		}
 
@@ -4721,7 +4720,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_5_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 5,L");
+			var result = assembler.CompileInstruction("SET 5 L");
 			Is(result, 0xCB, 0xED);
 		}
 
@@ -4730,7 +4729,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_5_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 5,(HL)");
+			var result = assembler.CompileInstruction("SET 5 (HL)");
 			Is(result, 0xCB, 0xEE);
 		}
 
@@ -4739,7 +4738,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_5_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 5,A");
+			var result = assembler.CompileInstruction("SET 5 A");
 			Is(result, 0xCB, 0xEF);
 		}
 
@@ -4748,7 +4747,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_6_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 6,B");
+			var result = assembler.CompileInstruction("SET 6 B");
 			Is(result, 0xCB, 0xF0);
 		}
 
@@ -4757,7 +4756,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_6_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 6,C");
+			var result = assembler.CompileInstruction("SET 6 C");
 			Is(result, 0xCB, 0xF1);
 		}
 
@@ -4766,7 +4765,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_6_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 6,D");
+			var result = assembler.CompileInstruction("SET 6 D");
 			Is(result, 0xCB, 0xF2);
 		}
 
@@ -4775,7 +4774,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_6_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 6,E");
+			var result = assembler.CompileInstruction("SET 6 E");
 			Is(result, 0xCB, 0xF3);
 		}
 
@@ -4784,7 +4783,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_6_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 6,H");
+			var result = assembler.CompileInstruction("SET 6 H");
 			Is(result, 0xCB, 0xF4);
 		}
 
@@ -4793,7 +4792,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_6_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 6,L");
+			var result = assembler.CompileInstruction("SET 6 L");
 			Is(result, 0xCB, 0xF5);
 		}
 
@@ -4802,7 +4801,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_6_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 6,(HL)");
+			var result = assembler.CompileInstruction("SET 6 (HL)");
 			Is(result, 0xCB, 0xF6);
 		}
 
@@ -4811,7 +4810,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_6_A()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 6,A");
+			var result = assembler.CompileInstruction("SET 6 A");
 			Is(result, 0xCB, 0xF7);
 		}
 
@@ -4820,7 +4819,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_7_B()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 7,B");
+			var result = assembler.CompileInstruction("SET 7 B");
 			Is(result, 0xCB, 0xF8);
 		}
 
@@ -4829,7 +4828,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_7_C()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 7,C");
+			var result = assembler.CompileInstruction("SET 7 C");
 			Is(result, 0xCB, 0xF9);
 		}
 
@@ -4838,7 +4837,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_7_D()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 7,D");
+			var result = assembler.CompileInstruction("SET 7 D");
 			Is(result, 0xCB, 0xFA);
 		}
 
@@ -4847,7 +4846,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_7_E()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 7,E");
+			var result = assembler.CompileInstruction("SET 7 E");
 			Is(result, 0xCB, 0xFB);
 		}
 
@@ -4856,7 +4855,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_7_H()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 7,H");
+			var result = assembler.CompileInstruction("SET 7 H");
 			Is(result, 0xCB, 0xFC);
 		}
 
@@ -4865,7 +4864,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_7_L()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 7,L");
+			var result = assembler.CompileInstruction("SET 7 L");
 			Is(result, 0xCB, 0xFD);
 		}
 
@@ -4874,7 +4873,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		public void CB_SET_7_HL()
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("SET 7,(HL)");
+			var result = assembler.CompileInstruction("SET 7 (HL)");
 			Is(result, 0xCB, 0xFE);
 		}
 

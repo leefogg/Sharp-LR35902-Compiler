@@ -787,9 +787,7 @@ namespace Sharp_LR35902_Assembler
 		}
 
 		public byte[] CompileInstruction(string code) {
-			var parts = code
-				.Replace(',', ' ')
-				.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			var parts = code.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 			return CompileInstruction(parts[0], parts.Skip(1).ToArray());
 		}
 		public byte[] CompileInstruction(string opcode, string[] oprands)

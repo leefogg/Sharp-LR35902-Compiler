@@ -544,6 +544,7 @@ namespace Sharp_LR35902_Compiler_Tests
 
 			void writeTestMethod(string instruction, byte opcode, bool isCB)
 			{
+				instruction = instruction.Replace(',', ' ');
 				// Write the method
 				var numexternalbytes = instruction.Count(c => c == 'n');
 				var methodname = instruction.Replace(',', '_').Replace(' ', '_').Replace("(", "").Replace(")", "");

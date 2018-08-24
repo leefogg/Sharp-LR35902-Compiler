@@ -331,7 +331,7 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			assembler.SetDefintion("X", val);
 
-			var result = assembler.CompileInstruction("LD A, X");
+			var result = assembler.CompileInstruction("LD A X");
 			Is(result, new byte[] { 0x3E, (byte)val });
 		}
 
@@ -343,7 +343,7 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			assembler.SetDefintion("x", val);
 
-			var result = assembler.CompileInstruction("LD A, x");
+			var result = assembler.CompileInstruction("LD A x");
 			Is(result, new byte[] { 0x3E, (byte)val });
 		}
 
