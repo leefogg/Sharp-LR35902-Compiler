@@ -4,8 +4,8 @@ namespace Sharp_LR35902_Assembler.InstructionVarients
 {
 	class LoadRegisterIntoMemoryAddressFromRegisterPair : InstructionVarient
 	{
-		private readonly RegisterPair From;
-		private readonly ushort Location;
+		public readonly RegisterPair From;
+		public readonly ushort Location;
 
 		public LoadRegisterIntoMemoryAddressFromRegisterPair(ushort location, RegisterPair from)
 		{

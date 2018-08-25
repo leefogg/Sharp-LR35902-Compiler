@@ -2,7 +2,7 @@
 {
 	class AddRegisterPairToHL : InstructionVarient
     {
-		private readonly RegisterPair RegisterPair;
+		public readonly RegisterPair RegisterPair;
 
 		public AddRegisterPairToHL(RegisterPair registerpair)
 		{

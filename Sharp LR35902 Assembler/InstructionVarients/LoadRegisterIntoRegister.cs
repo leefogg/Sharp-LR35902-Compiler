@@ -2,7 +2,7 @@
 {
 	class LoadRegisterIntoRegister : InstructionVarient
 	{
-		private readonly Register From, To;
+		public readonly Register From, To;
 
 		public LoadRegisterIntoRegister(Register to, Register from)
 		{

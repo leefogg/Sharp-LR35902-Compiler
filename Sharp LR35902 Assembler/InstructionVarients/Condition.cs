@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Sharp_LR35902_Assembler.InstructionVarients
+﻿namespace Sharp_LR35902_Assembler.InstructionVarients
 {
-    enum Condition
+	enum Condition
 	{
 		NotZero,
 		Zero,

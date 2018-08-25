@@ -2,7 +2,7 @@
 {
 	abstract class RotateInstruction : InstructionVarient
 	{
-		private readonly Register Register;
+		public readonly Register Register;
 		private readonly byte StartRowOpcode;
 
 		internal RotateInstruction(byte startrowopcode, Register register)

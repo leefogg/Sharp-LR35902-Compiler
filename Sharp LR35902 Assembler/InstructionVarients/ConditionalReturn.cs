@@ -2,7 +2,7 @@
 {
 	class ConditionalReturn : InstructionVarient
 	{
-		private readonly Condition Condition;
+		public readonly Condition Condition;
 
 		public ConditionalReturn(Condition condition)
 		{

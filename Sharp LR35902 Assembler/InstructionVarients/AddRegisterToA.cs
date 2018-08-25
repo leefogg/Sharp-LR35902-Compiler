@@ -2,7 +2,7 @@
 {
 	class AddRegisterToA : InstructionVarient
 	{
-		private readonly Register From;
+		public readonly Register From;
 
 		public AddRegisterToA(Register from)
 		{

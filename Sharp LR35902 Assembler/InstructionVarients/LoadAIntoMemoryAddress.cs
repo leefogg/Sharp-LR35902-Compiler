@@ -4,7 +4,7 @@ namespace Sharp_LR35902_Assembler.InstructionVarients
 {
 	class LoadAIntoMemoryAddress : InstructionVarient
 	{
-		private readonly ushort Location;
+		public readonly ushort Location;
 
 		public LoadAIntoMemoryAddress(ushort location)
 		{

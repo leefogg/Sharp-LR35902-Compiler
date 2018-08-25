@@ -2,7 +2,7 @@
 {
 	class AddImmediateToA : InstructionVarient
 	{
-		private readonly byte Immediate;
+		public readonly byte Immediate;
 
 		public AddImmediateToA(byte immdiate)
 		{

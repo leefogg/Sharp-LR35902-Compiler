@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Sharp_LR35902_Assembler.InstructionVarients
+﻿namespace Sharp_LR35902_Assembler.InstructionVarients
 {
 	class LoadImmediateIntoRegister : InstructionVarient
 	{
-		private readonly Register To;
-		private readonly byte Immediate;
+		public readonly Register To;
+		public readonly byte Immediate;
 
 		public LoadImmediateIntoRegister(byte immediate, Register to)
 		{

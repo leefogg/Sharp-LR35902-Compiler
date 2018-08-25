@@ -2,7 +2,7 @@
 {
 	class LoadMemoryValueFromRegisterPairIntoA : InstructionVarient
 	{
-		private readonly RegisterPair RegisterPair;
+		public readonly RegisterPair RegisterPair;
 
 		// Only really valid for BC and DE
 		public LoadMemoryValueFromRegisterPairIntoA(RegisterPair registerpair)
