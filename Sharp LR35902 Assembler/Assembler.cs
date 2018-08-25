@@ -262,16 +262,16 @@ namespace Sharp_LR35902_Assembler
 				if (oprands.Length != 2)
 					throw TooFewOprandsException(2);
 
-				if (oprands[0] == "HL")
+				if (oprands[0] == "HL") // ADD HL rr
 				{
 					var pairindex = RegisterPairs.IndexOf(oprands[1]);
 					if (pairindex == -1)
 						throw new ArgumentException($"Unrecognised register pair '{oprands[1]}'");
 
-					return ListOf((byte)(0x09 + 0x10 * pairindex));
+					return new AddRegisterPairToHL((RegisterPair)pairindex).Compile();
 				}
 
-				if (oprands[0] == "SP")
+				if (oprands[0] == "SP") // ADD SP n
 				{
 					ushort immediate = 0;
 					if (TryParseImmediate(oprands[1], ref immediate))
@@ -282,14 +282,14 @@ namespace Sharp_LR35902_Assembler
 					else
 						throw new ArgumentException($"Unexpected expression '{oprands[1]}'");
 
-					return ListOf<byte>(0xE8, (byte)immediate);
+					return new AddImmediateToSP((byte)immediate).Compile();
 				}
 
-				if (oprands[0] != "A")
+				if (oprands[0] != "A") 
 					throw new ArgumentException($"Cannot add into register '{oprands[0]}'. Can only add into register A and HL");
 
 				var registerindex = Registers.IndexOf(oprands[1]);
-				if (registerindex == -1)
+				if (registerindex == -1) // ADD a n
 				{
 					ushort immediate = 0;
 					if (TryParseImmediate(oprands[1], ref immediate))
@@ -300,11 +300,10 @@ namespace Sharp_LR35902_Assembler
 					else
 						throw new ArgumentException($"Unknown register '{oprands[1]}'");
 
-					return ListOf<byte>(0xC6, (byte)immediate);
+					return new AddImmediateToA((byte)immediate).Compile();
 				}
 
-
-				return ListOf((byte)(0x80 + registerindex));
+				return new Add8BitRegisterToA((Register)registerindex).Compile(); // ADD A r
 			}
 			byte[] AddWithCarry(string[] oprands)
 			{
