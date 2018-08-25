@@ -67,7 +67,7 @@ namespace Sharp_LR35902_Assembler
 
 			return creator((Register)registerindex).Compile();
 		}
-		private byte[] Pattern_RegisterOrImmediateOnRegister(string[] oprands, byte rowstartopcode, byte nopcode)
+		private byte[] Pattern_RegisterOrByte(string[] oprands, Func<byte, InstructionVarient> awithimmediatecreator, Func<Register, InstructionVarient> awithregistercreator)
 		{
 			if (oprands.Length != 1)
 				throw TooFewOprandsException(1);
@@ -81,11 +81,10 @@ namespace Sharp_LR35902_Assembler
 				if (!immediate.isByte())
 					throw UnexpectedInt16Exception;
 
-				return ListOf(nopcode, (byte)immediate);
+				return awithimmediatecreator((byte)immediate).Compile();
 			}
 
-
-			return ListOf((byte)(rowstartopcode + registerindex));
+			return awithregistercreator((Register)registerindex).Compile();
 		}
 
 		public static void Main(string[] args)
@@ -370,7 +369,7 @@ namespace Sharp_LR35902_Assembler
 
 				return ListOf((byte)(0x98 + registerindex));
 			}
-			byte[] XOR(string[] oprands) => Pattern_RegisterOrImmediateOnRegister(oprands, 0xA8, 0xEE);
+			byte[] XOR(string[] oprands) => Pattern_RegisterOrByte(oprands, i => new XORAWithImmediate(i), r => new XORAWithRegister(r));
 			byte[] Increment(string[] oprands)
 			{
 				if (oprands.Length != 1)
@@ -405,9 +404,9 @@ namespace Sharp_LR35902_Assembler
 
 				return ListOf((byte)(0x05 + 8 * registerindex));
 			}
-			byte[] Compare(string[] oprands) => Pattern_RegisterOrImmediateOnRegister(oprands, 0xB8, 0xFE);
-			byte[] And(string[] oprands) => Pattern_RegisterOrImmediateOnRegister(oprands, 0xA0, 0xE6);
-			byte[] Or(string[] oprands) => Pattern_RegisterOrImmediateOnRegister(oprands, 0xB0, 0xF6);
+			byte[] Compare(string[] oprands) => Pattern_RegisterOrByte(oprands, i => new CompareAWithImmediate(i), r => new CompareAWithRegister(r));
+			byte[] And(string[] oprands) => Pattern_RegisterOrByte(oprands, i => new AndAWithImmediate(i), r => new AndAWithRegister(r));
+			byte[] Or(string[] oprands) => Pattern_RegisterOrByte(oprands, i => new OrAWithImmediate(i), r => new OrAWithRegister(r));
 			byte[] Reset(string[] oprands)
 			{
 				if (oprands.Length != 1)
