@@ -189,7 +189,7 @@ namespace Sharp_LR35902_Assembler_Tests
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(Exception))]
+		[ExpectedException(typeof(SyntaxException))]
 		public void CompileProgram_ReplacesLabelLocation_ThrowIfNotFound()
 		{
 			var instructions = new List<string>()
