@@ -644,16 +644,15 @@ namespace Sharp_LR35902_Assembler
 			{
 				bytecode = CompileProgram(instructions);
 
+				using (var outputfile = File.Create(outputpath))
+					outputfile.Write(bytecode, 0, bytecode.Length);
 			}
-			catch (Exception e)
+			catch (SyntaxException e)
 			{
 				Console.WriteLine(e.Message);
 				Console.WriteLine("Output file has not been written.");
 				return;
 			}
-
-			using (var outputfile = File.Create(outputpath))
-				outputfile.Write(bytecode, 0, bytecode.Length);
 		}
 
 		public static byte[] CompileProgram(List<string> instructions)
@@ -688,7 +687,7 @@ namespace Sharp_LR35902_Assembler
 			{
 				foreach (var exception in ex.InnerExceptions)
 					Console.WriteLine(exception.Message);
-				throw new Exception("One or more errors occured while compiling source code.");
+				throw new SyntaxException("One or more errors occured while compiling source code.");
 			}
 
 			return rom;
