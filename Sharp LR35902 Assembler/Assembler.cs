@@ -595,10 +595,10 @@ namespace Sharp_LR35902_Assembler
 				throw NoOprandMatchException;
 			}
 			// CB instructions
-			byte[] RotateLeftWithCarry(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateRight(r));
+			byte[] RotateLeftWithCarry(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateLeftWithCarry(r));
 			byte[] RotateRightWithCarry(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateRightWithCarry(r));
 			byte[] RotateLeft(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateLeft(r));
-			byte[] RotateRight(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateLeftWithCarry(r));
+			byte[] RotateRight(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateRight(r));
 			byte[] ShiftLeftPreserveSign(string[] oprands) => Pattern_Line(oprands, 0x20);
 			byte[] ShiftRightPreserveSign(string[] oprands) => Pattern_Line(oprands, 0x28);
 			byte[] SwapNybbles(string[] oprands) => Pattern_Line(oprands, 0x30);
