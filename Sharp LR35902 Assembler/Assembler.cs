@@ -56,16 +56,16 @@ namespace Sharp_LR35902_Assembler
 
 			return ListOf<byte>(0xCB, (byte)(startopcode + registerindex));
 		}
-		private static byte[] Pattern_LineWithFastA(string[] oprands, byte rowstartopcode)
+		private static byte[] Pattern_LineWithFastA(string[] oprands, Func<Register, InstructionVarient> creator)
 		{
 			if (oprands.Length != 1)
 				throw TooFewOprandsException(1);
 
-			if (oprands[0] == "A")
-				return ListOf((byte)(rowstartopcode + 7));
-
 			var registerindex = Registers.IndexOf(oprands[0]);
-			return ListOf<byte>(0xCB, (byte)(rowstartopcode + registerindex));
+			if (registerindex == -1)
+				throw new ArgumentException("Unexpected expression.");
+
+			return creator((Register)registerindex).Compile();
 		}
 		private byte[] Pattern_RegisterOrImmediateOnRegister(string[] oprands, byte rowstartopcode, byte nopcode)
 		{
@@ -303,7 +303,7 @@ namespace Sharp_LR35902_Assembler
 					return new AddImmediateToA((byte)immediate).Compile();
 				}
 
-				return new Add8BitRegisterToA((Register)registerindex).Compile(); // ADD A r
+				return new AddRegisterToA((Register)registerindex).Compile(); // ADD A r
 			}
 			byte[] AddWithCarry(string[] oprands)
 			{
@@ -596,10 +596,10 @@ namespace Sharp_LR35902_Assembler
 				throw NoOprandMatchException;
 			}
 			// CB instructions
-			byte[] RotateLeftWithCarry(string[] oprands) => Pattern_LineWithFastA(oprands, 0x00);
-			byte[] RotateRightWithCarry(string[] oprands) => Pattern_LineWithFastA(oprands, 0x08);
-			byte[] RotateLeft(string[] oprands) => Pattern_LineWithFastA(oprands, 0x10);
-			byte[] RotateRight(string[] oprands) => Pattern_LineWithFastA(oprands, 0x18);
+			byte[] RotateLeftWithCarry(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateRight(r));
+			byte[] RotateRightWithCarry(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateRightWithCarry(r));
+			byte[] RotateLeft(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateLeft(r));
+			byte[] RotateRight(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateLeftWithCarry(r));
 			byte[] ShiftLeftPreserveSign(string[] oprands) => Pattern_Line(oprands, 0x20);
 			byte[] ShiftRightPreserveSign(string[] oprands) => Pattern_Line(oprands, 0x28);
 			byte[] SwapNybbles(string[] oprands) => Pattern_Line(oprands, 0x30);
