@@ -1,0 +1,23 @@
+﻿using Common.Extensions;
+
+namespace Sharp_LR35902_Assembler.InstructionVarients
+{
+	class ConditionalCall : InstructionVarient
+	{
+		private readonly Condition Condition;
+		private readonly byte LowerAddress, HigherAddress;
+
+		public ConditionalCall(Condition condition, ushort address)
+		{
+			Condition = condition;
+			var addressbytes = address.ToByteArray();
+			LowerAddress = addressbytes[0];
+			HigherAddress = addressbytes[1];
+		}
+
+		public override byte[] Compile()
+		{
+			return new byte[] { (byte)(0xC4 + 8 * (int)Condition), LowerAddress, HigherAddress };
+		}
+	}
+}

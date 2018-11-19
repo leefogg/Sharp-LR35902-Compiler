@@ -424,23 +424,23 @@ namespace Sharp_LR35902_Assembler
 				if (oprands.Length == 0)
 					throw new ArgumentException("Expected at least 1 oprand");
 
-				var conditionindex = Conditions.IndexOf(oprands[0]);
-				if (conditionindex == -1)
+				if (Enum.IsDefined(typeof(Condition), oprands[0]))
 				{
-					ushort address = 0;
-					if (!TryParseImmediate(oprands[0], ref address, true))
-						throw new ArgumentException($"Unknown expression '{oprands[0]}'.");
+					if (oprands.Length < 2)
+						throw new ArgumentException("Expected location after condition");
 
-					var addressbytes = address.ToByteArray();
-					return ListOf<byte>(0xCD, addressbytes[0], addressbytes[1]);
+					ushort immediate = 0;
+					if (!TryParseImmediate(oprands[1], ref immediate, true))
+						throw new ArgumentException($"Unknown expression '{oprands[1]}'.");
+
+					return new ConditionalCall(Enum.Parse<Condition>(oprands[0], true), immediate).Compile();
 				}
 
-				ushort immediate = 0;
-				if (!TryParseImmediate(oprands[1], ref immediate, true))
+				ushort address = 0;
+				if (!TryParseImmediate(oprands[0], ref address, true))
 					throw new ArgumentException($"Unknown expression '{oprands[0]}'.");
 
-				var immediatebytes = immediate.ToByteArray();
-				return ListOf((byte)(0xC4 + 8 * conditionindex), immediatebytes[0], immediatebytes[1]);
+				return new Call(address).Compile();
 			}
 			byte[] Push(string[] oprands)
 			{
