@@ -474,22 +474,23 @@ namespace Sharp_LR35902_Assembler
 				if (oprands[0] == "(HL)")
 					return ListOf<byte>(0xE9);
 
-				var conditionindex = Conditions.IndexOf(oprands[0]);
 				ushort address = 0;
-				if (conditionindex == -1)
+				if (Enum.IsDefined(typeof(Condition), oprands[0]))
 				{
-					if (!TryParseImmediate(oprands[0], ref address, true))
+					if (oprands.Length < 2)
+						throw new ArgumentException("Expected location after condition");
+
+					if (!TryParseImmediate(oprands[1], ref address, true))
 						throw new ArgumentException($"Unknown expression '{oprands[0]}'.");
 
-					var addressbytes = address.ToByteArray();
-					return ListOf<byte>(0xC3, addressbytes[0], addressbytes[1]);
+					var immediatebytes = address.ToByteArray();
+					return new ConditionalJump(Enum.Parse<Condition>(oprands[0], true), address).Compile();
 				}
 
-				if (!TryParseImmediate(oprands[1], ref address, true))
+				if (!TryParseImmediate(oprands[0], ref address, true))
 					throw new ArgumentException($"Unknown expression '{oprands[0]}'.");
 
-				var immediatebytes = address.ToByteArray();
-				return ListOf((byte)(0xC2 + 8 * conditionindex), immediatebytes[0], immediatebytes[1]);
+				return new Jump(address).Compile();
 			}
 			byte[] JumpRelative(string[] oprands)
 			{
