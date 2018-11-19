@@ -497,18 +497,17 @@ namespace Sharp_LR35902_Assembler
 				if (oprands.Length == 0)
 					throw new ArgumentException("Expected at least 1 oprand");
 
-				var conditionindex = Conditions.IndexOf(oprands[0]);
-				if (conditionindex == -1)
+				if (!Enum.IsDefined(typeof(Condition), oprands[0]))
 				{
 					ushort address = 0;
 					if (!TryParseImmediate(oprands[0], ref address))
 						throw new ArgumentException($"Unknown expression '{oprands[0]}'");
 
 					if (!address.isByte())
-						throw new ArgumentException("Can only jump back 127 and forward 128");
+						throw new ArgumentException("Can only jump back 127 and forward 128"); // TODO: Test this range
 
 					var addressbytes = address.ToByteArray();
-					return ListOf<byte>(0x18, addressbytes[0]);
+					return new ReletiveJump((byte)address).Compile();
 				}
 
 				ushort immediate = 0;
@@ -521,7 +520,8 @@ namespace Sharp_LR35902_Assembler
 					throw new ArgumentException($"Unknown condition '{oprands[1]}'");
 
 				var immediatebytes = immediate.ToByteArray();
-				return ListOf((byte)(0x20 + 8 * conditionindex), immediatebytes[0]);
+				var condition = Enum.Parse<Condition>(oprands[0]);
+				return new ConditionalReletiveJump(condition, (byte)immediate).Compile();
 			}
 			byte[] LoadAndIncrement(string[] oprands)
 			{
