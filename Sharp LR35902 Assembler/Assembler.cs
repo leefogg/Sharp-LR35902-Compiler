@@ -412,12 +412,12 @@ namespace Sharp_LR35902_Assembler
 				if (oprands.Length != 1)
 					throw TooFewOprandsException(1);
 
-				var vectors = new[] { "0", "8", "10", "18", "20", "28", "30", "38" };
+				var vectors = InstructionVarients.Reset.Vectors;
 				var vectorindex = vectors.IndexOf(oprands[0]);
 				if (vectorindex == -1)
 					throw new ArgumentException($"Unknown reset vector '{oprands[0]}'");
 
-				return ListOf((byte)(0xC7 + 8 * vectorindex));
+				return new Reset(vectorindex).Compile();
 			}
 			byte[] Call(string[] oprands)
 			{
