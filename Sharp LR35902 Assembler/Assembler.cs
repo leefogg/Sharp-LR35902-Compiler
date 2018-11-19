@@ -529,9 +529,9 @@ namespace Sharp_LR35902_Assembler
 					throw TooFewOprandsException(2);
 
 				if (oprands[0] == "A" && oprands[1] == "(HL)")
-					return ListOf<byte>(0x2A);
+					return new LoadMemoryValueFromHLAndIncrement().Compile();
 				if (oprands[0] == "(HL)" && oprands[1] == "A")
-					return ListOf<byte>(0x22);
+					return new LoadAIntoMemoryLocationAtHLAndIncrement().Compile();
 
 				throw new ArgumentException("No known oprand match found");
 			}
