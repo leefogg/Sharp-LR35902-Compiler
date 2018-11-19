@@ -447,24 +447,24 @@ namespace Sharp_LR35902_Assembler
 				if (oprands.Length != 1)
 					throw TooFewOprandsException(1);
 
-				string[] pairs = new[] { "BC", "DE", "HL", "AF" }; // Different to static list
+				var pairs = InstructionVarients.Push.RegisterPairs;
 				var pairindex = pairs.IndexOf(oprands[0]);
 				if (pairindex == -1)
 					throw new ArgumentException($"Unknown register pair '{oprands[0]}'");
 
-				return ListOf((byte)(0xC5 + 0x10 * pairindex));
+				return new Push(pairindex).Compile();
 			}
 			byte[] Pop(string[] oprands)
 			{
 				if (oprands.Length != 1)
 					throw TooFewOprandsException(1);
 
-				string[] pairs = new[] { "BC", "DE", "HL", "AF" }; // Different to static list
+				var pairs = InstructionVarients.Push.RegisterPairs;
 				var pairindex = pairs.IndexOf(oprands[0]);
 				if (pairindex == -1)
 					throw new ArgumentException($"Unknown register pair '{oprands[0]}'");
 
-				return ListOf((byte)(0xC1 + 0x10 * pairindex));
+				return new Pop(pairindex).Compile();
 			}
 			byte[] Jump(string[] oprands)
 			{
