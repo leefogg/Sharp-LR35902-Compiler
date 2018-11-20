@@ -25,7 +25,7 @@ namespace Sharp_LR35902_Assembler
 		private static ArgumentException UnexpectedInt16Exception => throw new ArgumentException($"Unexpected 16-bit immediate, expected 8-bit immediate.");
 		
 		// Common patterns for opcode ranges
-		private byte[] Pattern_BIT(string[] oprands, byte startopcode)
+		private byte[] Pattern_BIT(string[] oprands, Func<Register, byte, InstructionVarient> creator)
 		{
 			if (oprands.Length != 2)
 				throw TooFewOprandsException(2);
@@ -40,7 +40,7 @@ namespace Sharp_LR35902_Assembler
 				if (bit > 7)
 					throw new ArgumentException("Unkown bit '{oprands[0]}'. Expected bit 0-7 inclusive");
 
-				return ListOf<byte>(0xCB, (byte)(startopcode + (8 * bit) + registerindex));
+				return creator((Register)registerindex, (byte)bit).Compile();
 			}
 
 			throw new ArgumentException("No known oprand match found");
@@ -604,9 +604,9 @@ namespace Sharp_LR35902_Assembler
 			byte[] ShiftRightPreserveSign(string[] oprands) => Pattern_Line(oprands, 0x28);
 			byte[] SwapNybbles(string[] oprands) => Pattern_Line(oprands, 0x30);
 			byte[] ShiftRight(string[] oprands) => Pattern_Line(oprands, 0x38);
-			byte[] TestBit(string[] oprands) => Pattern_BIT(oprands, 0x40);
-			byte[] ClearBit(string[] oprands) => Pattern_BIT(oprands, 0x80);
-			byte[] SetBit(string[] oprands) => Pattern_BIT(oprands, 0xC0);
+			byte[] TestBit(string[] oprands) => Pattern_BIT(oprands, (reg, bit) => new TestBit(reg, bit));
+			byte[] ClearBit(string[] oprands) => Pattern_BIT(oprands, (reg, bit) => new ClearBit(reg, bit));
+			byte[] SetBit(string[] oprands) => Pattern_BIT(oprands, (reg, bit) => new SetBit(reg, bit));
 
 			Instructions = new Dictionary<string, Func<string[], byte[]>> {
 				{ "NOP", NoOp },
