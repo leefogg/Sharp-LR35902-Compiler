@@ -364,10 +364,10 @@ namespace Sharp_LR35902_Assembler
 					if (!immediate.isByte())
 						throw UnexpectedInt16Exception;
 
-					return ListOf<byte>(0xDE, (byte)immediate);
+					return new SubtractWithCarryImmediate((byte)immediate).Compile();
 				}
 
-				return ListOf((byte)(0x98 + registerindex));
+				return new SubtractWithCarryRegister((Register)registerindex).Compile();
 			}
 			byte[] XOR(string[] oprands) => Pattern_RegisterOrByte(oprands, i => new XORAWithImmediate(i), r => new XORAWithRegister(r));
 			byte[] Increment(string[] oprands)
