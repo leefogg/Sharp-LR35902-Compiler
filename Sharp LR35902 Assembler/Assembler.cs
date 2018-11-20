@@ -575,7 +575,7 @@ namespace Sharp_LR35902_Assembler
 
 				throw new ArgumentException("No known oprand match found");
 			}
-			byte[] AddSPIntoHL(string[] oprands)
+			byte[] AddToSPAndSaveToHL(string[] oprands)
 			{
 				if (oprands.Length != 2)
 					throw TooFewOprandsException(2);
@@ -588,8 +588,9 @@ namespace Sharp_LR35902_Assembler
 				{
 					if (!immediate.isByte())
 						throw UnexpectedInt16Exception;
+					//TODO: immediate is signed, check for range and convert
 
-					return ListOf<byte>(0xF8, (byte)immediate);
+					return new AddImmediateToSPSaveToHL((byte)immediate).Compile();
 				}
 
 				throw NoOprandMatchException;
@@ -639,7 +640,7 @@ namespace Sharp_LR35902_Assembler
 				{ "LDI", LoadAndIncrement },
 				{ "LDD", LoadAndDecrement },
 				{ "LDH", LoadHiger },
-				{ "LDHL", AddSPIntoHL },
+				{ "LDHL", AddToSPAndSaveToHL },
 				// CB instructions
 				{ "RL", RotateLeft},
 				{ "RR", RotateRight},

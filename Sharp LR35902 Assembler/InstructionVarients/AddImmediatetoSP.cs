@@ -1,7 +1,7 @@
 ﻿namespace Sharp_LR35902_Assembler.InstructionVarients
 {
 	class AddImmediateToSP : InstructionVarient
-    {
+	{
 		public readonly byte Immediate;
 
 		public AddImmediateToSP(byte immediate)
