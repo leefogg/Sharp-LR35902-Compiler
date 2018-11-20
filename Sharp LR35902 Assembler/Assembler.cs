@@ -233,14 +233,14 @@ namespace Sharp_LR35902_Assembler
 				{
 					// Pointed to by register pair
 					if (oprands[1] == "(BC)" || oprands[1] == "(DE)")
-						return new LoadMemoryValueFromRegisterPairIntoA((RegisterPair)RegisterPairs.IndexOf(TrimBrackets(oprands[1]))).Compile();
+						return new LoadMemoryValueFromRegisterPair((RegisterPair)RegisterPairs.IndexOf(TrimBrackets(oprands[1]))).Compile();
 
 					// Pointed to by immediate
 					ushort location = 0;
 					if (!TryParseImmediate(TrimBrackets(oprands[1]), ref location))
 						throw new ArgumentException($"Unexpected expression '{oprands[1]}', expected uint16.");
 
-					return new LoadMemoryValueFromImmediateIntoA(location).Compile();
+					return new LoadMemoryValueFromImmediate(location).Compile();
 				}
 				else if (oprand1offset != -1 && oprand2offset == -1) // Loading immediate into register (0xn6/0xnE)
 				{

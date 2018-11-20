@@ -1,11 +1,11 @@
 ﻿namespace Sharp_LR35902_Assembler.InstructionVarients
 {
-	class LoadMemoryValueFromRegisterPairIntoA : InstructionVarient
+	class LoadMemoryValueFromRegisterPair : InstructionVarient
 	{
 		public readonly RegisterPair RegisterPair;
 
 		// Only really valid for BC and DE
-		public LoadMemoryValueFromRegisterPairIntoA(RegisterPair registerpair)
+		public LoadMemoryValueFromRegisterPair(RegisterPair registerpair)
 		{
 			RegisterPair = registerpair;
 		}

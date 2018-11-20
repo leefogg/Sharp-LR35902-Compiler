@@ -2,12 +2,12 @@
 
 namespace Sharp_LR35902_Assembler.InstructionVarients
 {
-	class LoadMemoryValueFromImmediateIntoA : InstructionVarient
+	class LoadMemoryValueFromImmediate : InstructionVarient
 	{
 		public readonly ushort Location;
 
 		// Only really valid for BC and DE
-		public LoadMemoryValueFromImmediateIntoA(ushort location)
+		public LoadMemoryValueFromImmediate(ushort location)
 		{
 			Location = location;
 		}
