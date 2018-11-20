@@ -321,10 +321,10 @@ namespace Sharp_LR35902_Assembler
 					if (!immediate.isByte())
 						throw UnexpectedInt16Exception;
 
-					return ListOf<byte>(0xCE, (byte)immediate);
+					return new AddWithCarryImmediate((byte)immediate).Compile();
 				}
 
-				return ListOf((byte)(0x88 + registerindex));
+				return new AddWithCarryRegister((Register)registerindex).Compile();
 			}
 			byte[] Subtract(string[] oprands)
 			{
