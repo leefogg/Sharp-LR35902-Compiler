@@ -556,14 +556,14 @@ namespace Sharp_LR35902_Assembler
 				if (oprands[1] == "A")
 				{
 					if (oprands[0] == "(C)")
-						return ListOf<byte>(0xE2);
+						return new LoadAIntoMemoryAddressC().Compile();
 
 					if (TryParseImmediate(TrimBrackets(oprands[0]), ref addressoffset))
 					{
 						if (!addressoffset.isByte())
 							throw UnexpectedInt16Exception;
 
-						return ListOf<byte>(0xE0, (byte)addressoffset);
+						return new LoadAIntoHigherMemoryAddress((byte)addressoffset).Compile();
 					}
 				}
 				else if (TryParseImmediate(TrimBrackets(oprands[1]), ref addressoffset))
@@ -571,7 +571,7 @@ namespace Sharp_LR35902_Assembler
 					if (!addressoffset.isByte())
 						throw UnexpectedInt16Exception;
 
-					return ListOf<byte>(0xF0, (byte)addressoffset);
+					return new LoadFromHigherMemoryAddressIntoA((byte)addressoffset).Compile();
 				}
 
 				throw new ArgumentException("No known oprand match found");
