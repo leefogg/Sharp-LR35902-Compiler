@@ -336,12 +336,12 @@ namespace Sharp_LR35902_Assembler
 
 				var registerindex = Registers.IndexOf(oprands[1]);
 				if (registerindex > -1)
-					return ListOf((byte)(0x90 + registerindex));
+					return new SubtractRegister((Register)registerindex).Compile();
 
 				ushort immediate = 0;
 				if (TryParseImmediate(oprands[1], ref immediate))
 					if (immediate.isByte())
-						return ListOf<byte>(0xD6, (byte)immediate);
+						return new SubtractImmediate((byte)immediate).Compile();
 					else
 						throw UnexpectedInt16Exception;
 
