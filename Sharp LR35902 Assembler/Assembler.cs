@@ -382,10 +382,10 @@ namespace Sharp_LR35902_Assembler
 					if (pairindex == -1)
 						throw new ArgumentException($"Unknown register '{oprands[0]}'");
 
-					return ListOf((byte)(0x03 + 0x10 * pairindex));
+					return new IncrementRegisterPair((RegisterPair)pairindex).Compile();
 				}
 
-				return ListOf((byte)(0x04 + 8 * registerindex));
+				return new IncrementRegister((Register)registerindex).Compile();
 			}
 			byte[] Decrement(string[] oprands)
 			{
@@ -399,10 +399,10 @@ namespace Sharp_LR35902_Assembler
 					if (pairindex == -1)
 						throw new ArgumentException($"Unknown register '{oprands[0]}'");
 
-					return ListOf((byte)(0x0B + 0x10 * pairindex));
+					return new DecrementRegisterPair((RegisterPair)pairindex).Compile();
 				}
 
-				return ListOf((byte)(0x05 + 8 * registerindex));
+				return new DecrementRegister((Register)registerindex).Compile();
 			}
 			byte[] Compare(string[] oprands) => Pattern_RegisterOrByte(oprands, i => new CompareAWithImmediate(i), r => new CompareAWithRegister(r));
 			byte[] And(string[] oprands) => Pattern_RegisterOrByte(oprands, i => new AndAWithImmediate(i), r => new AndAWithRegister(r));
