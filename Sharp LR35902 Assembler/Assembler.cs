@@ -45,7 +45,7 @@ namespace Sharp_LR35902_Assembler
 
 			throw new ArgumentException("No known oprand match found");
 		}
-		private static byte[] Pattern_Line(string[] oprands, byte startopcode)
+		private static byte[] Pattern_Line(string[] oprands, Func<Register, InstructionVarient> creator)
 		{
 			if (oprands.Length != 1)
 				throw new ArgumentException("Expected 1 register oprand");
@@ -54,7 +54,7 @@ namespace Sharp_LR35902_Assembler
 			if (registerindex == -1)
 				throw new ArgumentException("Oprand 1 is not a register");
 
-			return ListOf<byte>(0xCB, (byte)(startopcode + registerindex));
+			return creator((Register)registerindex).Compile();
 		}
 		private static byte[] Pattern_LineWithFastA(string[] oprands, Func<Register, InstructionVarient> creator)
 		{
@@ -600,10 +600,10 @@ namespace Sharp_LR35902_Assembler
 			byte[] RotateRightWithCarry(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateRightWithCarry(r));
 			byte[] RotateLeft(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateLeft(r));
 			byte[] RotateRight(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateRight(r));
-			byte[] ShiftLeftPreserveSign(string[] oprands) => Pattern_Line(oprands, 0x20);
-			byte[] ShiftRightPreserveSign(string[] oprands) => Pattern_Line(oprands, 0x28);
-			byte[] SwapNybbles(string[] oprands) => Pattern_Line(oprands, 0x30);
-			byte[] ShiftRight(string[] oprands) => Pattern_Line(oprands, 0x38);
+			byte[] ShiftLeftPreserveSign(string[] oprands) => Pattern_Line(oprands, r => new ShiftLeftPreserveSign(r));
+			byte[] ShiftRightPreserveSign(string[] oprands) => Pattern_Line(oprands, r => new ShiftRightPreserveSign(r));
+			byte[] SwapNybbles(string[] oprands) => Pattern_Line(oprands, r => new SwapNybbles(r));
+			byte[] ShiftRight(string[] oprands) => Pattern_Line(oprands, r => new ShiftRight(r));
 			byte[] TestBit(string[] oprands) => Pattern_BIT(oprands, (reg, bit) => new TestBit(reg, bit));
 			byte[] ClearBit(string[] oprands) => Pattern_BIT(oprands, (reg, bit) => new ClearBit(reg, bit));
 			byte[] SetBit(string[] oprands) => Pattern_BIT(oprands, (reg, bit) => new SetBit(reg, bit));
