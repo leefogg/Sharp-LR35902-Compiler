@@ -472,7 +472,7 @@ namespace Sharp_LR35902_Assembler
 					throw new ArgumentException("Expected at least 1 oprand");
 
 				if (oprands[0] == "(HL)")
-					return ListOf<byte>(0xE9);
+					return new JumpToLocationAtHL().Compile();
 
 				ushort address = 0;
 				if (Enum.IsDefined(typeof(Condition), oprands[0]))
@@ -483,7 +483,6 @@ namespace Sharp_LR35902_Assembler
 					if (!TryParseImmediate(oprands[1], ref address, true))
 						throw new ArgumentException($"Unknown expression '{oprands[0]}'.");
 
-					var immediatebytes = address.ToByteArray();
 					return new ConditionalJump(Enum.Parse<Condition>(oprands[0], true), address).Compile();
 				}
 
