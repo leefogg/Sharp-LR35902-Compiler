@@ -15,7 +15,7 @@ namespace Sharp_LR35902_Assembler
 		private static readonly string[] RegisterPairs = new[] { "BC", "DE", "HL", "SP" };
 		private static readonly string[] Conditions = new[] { "NZ", "Z", "NC", "C" };
 
-		private readonly Dictionary<string, Func<string[], byte[]>> Instructions;
+		private readonly Dictionary<string, Func<string[], InstructionVarient>> Instructions;
 		private readonly Dictionary<string, ushort> Definitions = new Dictionary<string, ushort>();
 		private readonly Dictionary<string, ushort> LabelLocations = new Dictionary<string, ushort>();
 		private ushort	 CurrentLocation = 0;
@@ -25,7 +25,7 @@ namespace Sharp_LR35902_Assembler
 		private static ArgumentException UnexpectedInt16Exception => throw new ArgumentException($"Unexpected 16-bit immediate, expected 8-bit immediate.");
 		
 		// Common patterns for opcode ranges
-		private byte[] Pattern_BIT(string[] oprands, Func<Register, byte, InstructionVarient> creator)
+		private InstructionVarient Pattern_BIT(string[] oprands, Func<Register, byte, InstructionVarient> creator)
 		{
 			if (oprands.Length != 2)
 				throw TooFewOprandsException(2);
@@ -40,12 +40,12 @@ namespace Sharp_LR35902_Assembler
 				if (bit > 7)
 					throw new ArgumentException("Unkown bit '{oprands[0]}'. Expected bit 0-7 inclusive");
 
-				return creator((Register)registerindex, (byte)bit).Compile();
+				return creator((Register)registerindex, (byte)bit);
 			}
 
 			throw new ArgumentException("No known oprand match found");
 		}
-		private static byte[] Pattern_Line(string[] oprands, Func<Register, InstructionVarient> creator)
+		private static InstructionVarient Pattern_Line(string[] oprands, Func<Register, InstructionVarient> creator)
 		{
 			if (oprands.Length != 1)
 				throw new ArgumentException("Expected 1 register oprand");
@@ -54,9 +54,9 @@ namespace Sharp_LR35902_Assembler
 			if (registerindex == -1)
 				throw new ArgumentException("Oprand 1 is not a register");
 
-			return creator((Register)registerindex).Compile();
+			return creator((Register)registerindex);
 		}
-		private static byte[] Pattern_LineWithFastA(string[] oprands, Func<Register, InstructionVarient> creator)
+		private static InstructionVarient Pattern_LineWithFastA(string[] oprands, Func<Register, InstructionVarient> creator)
 		{
 			if (oprands.Length != 1)
 				throw TooFewOprandsException(1);
@@ -65,9 +65,9 @@ namespace Sharp_LR35902_Assembler
 			if (registerindex == -1)
 				throw new ArgumentException("Unexpected expression.");
 
-			return creator((Register)registerindex).Compile();
+			return creator((Register)registerindex);
 		}
-		private byte[] Pattern_RegisterOrByte(string[] oprands, Func<byte, InstructionVarient> awithimmediatecreator, Func<Register, InstructionVarient> awithregistercreator)
+		private InstructionVarient Pattern_RegisterOrByte(string[] oprands, Func<byte, InstructionVarient> awithimmediatecreator, Func<Register, InstructionVarient> creator)
 		{
 			if (oprands.Length != 1)
 				throw TooFewOprandsException(1);
@@ -81,10 +81,10 @@ namespace Sharp_LR35902_Assembler
 				if (!immediate.isByte())
 					throw UnexpectedInt16Exception;
 
-				return awithimmediatecreator((byte)immediate).Compile();
+				return awithimmediatecreator((byte)immediate);
 			}
 
-			return awithregistercreator((Register)registerindex).Compile();
+			return creator((Register)registerindex);
 		}
 
 		public static void Main(string[] args)
@@ -164,31 +164,31 @@ namespace Sharp_LR35902_Assembler
 
 		public Assembler()
 		{
-			byte[] NoOp(string[] oprands) => new NoOp().Compile();
-			byte[] Stop(string[] oprands) => new Stop().Compile();
-			byte[] BCDAdjustA(string[] oprands) => new BCDAdjustA().Compile();
-			byte[] ComplementA(string[] oprands) => new ComplementA().Compile();
-			byte[] SetCarryFlag(string[] oprands) => new SetCarryFlag().Compile();
-			byte[] ClearCarryFlag(string[] oprands) => new ClearCarryFlag().Compile();
-			byte[] Halt(string[] oprands) => new Halt().Compile();
-			byte[] ReturnWithInterrrupts(string[] oprands) => new ReturnWithInterrupts().Compile();
-			byte[] DisableInterrupts(string[] oprands) => new DisableInterrupts().Compile();
-			byte[] EnableInterrupts(string[] oprands) => new EnableInterrupts().Compile();
-			byte[] Return(string[] oprands)
+			InstructionVarient NoOp(string[] oprands) => new NoOp();
+			InstructionVarient Stop(string[] oprands) => new Stop();
+			InstructionVarient BCDAdjustA(string[] oprands) => new BCDAdjustA();
+			InstructionVarient ComplementA(string[] oprands) => new ComplementA();
+			InstructionVarient SetCarryFlag(string[] oprands) => new SetCarryFlag();
+			InstructionVarient ClearCarryFlag(string[] oprands) => new ClearCarryFlag();
+			InstructionVarient Halt(string[] oprands) => new Halt();
+			InstructionVarient ReturnWithInterrrupts(string[] oprands) => new ReturnWithInterrupts();
+			InstructionVarient DisableInterrupts(string[] oprands) => new DisableInterrupts();
+			InstructionVarient EnableInterrupts(string[] oprands) => new EnableInterrupts();
+			InstructionVarient Return(string[] oprands)
 			{
 				if (oprands.Length > 1)
 					throw new ArgumentException("Unexpected oprands");
 
 				if (oprands.Length == 0)
-					return new Return().Compile();
+					return new Return();
 
 				var conditionindex = Conditions.IndexOf(oprands[0]);
 				if (conditionindex == -1)
 					throw new ArgumentException($"Unexpected condition '{oprands[0]}'");
 
-				return new ConditionalReturn((Condition)conditionindex).Compile();
+				return new ConditionalReturn((Condition)conditionindex);
 			}
-			byte[] Load(string[] oprands)
+			InstructionVarient Load(string[] oprands)
 			{
 				if (oprands.Length != 2)
 					throw TooFewOprandsException(2);
@@ -202,18 +202,18 @@ namespace Sharp_LR35902_Assembler
 					if (pairindex == -1)
 						throw new ArgumentException($"Register pair '{oprands[1]}' doesn't exist");
 
-					return new LoadRegisterIntoMemoryAddressFromRegisterPair(oprand2const, (RegisterPair)pairindex).Compile();
+					return new LoadRegisterIntoMemoryAddressFromRegisterPair(oprand2const, (RegisterPair)pairindex);
 				}
 
 				// Loading A into memory location at register pair
 				if (oprands[0] == "(BC)")
-					return new LoadAIntoMemoryAddressAtBC().Compile();
+					return new LoadAIntoMemoryAddressAtBC();
 				if (oprands[0] == "(DE)")
-					return new LoadAIntoMemoryAddressAtDE().Compile();
+					return new LoadAIntoMemoryAddressAtDE();
 
 				// Loading HL into SP
 				if (oprands[0] == "SP" && oprands[1] == "HL")
-					return new LoadHLIntoSP().Compile();
+					return new LoadHLIntoSP();
 
 				var oprand1offset = Registers.IndexOf(oprands[0]);
 				var oprand2offset = Registers.IndexOf(oprands[1]);
@@ -225,22 +225,22 @@ namespace Sharp_LR35902_Assembler
 						throw new ArgumentException($"Unexpected expression '{oprands[1]}', expected uint16.");
 
 					if (oprands[1] == "A")
-						return new LoadAIntoMemoryAddress(location).Compile();
+						return new LoadAIntoMemoryAddress(location);
 					if (oprands[1] == "SP")
-						return new LoadSPIntoMemoryAddress(location).Compile();
+						return new LoadSPIntoMemoryAddress(location);
 				}
 				if (oprands[0] == "A" && oprand2offset == -1 && IsLocation(oprands[1])) // Loading memory value into A
 				{
 					// Pointed to by register pair
 					if (oprands[1] == "(BC)" || oprands[1] == "(DE)")
-						return new LoadMemoryValueFromRegisterPair((RegisterPair)RegisterPairs.IndexOf(TrimBrackets(oprands[1]))).Compile();
+						return new LoadMemoryValueFromRegisterPair((RegisterPair)RegisterPairs.IndexOf(TrimBrackets(oprands[1])));
 
 					// Pointed to by immediate
 					ushort location = 0;
 					if (!TryParseImmediate(TrimBrackets(oprands[1]), ref location))
 						throw new ArgumentException($"Unexpected expression '{oprands[1]}', expected uint16.");
 
-					return new LoadMemoryValueFromImmediate(location).Compile();
+					return new LoadMemoryValueFromImmediate(location);
 				}
 				else if (oprand1offset != -1 && oprand2offset == -1) // Loading immediate into register (0xn6/0xnE)
 				{
@@ -248,15 +248,15 @@ namespace Sharp_LR35902_Assembler
 					ushort immediate = 0;
 					if (!TryParseImmediate(oprands[1], ref immediate))
 						throw new FormatException($"Oprand 2 '{oprands[1]}' is not a valid immediate");
-					return new LoadImmediateIntoRegister((byte)immediate, (Register)oprand1offset).Compile();
+					return new LoadImmediateIntoRegister((byte)immediate, (Register)oprand1offset);
 				}
 				else // 0x40 - 0x6F
 				{
 					// Both oprands are registers
-					return new LoadRegisterIntoRegister((Register)oprand1offset, (Register)oprand2offset).Compile();
+					return new LoadRegisterIntoRegister((Register)oprand1offset, (Register)oprand2offset);
 				}
 			}
-			byte[] Add(string[] oprands)
+			InstructionVarient Add(string[] oprands)
 			{
 				if (oprands.Length != 2)
 					throw TooFewOprandsException(2);
@@ -267,7 +267,7 @@ namespace Sharp_LR35902_Assembler
 					if (pairindex == -1)
 						throw new ArgumentException($"Unrecognised register pair '{oprands[1]}'");
 
-					return new AddRegisterPairToHL((RegisterPair)pairindex).Compile();
+					return new AddRegisterPairToHL((RegisterPair)pairindex);
 				}
 
 				if (oprands[0] == "SP") // ADD SP n
@@ -281,7 +281,7 @@ namespace Sharp_LR35902_Assembler
 					else
 						throw new ArgumentException($"Unexpected expression '{oprands[1]}'");
 
-					return new AddImmediateToSP((byte)immediate).Compile();
+					return new AddImmediateToSP((byte)immediate);
 				}
 
 				if (oprands[0] != "A") 
@@ -299,12 +299,12 @@ namespace Sharp_LR35902_Assembler
 					else
 						throw new ArgumentException($"Unknown register '{oprands[1]}'");
 
-					return new AddImmediateToA((byte)immediate).Compile();
+					return new AddImmediateToA((byte)immediate);
 				}
 
-				return new AddRegisterToA((Register)registerindex).Compile(); // ADD A r
+				return new AddRegisterToA((Register)registerindex); // ADD A r
 			}
-			byte[] AddWithCarry(string[] oprands)
+			InstructionVarient AddWithCarry(string[] oprands)
 			{
 				if (oprands.Length != 2)
 					throw TooFewOprandsException(2);
@@ -321,12 +321,12 @@ namespace Sharp_LR35902_Assembler
 					if (!immediate.isByte())
 						throw UnexpectedInt16Exception;
 
-					return new AddWithCarryImmediate((byte)immediate).Compile();
+					return new AddWithCarryImmediate((byte)immediate);
 				}
 
-				return new AddWithCarryRegister((Register)registerindex).Compile();
+				return new AddWithCarryRegister((Register)registerindex);
 			}
-			byte[] Subtract(string[] oprands)
+			InstructionVarient Subtract(string[] oprands)
 			{
 				if (oprands.Length != 2)
 					throw TooFewOprandsException(2);
@@ -336,18 +336,18 @@ namespace Sharp_LR35902_Assembler
 
 				var registerindex = Registers.IndexOf(oprands[1]);
 				if (registerindex > -1)
-					return new SubtractRegister((Register)registerindex).Compile();
+					return new SubtractRegister((Register)registerindex);
 
 				ushort immediate = 0;
 				if (TryParseImmediate(oprands[1], ref immediate))
 					if (immediate.isByte())
-						return new SubtractImmediate((byte)immediate).Compile();
+						return new SubtractImmediate((byte)immediate);
 					else
 						throw UnexpectedInt16Exception;
 
 				throw new ArgumentException($"Unrecognised register '{oprands[1]}'");
 			}
-			byte[] SubtractWithCarry(string[] oprands)
+			InstructionVarient SubtractWithCarry(string[] oprands)
 			{
 				if (oprands.Length != 2)
 					throw TooFewOprandsException(2);
@@ -364,13 +364,13 @@ namespace Sharp_LR35902_Assembler
 					if (!immediate.isByte())
 						throw UnexpectedInt16Exception;
 
-					return new SubtractWithCarryImmediate((byte)immediate).Compile();
+					return new SubtractWithCarryImmediate((byte)immediate);
 				}
 
-				return new SubtractWithCarryRegister((Register)registerindex).Compile();
+				return new SubtractWithCarryRegister((Register)registerindex);
 			}
-			byte[] XOR(string[] oprands) => Pattern_RegisterOrByte(oprands, i => new XORAWithImmediate(i), r => new XORAWithRegister(r));
-			byte[] Increment(string[] oprands)
+			InstructionVarient XOR(string[] oprands) => Pattern_RegisterOrByte(oprands, i => new XORAWithImmediate(i), r => new XORAWithRegister(r));
+			InstructionVarient Increment(string[] oprands)
 			{
 				if (oprands.Length != 1)
 					throw TooFewOprandsException(1);
@@ -382,12 +382,12 @@ namespace Sharp_LR35902_Assembler
 					if (pairindex == -1)
 						throw new ArgumentException($"Unknown register '{oprands[0]}'");
 
-					return new IncrementRegisterPair((RegisterPair)pairindex).Compile();
+					return new IncrementRegisterPair((RegisterPair)pairindex);
 				}
 
-				return new IncrementRegister((Register)registerindex).Compile();
+				return new IncrementRegister((Register)registerindex);
 			}
-			byte[] Decrement(string[] oprands)
+			InstructionVarient Decrement(string[] oprands)
 			{
 				if (oprands.Length != 1)
 					throw TooFewOprandsException(1);
@@ -399,15 +399,15 @@ namespace Sharp_LR35902_Assembler
 					if (pairindex == -1)
 						throw new ArgumentException($"Unknown register '{oprands[0]}'");
 
-					return new DecrementRegisterPair((RegisterPair)pairindex).Compile();
+					return new DecrementRegisterPair((RegisterPair)pairindex);
 				}
 
-				return new DecrementRegister((Register)registerindex).Compile();
+				return new DecrementRegister((Register)registerindex);
 			}
-			byte[] Compare(string[] oprands) => Pattern_RegisterOrByte(oprands, i => new CompareAWithImmediate(i), r => new CompareAWithRegister(r));
-			byte[] And(string[] oprands) => Pattern_RegisterOrByte(oprands, i => new AndAWithImmediate(i), r => new AndAWithRegister(r));
-			byte[] Or(string[] oprands) => Pattern_RegisterOrByte(oprands, i => new OrAWithImmediate(i), r => new OrAWithRegister(r));
-			byte[] Reset(string[] oprands)
+			InstructionVarient Compare(string[] oprands) => Pattern_RegisterOrByte(oprands, i => new CompareAWithImmediate(i), r => new CompareAWithRegister(r));
+			InstructionVarient And(string[] oprands) => Pattern_RegisterOrByte(oprands, i => new AndAWithImmediate(i), r => new AndAWithRegister(r));
+			InstructionVarient Or(string[] oprands) => Pattern_RegisterOrByte(oprands, i => new OrAWithImmediate(i), r => new OrAWithRegister(r));
+			InstructionVarient Reset(string[] oprands)
 			{
 				if (oprands.Length != 1)
 					throw TooFewOprandsException(1);
@@ -417,9 +417,9 @@ namespace Sharp_LR35902_Assembler
 				if (vectorindex == -1)
 					throw new ArgumentException($"Unknown reset vector '{oprands[0]}'");
 
-				return new Reset(vectorindex).Compile();
+				return new Reset(vectorindex);
 			}
-			byte[] Call(string[] oprands)
+			InstructionVarient Call(string[] oprands)
 			{
 				if (oprands.Length == 0)
 					throw new ArgumentException("Expected at least 1 oprand");
@@ -433,16 +433,16 @@ namespace Sharp_LR35902_Assembler
 					if (!TryParseImmediate(oprands[1], ref immediate, true))
 						throw new ArgumentException($"Unknown expression '{oprands[1]}'.");
 
-					return new ConditionalCall(Enum.Parse<Condition>(oprands[0], true), immediate).Compile();
+					return new ConditionalCall(Enum.Parse<Condition>(oprands[0], true), immediate);
 				}
 
 				ushort address = 0;
 				if (!TryParseImmediate(oprands[0], ref address, true))
 					throw new ArgumentException($"Unknown expression '{oprands[0]}'.");
 
-				return new Call(address).Compile();
+				return new Call(address);
 			}
-			byte[] Push(string[] oprands)
+			InstructionVarient Push(string[] oprands)
 			{
 				if (oprands.Length != 1)
 					throw TooFewOprandsException(1);
@@ -452,9 +452,9 @@ namespace Sharp_LR35902_Assembler
 				if (pairindex == -1)
 					throw new ArgumentException($"Unknown register pair '{oprands[0]}'");
 
-				return new Push(pairindex).Compile();
+				return new Push(pairindex);
 			}
-			byte[] Pop(string[] oprands)
+			InstructionVarient Pop(string[] oprands)
 			{
 				if (oprands.Length != 1)
 					throw TooFewOprandsException(1);
@@ -464,15 +464,15 @@ namespace Sharp_LR35902_Assembler
 				if (pairindex == -1)
 					throw new ArgumentException($"Unknown register pair '{oprands[0]}'");
 
-				return new Pop(pairindex).Compile();
+				return new Pop(pairindex);
 			}
-			byte[] Jump(string[] oprands)
+			InstructionVarient Jump(string[] oprands)
 			{
 				if (oprands.Length == 0)
 					throw new ArgumentException("Expected at least 1 oprand");
 
 				if (oprands[0] == "(HL)")
-					return new JumpToLocationAtHL().Compile();
+					return new JumpToLocationAtHL();
 
 				ushort address = 0;
 				if (Enum.IsDefined(typeof(Condition), oprands[0]))
@@ -483,15 +483,15 @@ namespace Sharp_LR35902_Assembler
 					if (!TryParseImmediate(oprands[1], ref address, true))
 						throw new ArgumentException($"Unknown expression '{oprands[0]}'.");
 
-					return new ConditionalJump(Enum.Parse<Condition>(oprands[0], true), address).Compile();
+					return new ConditionalJump(Enum.Parse<Condition>(oprands[0], true), address);
 				}
 
 				if (!TryParseImmediate(oprands[0], ref address, true))
 					throw new ArgumentException($"Unknown expression '{oprands[0]}'.");
 
-				return new Jump(address).Compile();
+				return new Jump(address);
 			}
-			byte[] JumpRelative(string[] oprands)
+			InstructionVarient JumpRelative(string[] oprands)
 			{
 				if (oprands.Length == 0)
 					throw new ArgumentException("Expected at least 1 oprand");
@@ -506,7 +506,7 @@ namespace Sharp_LR35902_Assembler
 						throw new ArgumentException("Can only jump back 127 and forward 128"); // TODO: Test this range
 
 					var addressbytes = address.ToByteArray();
-					return new ReletiveJump((byte)address).Compile();
+					return new ReletiveJump((byte)address);
 				}
 
 				ushort immediate = 0;
@@ -520,33 +520,33 @@ namespace Sharp_LR35902_Assembler
 
 				var immediatebytes = immediate.ToByteArray();
 				var condition = Enum.Parse<Condition>(oprands[0]);
-				return new ConditionalReletiveJump(condition, (byte)immediate).Compile();
+				return new ConditionalReletiveJump(condition, (byte)immediate);
 			}
-			byte[] LoadAndIncrement(string[] oprands)
+			InstructionVarient LoadAndIncrement(string[] oprands)
 			{
 				if (oprands.Length != 2)
 					throw TooFewOprandsException(2);
 
 				if (oprands[0] == "A" && oprands[1] == "(HL)")
-					return new LoadMemoryValueFromHLAndIncrement().Compile();
+					return new LoadMemoryValueFromHLAndIncrement();
 				if (oprands[0] == "(HL)" && oprands[1] == "A")
-					return new LoadAIntoMemoryLocationAtHLAndIncrement().Compile();
+					return new LoadAIntoMemoryLocationAtHLAndIncrement();
 
 				throw new ArgumentException("No known oprand match found");
 			}
-			byte[] LoadAndDecrement(string[] oprands)
+			InstructionVarient LoadAndDecrement(string[] oprands)
 			{
 				if (oprands.Length != 2)
 					throw TooFewOprandsException(2);
 
 				if (oprands[0] == "A" && oprands[1] == "(HL)")
-					return new LoadMemoryValueFromHLAndDecrement().Compile();
+					return new LoadMemoryValueFromHLAndDecrement();
 				if (oprands[0] == "(HL)" && oprands[1] == "A")
-					return new LoadAIntoMemoryLocationAtHLAndDecrement().Compile();
+					return new LoadAIntoMemoryLocationAtHLAndDecrement();
 
 				throw new ArgumentException("No known oprand match found");
 			}
-			byte[] LoadHiger(string[] oprands)
+			InstructionVarient LoadHiger(string[] oprands)
 			{
 				if (oprands.Length != 2)
 					throw TooFewOprandsException(2);
@@ -555,14 +555,14 @@ namespace Sharp_LR35902_Assembler
 				if (oprands[1] == "A")
 				{
 					if (oprands[0] == "(C)")
-						return new LoadAIntoMemoryAddressC().Compile();
+						return new LoadAIntoMemoryAddressC();
 
 					if (TryParseImmediate(TrimBrackets(oprands[0]), ref addressoffset))
 					{
 						if (!addressoffset.isByte())
 							throw UnexpectedInt16Exception;
 
-						return new LoadAIntoHigherMemoryAddress((byte)addressoffset).Compile();
+						return new LoadAIntoHigherMemoryAddress((byte)addressoffset);
 					}
 				}
 				else if (TryParseImmediate(TrimBrackets(oprands[1]), ref addressoffset))
@@ -570,12 +570,12 @@ namespace Sharp_LR35902_Assembler
 					if (!addressoffset.isByte())
 						throw UnexpectedInt16Exception;
 
-					return new LoadFromHigherMemoryAddressIntoA((byte)addressoffset).Compile();
+					return new LoadFromHigherMemoryAddressIntoA((byte)addressoffset);
 				}
 
 				throw new ArgumentException("No known oprand match found");
 			}
-			byte[] AddToSPAndSaveToHL(string[] oprands)
+			InstructionVarient AddToSPAndSaveToHL(string[] oprands)
 			{
 				if (oprands.Length != 2)
 					throw TooFewOprandsException(2);
@@ -590,25 +590,25 @@ namespace Sharp_LR35902_Assembler
 						throw UnexpectedInt16Exception;
 					//TODO: immediate is signed, check for range and convert
 
-					return new AddImmediateToSPSaveToHL((byte)immediate).Compile();
+					return new AddImmediateToSPSaveToHL((byte)immediate);
 				}
 
 				throw NoOprandMatchException;
 			}
 			// CB instructions
-			byte[] RotateLeftWithCarry(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateLeftWithCarry(r));
-			byte[] RotateRightWithCarry(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateRightWithCarry(r));
-			byte[] RotateLeft(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateLeft(r));
-			byte[] RotateRight(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateRight(r));
-			byte[] ShiftLeftPreserveSign(string[] oprands) => Pattern_Line(oprands, r => new ShiftLeftPreserveSign(r));
-			byte[] ShiftRightPreserveSign(string[] oprands) => Pattern_Line(oprands, r => new ShiftRightPreserveSign(r));
-			byte[] SwapNybbles(string[] oprands) => Pattern_Line(oprands, r => new SwapNybbles(r));
-			byte[] ShiftRight(string[] oprands) => Pattern_Line(oprands, r => new ShiftRight(r));
-			byte[] TestBit(string[] oprands) => Pattern_BIT(oprands, (reg, bit) => new TestBit(reg, bit));
-			byte[] ClearBit(string[] oprands) => Pattern_BIT(oprands, (reg, bit) => new ClearBit(reg, bit));
-			byte[] SetBit(string[] oprands) => Pattern_BIT(oprands, (reg, bit) => new SetBit(reg, bit));
+			InstructionVarient RotateLeftWithCarry(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateLeftWithCarry(r));
+			InstructionVarient RotateRightWithCarry(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateRightWithCarry(r));
+			InstructionVarient RotateLeft(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateLeft(r));
+			InstructionVarient RotateRight(string[] oprands) => Pattern_LineWithFastA(oprands, r => new RotateRight(r));
+			InstructionVarient ShiftLeftPreserveSign(string[] oprands) => Pattern_Line(oprands, r => new ShiftLeftPreserveSign(r));
+			InstructionVarient ShiftRightPreserveSign(string[] oprands) => Pattern_Line(oprands, r => new ShiftRightPreserveSign(r));
+			InstructionVarient SwapNybbles(string[] oprands) => Pattern_Line(oprands, r => new SwapNybbles(r));
+			InstructionVarient ShiftRight(string[] oprands) => Pattern_Line(oprands, r => new ShiftRight(r));
+			InstructionVarient TestBit(string[] oprands) => Pattern_BIT(oprands, (reg, bit) => new TestBit(reg, bit));
+			InstructionVarient ClearBit(string[] oprands) => Pattern_BIT(oprands, (reg, bit) => new ClearBit(reg, bit));
+			InstructionVarient SetBit(string[] oprands) => Pattern_BIT(oprands, (reg, bit) => new SetBit(reg, bit));
 
-			Instructions = new Dictionary<string, Func<string[], byte[]>> {
+			Instructions = new Dictionary<string, Func<string[], InstructionVarient>> {
 				{ "NOP", NoOp },
 				{ "STOP", Stop },
 				{ "HALT", Halt },
@@ -785,10 +785,10 @@ namespace Sharp_LR35902_Assembler
 		{
 			try
 			{
-				if (!Instructions.TryGetValue(opcode, out Func<string[], byte[]> method))
+				if (!Instructions.TryGetValue(opcode, out Func<string[], InstructionVarient> method))
 					throw new NotFoundException($"Instruction '{opcode}' not found");
 
-				return method(oprands);
+				return method(oprands).Compile();
 			}
 			catch (ArgumentException ee)
 			{
