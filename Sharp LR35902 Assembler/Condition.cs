@@ -1,4 +1,4 @@
-﻿namespace Sharp_LR35902_Assembler.InstructionVarients
+﻿namespace Sharp_LR35902_Assembler
 {
 	enum Condition
 	{
