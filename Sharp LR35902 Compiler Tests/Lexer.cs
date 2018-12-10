@@ -137,7 +137,22 @@ namespace Sharp_LR35902_Compiler_Tests
 		[ExpectedException(typeof(Common.Exceptions.SyntaxException))]
 		public void GetTokenType_Unknown()
 		{
-			GetTokenType("@");
+			GetTokenList("@");
+		}
+
+		[TestMethod]
+		public void GetTokenType_BlankLine()
+		{
+			var tokens = GetTokenList(" \t");
+			Assert.AreEqual(0, tokens.Count);
+		}
+
+		private static TokenType GetTokenType(string token)
+		{
+			var tokens = GetTokenList(token);
+			Assert.AreEqual(1, tokens.Count);
+
+			return tokens[0].Type;
 		}
 
 		[TestMethod]

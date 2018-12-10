@@ -7,66 +7,73 @@ namespace Sharp_LR35902_Compiler
 {
 	public class Lexer // Tokenizer
 	{
-		private static readonly Regex SplitRegex = new Regex(@"([a-z]+|\,|\(|\)|\=\=|\!\=|\=|\<|\>|\;|\+\+|\-\-|\{|\}|[0-9]|if|while|for|else+)", RegexOptions.Compiled | RegexOptions.Singleline);
+		private struct TokenDescriptor
+		{
+			public readonly Regex Pattern;
+			public readonly TokenType Type;
+
+			public TokenDescriptor(string pattern, TokenType type)
+			{
+				Pattern = new Regex(pattern, RegexOptions.Compiled | RegexOptions.Singleline);
+				Type = type;
+			}
+		}
+
+		private static readonly TokenDescriptor[] PossibleTokens = {
+			new TokenDescriptor("while",	TokenType.ControlFlow),
+			new TokenDescriptor("do",		TokenType.ControlFlow),
+			new TokenDescriptor("for",		TokenType.ControlFlow),
+			new TokenDescriptor("return",	TokenType.ControlFlow),
+			new TokenDescriptor("continue", TokenType.ControlFlow),
+			new TokenDescriptor("else",		TokenType.ControlFlow),
+			new TokenDescriptor("if",		TokenType.ControlFlow),
+			new TokenDescriptor("int",		TokenType.DataType),
+			new TokenDescriptor(@"\=\=",	TokenType.Comparison),
+			new TokenDescriptor(@"\!\=",	TokenType.Comparison),
+			new TokenDescriptor(@"\+\+",	TokenType.Operator),
+			new TokenDescriptor(@"\-\-",	TokenType.Operator),
+			new TokenDescriptor(@"\=",		TokenType.Operator),
+			new TokenDescriptor(@"\(",		TokenType.Grammar),
+			new TokenDescriptor(@"\)",		TokenType.Grammar),
+			new TokenDescriptor(@"\{",		TokenType.Grammar),
+			new TokenDescriptor(@"\}",		TokenType.Grammar),
+			new TokenDescriptor(@"\;",		TokenType.Grammar),
+			new TokenDescriptor("[a-z]+",	TokenType.Variable),
+			new TokenDescriptor("[0-9]+",	TokenType.Immediate),
+		};
 
 		public static List<Token> GetTokenList(string line) => GetTokenList(new[] { line });
 		public static List<Token> GetTokenList(string[] lines)
 		{
-			var list = new List<Token>();
+			var tokens = new List<Token>();
 
-			foreach (var l in lines)
+			for (int i=0; i<lines.Length; i++)
 			{
-				// Pre-Processing
-				var line = l.Trim();
+				var line = lines[i].Trim();
+				if (line.Length == 0)
+					continue;
 
-				var symbols = SplitRegex.Matches(line);
-				foreach (Match symbol in symbols)
-					list.Add(
-						new Token(
-							GetTokenType(symbol.Value),
-							symbol.Value
-						)
-					);
+				var starttokencount = tokens.Count;
+
+				foreach (var descriptor in PossibleTokens)
+				{
+					var symbols = descriptor.Pattern.Matches(line);
+					foreach (Match symbol in symbols)
+						tokens.Add(
+							new Token(
+								descriptor.Type,
+								symbol.Value
+							)
+						);
+					if (symbols.Count > 0)
+						break;
+				}
+
+				if (tokens.Count == starttokencount) // Didn't add any tokens, didn't understand line
+					throw new SyntaxException($"Unknown character on line {i+1}");
 			}
 
-			return list;
-		}
-
-		public static TokenType GetTokenType(string value)
-		{
-			switch (value)
-			{
-				case "=":
-				case "++":
-				case "--":
-					return TokenType.Operator;
-				case "int":
-					return TokenType.DataType;
-				case "==":
-				case "!=":
-					return TokenType.Comparison;
-				case "if":
-				case "while":
-				case "for":
-				case "do":
-				case "return":
-				case "continue":
-				case "else":
-					return TokenType.ControlFlow;
-				case "(":
-				case ")":
-				case "{":
-				case "}":
-				case ";":
-					return TokenType.Grammar;
-				default:
-					if (value[0].IsLetter())
-						return TokenType.Variable;
-					if (value[0].isNumber())
-						return TokenType.Immediate;
-
-					throw new SyntaxException("Unknown symbol");
-			}
+			return tokens;
 		}
 	}
 }
