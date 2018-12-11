@@ -25,7 +25,7 @@ namespace Sharp_LR35902_Compiler
 				if (token.Type == Variable)
 				{
 					// Variable[++/--] or Variable = [Variable/Immediate]
-					var nexttoken = tokenlist[i + 1];
+					var nexttoken = tokenlist[++i];
 					if (nexttoken.Type != Operator)
 						throw new SyntaxException("Expected operator after variable");
 					
@@ -33,7 +33,7 @@ namespace Sharp_LR35902_Compiler
 					{
 						case "=":
 							// TODO: Remove byte cast when added support for ushorts
-							var valuenode = tokenlist[i + 2];
+							var valuenode = tokenlist[++i];
 							if (valuenode.Type == Variable)
 								currentnode.AddChild(new VariableAssignmentNode(token.Value, new VariableValueNode(valuenode.Value))); 
 							else if (valuenode.Type == Immediate)
@@ -41,7 +41,6 @@ namespace Sharp_LR35902_Compiler
 							else
 								throw new SyntaxException($"Unexpected token '{valuenode.Value} after ='");
 
-							i++;
 							break;
 						case "++":
 							currentnode.AddChild(new IncrementNode(token.Value));
@@ -53,18 +52,16 @@ namespace Sharp_LR35902_Compiler
 						default:
 							throw new SyntaxException("Expected operator");
 					}
-
-					i++;
 				} 
 				else if (token.Type == DataType)
 				{
 					// DataType Variable = [Variable/Immediate]
-					var variablenode = tokenlist[i + 1];
+					var variablenode = tokenlist[++i];
 					if (variablenode.Type != Variable)
 						throw new SyntaxException("Expected variable name after data type");
 
-					var operatornode = tokenlist[i + 2];
-					if ((operatornode.Type == Grammar && operatornode.Value == ";") || (operatornode.Type == Operator && operatornode.Value == "="))
+					var operatornode = tokenlist[++i];
+					if (operatornode.Value == ";" || operatornode.Value == "=")
 					{
 						if (currentscope.MemberExists(variablenode.Value))
 							throw new SyntaxException($"A variable named '{variablenode.Value}' is already defined in this scope");
@@ -72,16 +69,13 @@ namespace Sharp_LR35902_Compiler
 						currentnode.AddChild(new VariableDeclarationNode(token.Value, variablenode.Value));
 						currentscope.AddMember(new VariableMember(token.Value, variablenode.Value));
 
-						if (operatornode.Type == Grammar) // Mus not be =. In which case we want a value too
-						{
-							i += 2;
+						if (operatornode.Value == ";") // Just a decleration
 							continue;
-						}
 					}
 					if (operatornode.Value != "=")
 						throw new SyntaxException("Expected token '='");
 
-					var valuenode = tokenlist[i + 3];
+					var valuenode = tokenlist[++i];
 					if (valuenode.Type != Immediate && valuenode.Type != Variable)
 						throw new SyntaxException($"Unexpected symbol on variable assignment '{valuenode.Value}'");
 
@@ -89,8 +83,6 @@ namespace Sharp_LR35902_Compiler
 						currentnode.AddChild(new VariableAssignmentNode(variablenode.Value, new VariableValueNode(valuenode.Value)));
 					else if (valuenode.Type == Immediate)
 						currentnode.AddChild(new VariableAssignmentNode(variablenode.Value, new ImmediateValueNode((byte)Common.Parser.ParseImmediate(valuenode.Value))));
-
-					i += 3;
 				}
 			}
 

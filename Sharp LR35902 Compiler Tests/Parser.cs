@@ -179,6 +179,7 @@ namespace Sharp_LR35902_Compiler_Tests
 				new Token(TokenType.Variable, "x"),
 				new Token(TokenType.Operator, "="),
 				new Token(TokenType.Immediate, "42"),
+				new Token(TokenType.Grammar, ";"),
 				new Token(TokenType.DataType, "byte"),
 				new Token(TokenType.Variable, "y"),
 				new Token(TokenType.Grammar, ";")
