@@ -14,7 +14,7 @@ namespace Sharp_LR35902_Compiler
 
 			public TokenDescriptor(string pattern, TokenType type)
 			{
-				Pattern = new Regex(pattern, RegexOptions.Compiled | RegexOptions.Singleline);
+				Pattern = new Regex('^'+pattern, RegexOptions.Compiled | RegexOptions.Singleline);
 				Type = type;
 			}
 		}
@@ -27,7 +27,7 @@ namespace Sharp_LR35902_Compiler
 			new TokenDescriptor("continue", TokenType.ControlFlow),
 			new TokenDescriptor("else",		TokenType.ControlFlow),
 			new TokenDescriptor("if",		TokenType.ControlFlow),
-			new TokenDescriptor("int",		TokenType.DataType),
+			new TokenDescriptor("byte",		TokenType.DataType),
 			new TokenDescriptor(@"\=\=",	TokenType.Comparison),
 			new TokenDescriptor(@"\!\=",	TokenType.Comparison),
 			new TokenDescriptor(@"\+\+",	TokenType.Operator),
@@ -55,21 +55,26 @@ namespace Sharp_LR35902_Compiler
 
 				var starttokencount = tokens.Count;
 
-				foreach (var descriptor in PossibleTokens)
-				{
+				for(var j=0; j<PossibleTokens.Length; j++) {
+					var descriptor = PossibleTokens[j];
+
 					var symbols = descriptor.Pattern.Matches(line);
 					foreach (Match symbol in symbols)
+					{
 						tokens.Add(
 							new Token(
 								descriptor.Type,
 								symbol.Value
 							)
 						);
-					if (symbols.Count > 0)
+						line = line.Substring(symbol.Length).Trim();
+						j = 0;
+					}
+					if (line.Length == 0)
 						break;
 				}
 
-				if (tokens.Count == starttokencount) // Didn't add any tokens, didn't understand line
+				if (line.Length > 0 || tokens.Count == starttokencount) // Didn't add any tokens, didn't understand line
 					throw new SyntaxException($"Unknown character on line {i+1}");
 			}
 

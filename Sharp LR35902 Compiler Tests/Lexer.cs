@@ -32,9 +32,9 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void GetTokenType_Int()
+		public void GetTokenType_Byte()
 		{
-			Assert.AreEqual(TokenType.DataType, GetTokenType("int"));
+			Assert.AreEqual(TokenType.DataType, GetTokenType("byte"));
 		}
 
 		[TestMethod]
@@ -161,6 +161,20 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = GetTokenList("	if	");
 
 			Assert.AreEqual(1, tokens.Count);
+		}
+
+		[TestMethod]
+		public void GetTokenList_VariableDecleration()
+		{
+			var decleration = "byte x = 0;";
+
+			var tokens = GetTokenList(decleration);
+			Assert.AreEqual(5, tokens.Count);
+			Assert.AreEqual("byte", tokens[0].Value);
+			Assert.AreEqual("x", tokens[1].Value);
+			Assert.AreEqual("=", tokens[2].Value);
+			Assert.AreEqual("0", tokens[3].Value);
+			Assert.AreEqual(";", tokens[4].Value);
 		}
 	}
 }
