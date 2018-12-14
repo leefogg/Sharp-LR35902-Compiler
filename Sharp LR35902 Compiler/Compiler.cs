@@ -1,4 +1,5 @@
-﻿using Sharp_LR35902_Compiler.Nodes;
+﻿using Common.Exceptions;
+using Sharp_LR35902_Compiler.Nodes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +22,39 @@ namespace Sharp_LR35902_Compiler
 			}
 		}
 
+		public static IEnumerable<string> EmitAssembly(Node astroot)
+		{
+			char[] registernames = new[] { 'B', 'C', 'D', 'E', 'H', 'L' };
+
+			var variablealloc = AllocateRegisters(astroot);
+
+			// Check variable count is under the register limit
+			if (variablealloc.Max(pair => pair.Value) > registernames.Length)
+				throw new OutOfSpaceException("Unable to allocate sufficent registers for optimized variable count");
+
+			char getVariableRegister(string name) =>
+				registernames[variablealloc[name]];
+
+			foreach (var node in astroot.GetChildren())
+			{
+				if (node is VariableAssignmentNode var) {
+					if (var.Value is VariableValueNode varval)
+						yield return $"LD {getVariableRegister(var.VariableName)}, {getVariableRegister(varval.Name)}";
+					else if (var.Value is ImmediateValueNode imval)
+						yield return $"LD {getVariableRegister(var.VariableName)}, {imval.Value}";
+				} else if (node is IncrementNode inc) {
+					yield return $"INC {getVariableRegister(inc.VariableName)}";
+				} else if (node is DecrementNode dec) {
+					yield return $"DEC {getVariableRegister(dec.VariableName)}";
+				}
+			}
+		}
+
 		public static IDictionary<string, int> AllocateRegisters(Node astroot)
 		{
-			var start = NaiveAllocate(astroot);
-			// TODO: Find last usage of each register and reuse in a loop
-			return start;
+			var lifetimes = FindAllLastUsages(astroot);
+
+			return OptimizeAllocation(lifetimes);
 		}
 
 		public static IDictionary<string, int> NaiveAllocate(Node astroot)
