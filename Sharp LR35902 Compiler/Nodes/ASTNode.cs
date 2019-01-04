@@ -4,18 +4,13 @@ using System.Text;
 
 namespace Sharp_LR35902_Compiler.Nodes
 {
-    public class VariableValueNode : ValueNode
+    public class ASTNode : Node
     {
-		public string VariableName { get; }
-
-		public VariableValueNode(string name)
-		{
-			VariableName = name;
-		}
-
         public override IEnumerable<string> GetUsedRegisterNames()
         {
-            yield return VariableName;
+            foreach (var child in Children)
+                foreach (var variablename in child.GetUsedRegisterNames())
+                    yield return variablename;
         }
     }
 }

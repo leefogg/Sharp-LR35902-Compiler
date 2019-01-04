@@ -12,7 +12,7 @@ namespace Sharp_LR35902_Compiler
     {
 		public static Node CreateAST(List<Token> tokenlist)
 		{
-			var rootnode = new Node();
+			var rootnode = new ASTNode();
 
 			var currentnode = rootnode;
 

@@ -29,7 +29,7 @@ namespace Sharp_LR35902_Compiler
 			var variablealloc = AllocateRegisters(astroot);
 
 			// Check variable count is under the register limit
-			if (variablealloc.Max(pair => pair.Value) > registernames.Length)
+			if (variablealloc.Max(pair => pair.Value) >= registernames.Length)
 				throw new OutOfSpaceException("Unable to allocate sufficent registers for optimized variable count");
 
 			char getVariableRegister(string name) =>
@@ -39,7 +39,7 @@ namespace Sharp_LR35902_Compiler
 			{
 				if (node is VariableAssignmentNode var) {
 					if (var.Value is VariableValueNode varval)
-						yield return $"LD {getVariableRegister(var.VariableName)}, {getVariableRegister(varval.Name)}";
+						yield return $"LD {getVariableRegister(var.VariableName)}, {getVariableRegister(varval.VariableName)}";
 					else if (var.Value is ImmediateValueNode imval)
 						yield return $"LD {getVariableRegister(var.VariableName)}, {imval.Value}";
 				} else if (node is IncrementNode inc) {
@@ -64,7 +64,7 @@ namespace Sharp_LR35902_Compiler
 
 			foreach (var node in astroot.GetChildren()) {
 				if (node is VariableDeclarationNode dec)
-					variabletoregister[dec.Name] = currentnode++;
+					variabletoregister[dec.VariableName] = currentnode++;
 			}
 
 			return variabletoregister;
@@ -108,8 +108,8 @@ namespace Sharp_LR35902_Compiler
 			{
 				if (node is VariableDeclarationNode dec)
 				{
-					var lastusage = FindLastVariableUsage(rootnode, index, dec.Name);
-					yield return new VariableUseRage(dec.Name, index, lastusage);
+					var lastusage = FindLastVariableUsage(rootnode, index, dec.VariableName);
+					yield return new VariableUseRage(dec.VariableName, index, lastusage);
 				}
 
 				index++;
@@ -118,23 +118,23 @@ namespace Sharp_LR35902_Compiler
 
 		public static int FindLastVariableUsage(Node rootnote, int start, string variablename)
 		{
-			int lastuseage = start;
+			int lastusage = start;
 
 			var children = rootnote.GetChildren();
 			for (var i=start+1; i<children.Length; i++)
 			{
 				var node = children[i];
-				if (node is VariableAssignmentNode assignment)
-				{
-					if (assignment.VariableName == variablename)
-						lastuseage = i;
-					if (assignment.Value is VariableValueNode val)
-						if (val.Name == variablename)
-							lastuseage = i;
-				}
+				
+                if (!(node is VariableDeclarationNode))
+                {
+                    var usedvariables = node.GetUsedRegisterNames().Distinct();
+                    foreach (var usedvar in usedvariables)
+                        if (usedvar == variablename)
+                            lastusage = i;
+                }
 			}
 
-			return lastuseage;
+			return lastusage;
 		}
 	}
 }

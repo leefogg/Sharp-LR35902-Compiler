@@ -86,7 +86,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			Assert.IsInstanceOfType(children[0], typeof(VariableAssignmentNode));
 			Assert.AreEqual(variablename, (children[0] as VariableAssignmentNode).VariableName);
 			Assert.IsInstanceOfType((children[0] as VariableAssignmentNode).Value, typeof(VariableValueNode));
-			Assert.AreEqual(othervariablename, ((children[0] as VariableAssignmentNode).Value as VariableValueNode).Name);
+			Assert.AreEqual(othervariablename, ((children[0] as VariableAssignmentNode).Value as VariableValueNode).VariableName);
 		}
 
 		[TestMethod]
@@ -133,7 +133,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			Assert.AreEqual(1, children.Length);
 			Assert.IsInstanceOfType(children[0], typeof(VariableDeclarationNode));
 			Assert.AreEqual(datatype, (children[0] as VariableDeclarationNode).DataType);
-			Assert.AreEqual(variablename, (children[0] as VariableDeclarationNode).Name);
+			Assert.AreEqual(variablename, (children[0] as VariableDeclarationNode).VariableName);
 		}
 
 		[TestMethod]
@@ -209,7 +209,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			Assert.AreEqual(2, children.Length);
 			Assert.IsInstanceOfType(children[0], typeof(VariableDeclarationNode));
 			Assert.AreEqual(datatype, (children[0] as VariableDeclarationNode).DataType);
-			Assert.AreEqual(variablename, (children[0] as VariableDeclarationNode).Name);
+			Assert.AreEqual(variablename, (children[0] as VariableDeclarationNode).VariableName);
 			Assert.IsInstanceOfType(children[1], typeof(VariableAssignmentNode));
 			Assert.AreEqual(variablename, (children[1] as VariableAssignmentNode).VariableName);
 			Assert.IsInstanceOfType((children[1] as VariableAssignmentNode).Value, typeof(ImmediateValueNode));
@@ -235,11 +235,11 @@ namespace Sharp_LR35902_Compiler_Tests
 			Assert.AreEqual(2, children.Length);
 			Assert.IsInstanceOfType(children[0], typeof(VariableDeclarationNode));
 			Assert.AreEqual(datatype, (children[0] as VariableDeclarationNode).DataType);
-			Assert.AreEqual(variablename, (children[0] as VariableDeclarationNode).Name);
+			Assert.AreEqual(variablename, (children[0] as VariableDeclarationNode).VariableName);
 			Assert.IsInstanceOfType(children[1], typeof(VariableAssignmentNode));
 			Assert.AreEqual(variablename, (children[1] as VariableAssignmentNode).VariableName);
 			Assert.IsInstanceOfType((children[1] as VariableAssignmentNode).Value, typeof(VariableValueNode));
-			Assert.AreEqual(othervariablename, ((children[1] as VariableAssignmentNode).Value as VariableValueNode).Name);
+			Assert.AreEqual(othervariablename, ((children[1] as VariableAssignmentNode).Value as VariableValueNode).VariableName);
 		}
 
 		[TestMethod]
@@ -261,11 +261,11 @@ namespace Sharp_LR35902_Compiler_Tests
 			Assert.AreEqual(2, children.Length);
 			Assert.IsInstanceOfType(children[0], typeof(VariableDeclarationNode));
 			Assert.AreEqual(datatype, (children[0] as VariableDeclarationNode).DataType);
-			Assert.AreEqual(variablename, (children[0] as VariableDeclarationNode).Name);
+			Assert.AreEqual(variablename, (children[0] as VariableDeclarationNode).VariableName);
 			Assert.IsInstanceOfType(children[1], typeof(VariableAssignmentNode));
 			Assert.AreEqual(variablename, (children[1] as VariableAssignmentNode).VariableName);
 			Assert.IsInstanceOfType((children[1] as VariableAssignmentNode).Value, typeof(VariableValueNode));
-			Assert.AreEqual(othervariablename, ((children[1] as VariableAssignmentNode).Value as VariableValueNode).Name);
+			Assert.AreEqual(othervariablename, ((children[1] as VariableAssignmentNode).Value as VariableValueNode).VariableName);
 		}
 	}
 }

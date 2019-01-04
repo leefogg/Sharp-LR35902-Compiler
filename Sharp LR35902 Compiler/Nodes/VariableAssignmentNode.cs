@@ -14,5 +14,13 @@ namespace Sharp_LR35902_Compiler.Nodes
 			VariableName = variablename;
 			Value = value;
 		}
+
+        public override IEnumerable<string> GetUsedRegisterNames()
+        {
+            yield return VariableName;
+
+            foreach (var usedvariable in Value.GetUsedRegisterNames())
+                yield return usedvariable;
+        }
     }
 }

@@ -17,5 +17,13 @@ namespace Sharp_LR35902_Compiler.Nodes
 			Right = right;
 			Operator = op;
 		}
+
+        public override IEnumerable<string> GetUsedRegisterNames()
+        {
+            foreach (var variablename in Left.GetUsedRegisterNames())
+                yield return variablename;
+            foreach (var variablename in Right.GetUsedRegisterNames())
+                yield return variablename;
+        }
     }
 }

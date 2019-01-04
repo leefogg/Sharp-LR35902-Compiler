@@ -12,5 +12,10 @@ namespace Sharp_LR35902_Compiler.Nodes
 		{
 			Value = value;
 		}
+
+        public override IEnumerable<string> GetUsedRegisterNames()
+        {
+            return new string[0];
+        }
     }
 }
