@@ -22,5 +22,16 @@ namespace Sharp_LR35902_Compiler.Nodes
             foreach (var usedvariable in Value.GetUsedRegisterNames())
                 yield return usedvariable;
         }
-    }
+
+		public override bool Equals(object obj)
+		{
+			if (obj is VariableAssignmentNode)
+			{
+				var other = obj as VariableAssignmentNode;
+				return other.VariableName == VariableName && other.Value.Equals(Value);
+			}
+
+			return false;
+		}
+	}
 }

@@ -17,5 +17,16 @@ namespace Sharp_LR35902_Compiler.Nodes
         {
             return NoRegisters;
         }
-    }
+
+		public override bool Equals(object obj)
+		{
+			if (obj is ImmediateValueNode)
+			{
+				var other = obj as ImmediateValueNode;
+				return other.Value == Value;
+			}
+
+			return false;
+		}
+	}
 }

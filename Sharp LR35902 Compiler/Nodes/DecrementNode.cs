@@ -17,5 +17,16 @@ namespace Sharp_LR35902_Compiler.Nodes
         {
             yield return VariableName;
         }
-    }
+
+		public override bool Equals(object obj)
+		{
+			if (obj is DecrementNode)
+			{
+				var other = obj as DecrementNode;
+				return other.VariableName == VariableName;
+			}
+
+			return false;
+		}
+	}
 }

@@ -19,5 +19,16 @@ namespace Sharp_LR35902_Compiler.Nodes
         {
             yield return VariableName;
         }
-    }
+
+		public override bool Equals(object obj)
+		{
+			if (obj is VariableDeclarationNode)
+			{
+				var other = obj as VariableDeclarationNode;
+				return other.VariableName == VariableName && other.DataType == DataType;
+			}
+
+			return false;
+		}
+	}
 }

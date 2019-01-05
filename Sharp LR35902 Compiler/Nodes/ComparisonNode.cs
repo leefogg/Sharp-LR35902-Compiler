@@ -25,5 +25,16 @@ namespace Sharp_LR35902_Compiler.Nodes
             foreach (var variablename in Right.GetUsedRegisterNames())
                 yield return variablename;
         }
-    }
+
+		public override bool Equals(object obj)
+		{
+			if (obj is ComparisonNode)
+			{
+				var other = obj as ComparisonNode;
+				return other.Left.Equals(Left) && other.Right.Equals(Right);
+			}
+
+			return false;
+		}
+	}
 }
