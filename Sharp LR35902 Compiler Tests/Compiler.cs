@@ -176,6 +176,28 @@ namespace Sharp_LR35902_Compiler_Tests
             Assert.AreEqual("DEC B", asmlines[1]);
         }
 
+		[TestMethod]
+		public void EmitAssembly_Blank()
+		{
+			var rootnode = new ASTNode();
+
+			var asmlines = new List<string>(EmitAssembly(rootnode));
+
+			Assert.AreEqual(0, asmlines.Count);
+		}
+
+		[TestMethod]
+		public void EmitAssembly_Label()
+		{
+			var rootnode = new ASTNode();
+			rootnode.AddChild(new LabelNode("label")); // label:
+
+			var asmlines = new List<string>(EmitAssembly(rootnode));
+
+			Assert.AreEqual(1, asmlines.Count);
+			Assert.AreEqual("label:", asmlines[0]);
+		}
+
         [TestMethod]
         public void EmitAssembly_UsesAllRegisters()
         {

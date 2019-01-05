@@ -20,6 +20,7 @@ namespace Sharp_LR35902_Compiler
 		}
 
 		private static readonly TokenDescriptor[] PossibleTokens = {
+            new TokenDescriptor(@"[a-z]+\:",TokenType.ControlFlow),
 			new TokenDescriptor("while",	TokenType.ControlFlow),
 			new TokenDescriptor("do",		TokenType.ControlFlow),
 			new TokenDescriptor("for",		TokenType.ControlFlow),

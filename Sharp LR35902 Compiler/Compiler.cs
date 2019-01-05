@@ -29,8 +29,9 @@ namespace Sharp_LR35902_Compiler
 			var variablealloc = AllocateRegisters(astroot);
 
 			// Check variable count is under the register limit
-			if (variablealloc.Max(pair => pair.Value) >= registernames.Length)
-				throw new OutOfSpaceException("Unable to allocate sufficent registers for optimized variable count");
+			if (variablealloc.Count > 0) // .Max throws if collection is empty :/
+				if (variablealloc.Max(pair => pair.Value) >= registernames.Length)
+					throw new OutOfSpaceException("Unable to allocate sufficent registers for optimized variable count");
 
 			char getVariableRegister(string name) =>
 				registernames[variablealloc[name]];
@@ -46,6 +47,8 @@ namespace Sharp_LR35902_Compiler
 					yield return $"INC {getVariableRegister(inc.VariableName)}";
 				} else if (node is DecrementNode dec) {
 					yield return $"DEC {getVariableRegister(dec.VariableName)}";
+				} else if (node is LabelNode label)	{
+					yield return label.Name + ':';
 				}
 			}
 		}

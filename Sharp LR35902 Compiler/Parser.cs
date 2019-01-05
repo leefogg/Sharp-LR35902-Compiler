@@ -10,7 +10,7 @@ namespace Sharp_LR35902_Compiler
 {
     public class Parser
     {
-		public static Node CreateAST(List<Token> tokenlist)
+		public static Node CreateAST(IList<Token> tokenlist)
 		{
 			var rootnode = new ASTNode();
 
@@ -84,6 +84,22 @@ namespace Sharp_LR35902_Compiler
 					else if (valuenode.Type == Immediate)
 						currentnode.AddChild(new VariableAssignmentNode(variablenode.Value, new ImmediateValueNode((byte)Common.Parser.ParseImmediate(valuenode.Value))));
 				}
+                else if (token.Type == ControlFlow)
+                {
+                    switch(token.Value)
+                    {
+                        case "while": break;
+                        case "do": break;
+                        case "for": break;
+                        case "return": break;
+                        case "continue": break;
+                        case "else": break;
+                        case "if": break;
+                        default: // Label
+                            currentnode.AddChild(new LabelNode(token.Value.Substring(0, token.Value.Length - 2)));
+                        break;
+                    }
+                }
 			}
 
 			return rootnode;

@@ -14,7 +14,7 @@ namespace Sharp_LR35902_Compiler_Tests
 	public class Parser
 	{
 		[TestMethod]
-		public void Increment()
+		public void CreateAST_Increment()
 		{
 			var variablename = "x";
 			var tokens = new List<Token>() {
@@ -31,7 +31,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void Decrement()
+		public void CreateAST_Decrement()
 		{
 			var variablename = "x";
 			var tokens = new List<Token>() {
@@ -48,7 +48,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void VariableAssignment_WithImmediate()
+		public void CreateAST_VariableAssignment_WithImmediate()
 		{
 			var variablename = "x";
 			var variablevalue = 42;
@@ -69,7 +69,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void VariableAssignment_WithVariable()
+		public void CreateAST_VariableAssignment_WithVariable()
 		{
 			var variablename = "x";
 			var othervariablename = "y";
@@ -91,7 +91,7 @@ namespace Sharp_LR35902_Compiler_Tests
 
 		[TestMethod]
 		[ExpectedException(typeof(SyntaxException))]
-		public void VariableAssignment_UnexpectedToken()
+		public void CreateAST_VariableAssignment_UnexpectedToken()
 		{
 			var variablename = "x";
 			var tokens = new List<Token>() {
@@ -105,7 +105,7 @@ namespace Sharp_LR35902_Compiler_Tests
 
 		[TestMethod]
 		[ExpectedException(typeof(SyntaxException))]
-		public void VariableAssignment_UnknownOperator()
+		public void CreateAST_VariableAssignment_UnknownOperator()
 		{
 			var variablename = "x";
 			var tokens = new List<Token>() {
@@ -117,7 +117,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void DeclareVariable()
+		public void CreateAST_DeclareVariable()
 		{
 			var datatype = "byte";
 			var variablename = "x";
@@ -138,7 +138,7 @@ namespace Sharp_LR35902_Compiler_Tests
 
 		[TestMethod]
 		[ExpectedException(typeof(SyntaxException))]
-		public void DeclareVariable_VariableRedeclaration()
+		public void CreateAST_DeclareVariable_VariableRedeclaration()
 		{
 			var datatype = "byte";
 			var variablename = "x";
@@ -155,7 +155,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void DeclareVariable_CorrectNumberSymbols()
+		public void CreateAST_DeclareVariable_CorrectNumberSymbols()
 		{
 			var tokens = new List<Token>() {
 				new Token(TokenType.DataType, "byte"),
@@ -172,7 +172,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void DeclareAndAssignVariable_CorrectNumberSymbols()
+		public void CreateAST_DeclareAndAssignVariable_CorrectNumberSymbols()
 		{
 			var tokens = new List<Token>() {
 				new Token(TokenType.DataType, "byte"),
@@ -191,7 +191,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void DeclareAndAssignVariable_WithImmediate()
+		public void CreateAST_DeclareAndAssignVariable_WithImmediate()
 		{
 			var datatype = "byte";
 			var variablename = "x";
@@ -217,7 +217,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void DeclareAndAssignVariable_WithVariable()
+		public void CreateAST_DeclareAndAssignVariable_WithVariable()
 		{
 			var datatype = "byte";
 			var variablename = "x";
@@ -243,7 +243,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void DeclareAndAssignVariable_UnexpectedSymbol()
+		public void CreateAST_DeclareAndAssignVariable_UnexpectedSymbol()
 		{
 			var datatype = "byte";
 			var variablename = "x";
@@ -266,6 +266,20 @@ namespace Sharp_LR35902_Compiler_Tests
 			Assert.AreEqual(variablename, (children[1] as VariableAssignmentNode).VariableName);
 			Assert.IsInstanceOfType((children[1] as VariableAssignmentNode).Value, typeof(VariableValueNode));
 			Assert.AreEqual(othervariablename, ((children[1] as VariableAssignmentNode).Value as VariableValueNode).VariableName);
+		}
+
+		[TestMethod]
+		public void CreateAST_Label()
+		{
+			var tokens = new[] {
+				new Token(TokenType.ControlFlow, "label:")
+			};
+
+			var ast = CreateAST(tokens);
+			var children = ast.GetChildren();
+
+			Assert.AreEqual(1, children.Length);
+			Assert.IsInstanceOfType(children[0], typeof(LabelNode));
 		}
 	}
 }

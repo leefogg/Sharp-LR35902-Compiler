@@ -15,7 +15,7 @@ namespace Sharp_LR35902_Compiler.Nodes
 
         public override IEnumerable<string> GetUsedRegisterNames()
         {
-            return new string[0];
+            return NoRegisters;
         }
     }
 }

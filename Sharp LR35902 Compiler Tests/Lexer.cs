@@ -127,6 +127,12 @@ namespace Sharp_LR35902_Compiler_Tests
 			Assert.AreEqual(TokenType.Variable, GetTokenType("variable"));
 		}
 
+        [TestMethod]
+        public void GetTokenType_Label()
+        {
+            Assert.AreEqual(TokenType.ControlFlow, GetTokenType("label:"));
+        }
+
 		[TestMethod]
 		public void GetTokenType_Value()
 		{
