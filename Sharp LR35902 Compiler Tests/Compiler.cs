@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using static Test_Common.Utils;
 using static Sharp_LR35902_Compiler.Compiler;
 
 namespace Sharp_LR35902_Compiler_Tests
@@ -198,7 +198,18 @@ namespace Sharp_LR35902_Compiler_Tests
 			Assert.AreEqual("label:", asmlines[0]);
 		}
 
-        [TestMethod]
+		[TestMethod]
+		public void EmitAssembly_Goto()
+		{
+			var rootnode = new ASTNode();
+			rootnode.AddChild(new GotoNode("label")); // goto label
+
+			var asmlines = new List<string>(EmitAssembly(rootnode));
+
+			ListEqual(new List<string>{ "JP label" }, asmlines);
+		}
+
+		[TestMethod]
         public void EmitAssembly_UsesAllRegisters()
         {
             var rootnode = new ASTNode();

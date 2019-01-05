@@ -13,7 +13,7 @@ namespace Common_Tests
 		{
 			var output = "0x0".SplitAndKeep(new char[] { 'x' });
 
-			listEqual(
+			ListEqual(
 				new[]
 				{
 					"0",

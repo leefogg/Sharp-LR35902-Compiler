@@ -95,6 +95,13 @@ namespace Sharp_LR35902_Compiler
                         case "continue": break;
                         case "else": break;
                         case "if": break;
+						case "goto":
+							var nextnode = tokenlist[++i];
+							if (nextnode.Type != Variable)
+								throw new SyntaxException("Expected label name after goto statement.");
+
+							currentnode.AddChild(new GotoNode(nextnode.Value));
+							break;
                         default: // Label
                             currentnode.AddChild(new LabelNode(token.Value.Substring(0, token.Value.Length - 2)));
                         break;

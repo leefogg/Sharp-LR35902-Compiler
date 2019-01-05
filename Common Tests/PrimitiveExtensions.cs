@@ -54,7 +54,7 @@ namespace Common_Tests
 		[TestMethod]
 		public void GetHexBytes()
 		{
-			listEqual(
+			ListEqual(
 				new byte[]
 				{
 					0xFF,

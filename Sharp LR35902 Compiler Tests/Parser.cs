@@ -282,6 +282,23 @@ namespace Sharp_LR35902_Compiler_Tests
 			Assert.IsInstanceOfType(children[0], typeof(LabelNode));
 		}
 
+		[TestMethod]
+		public void CreateAST_Goto()
+		{
+			var labelname = "label";
+			var tokens = new[] {
+				new Token(TokenType.ControlFlow, "goto"),
+				new Token(TokenType.Variable, labelname),
+			};
+
+			var ast = CreateAST(tokens);
+
+			var expectedast = new ASTNode();
+			expectedast.AddChild(new GotoNode(labelname));
+
+			Assert.IsTrue(compareNode(expectedast, ast));
+		}
+
 		private bool compareNode(Node expected, Node actual)
 		{
 			var actualchildren = actual.GetChildren();

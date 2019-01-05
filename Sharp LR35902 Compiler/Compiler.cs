@@ -49,6 +49,8 @@ namespace Sharp_LR35902_Compiler
 					yield return $"DEC {getVariableRegister(dec.VariableName)}";
 				} else if (node is LabelNode label)	{
 					yield return label.Name + ':';
+				} else if (node is GotoNode gotonode) {
+					yield return "JP " + gotonode.LabelName;
 				}
 			}
 		}

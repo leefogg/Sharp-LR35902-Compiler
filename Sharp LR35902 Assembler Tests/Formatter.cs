@@ -18,7 +18,7 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			RemoveWhitespace(instructions);
 
-			listEqual(new[] { "EI" }, instructions.ToArray());
+			ListEqual(new[] { "EI" }, instructions.ToArray());
 		}
 
 		[TestMethod]
@@ -31,7 +31,7 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			RemoveWhitespace(instructions);
 
-			listEqual(new[] { "LD A, 01" }, instructions.ToArray());
+			ListEqual(new[] { "LD A, 01" }, instructions.ToArray());
 		}
 
 		[TestMethod]
@@ -44,7 +44,7 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			RemoveComma(instructions);
 
-			listEqual(new[] { "LD A 01" }, instructions.ToArray());
+			ListEqual(new[] { "LD A 01" }, instructions.ToArray());
 		}
 
 		[TestMethod]
@@ -58,7 +58,7 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			LineBreakLabels(instructions);
 
-			listEqual(
+			ListEqual(
 				new[]
 				{
 					"label1:",
@@ -82,7 +82,7 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			LineBreakLabels(instructions);
 
-			listEqual(
+			ListEqual(
 				new[]
 				{
 					"label1:",
@@ -106,7 +106,7 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			RemoveBlankLines(instructions);
 
-			listEqual(
+			ListEqual(
 				new[]
 				{
 					"XOR A"
@@ -128,7 +128,7 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			RemoveComments(instructions);
 
-			listEqual(
+			ListEqual(
 				new[]
 				{
 					"NOP",
@@ -151,7 +151,7 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			EnsureNOPAfterSTOPOrHALT(instructions);
 
-			listEqual(
+			ListEqual(
 				new[]
 				{
 					"HALT",
@@ -173,7 +173,7 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			EnsureNOPAfterSTOPOrHALT(instructions);
 
-			listEqual(
+			ListEqual(
 				new[]
 				{
 					"STOP",
@@ -195,7 +195,7 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			EnsureNOPAfterSTOPOrHALT(instructions);
 
-			listEqual(
+			ListEqual(
 				new[]
 				{
 					"haLt",
@@ -216,7 +216,7 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			EnsureNOPAfterSTOPOrHALT(instructions);
 
-			listEqual(
+			ListEqual(
 				new[]
 				{
 					"STOP",
@@ -236,7 +236,7 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			EnsureNOPAfterSTOPOrHALT(instructions);
 
-			listEqual(
+			ListEqual(
 				new[]
 				{
 					"STOP",

@@ -36,7 +36,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			var linesremoved = DeleteUnreachableCode(lines);
 
 			Assert.AreEqual(2, linesremoved);
-			listEqual(lines.ToArray(), new[] { 
+			ListEqual(lines.ToArray(), new[] { 
 				"JP SOMELABEL"
 			});
 		}
@@ -55,7 +55,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			var linesremoved = DeleteUnreachableCode(lines);
 
 			Assert.AreEqual(2, linesremoved);
-			listEqual(lines.ToArray(), new[] {
+			ListEqual(lines.ToArray(), new[] {
 				"ret",
 				"ANOTHERLABEL:",
 				"DI"
@@ -76,7 +76,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			var linesremoved = DeleteUnreachableCode(lines);
 
 			Assert.AreEqual(2, linesremoved);
-			listEqual(lines.ToArray(), new[] {
+			ListEqual(lines.ToArray(), new[] {
 				"JP SOMELABEL",
 				"ANOTHERLABEL:",
 				"DI"
@@ -97,7 +97,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			var linesremoved = DeleteUnreachableCode(lines);
 
 			Assert.AreEqual(2, linesremoved);
-			listEqual(lines.ToArray(), new[] {
+			ListEqual(lines.ToArray(), new[] {
 				"RET",
 				"ANOTHERLABEL:",
 				"DI"
@@ -119,7 +119,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			var linesremoved = DeleteUnreachableCode(lines);
 
 			Assert.AreEqual(0, linesremoved);
-			listEqual(lines.ToArray(), instructions);
+			ListEqual(lines.ToArray(), instructions);
 		}
 
 		[TestMethod]
@@ -137,7 +137,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			var linesremoved = DeleteUnreachableCode(lines);
 
 			Assert.AreEqual(2, linesremoved);
-			listEqual(lines.ToArray(), new[] {
+			ListEqual(lines.ToArray(), new[] {
 				"JP SOMELABEL",
 				"ANOTHERLABEL:",
 				"JP SOMELABEL",
@@ -159,7 +159,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			var linesremoved = DeleteUnreachableCode(lines);
 
 			Assert.AreEqual(0, linesremoved);
-			listEqual(lines.ToArray(), instructions);
+			ListEqual(lines.ToArray(), instructions);
 		}
 	}
 }

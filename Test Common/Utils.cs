@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Common.Extensions;
+using System.Collections.Generic;
 
 namespace Test_Common
 {
@@ -7,10 +8,10 @@ namespace Test_Common
 	{
 		public static void Is(byte[] result, byte onlybyte)
 		{
-			listEqual(IEnumerableExtensions.ListOf(onlybyte), result);
+			ListEqual(IEnumerableExtensions.ListOf(onlybyte), result);
 		}
 		public static void Is(byte[] actual, params byte[] expected)
-			=> listEqual(expected, actual);
+			=> ListEqual(expected, actual);
 		public static void StartsWith(byte[] expected, byte[] actual)
 		{
 			if (expected.Length > actual.Length)
@@ -20,12 +21,12 @@ namespace Test_Common
 				Assert.AreEqual(expected[i], actual[i]);
 		}
 
-		public static void listEqual<T>(T [] left, T[] right)
+		public static void ListEqual<T>(IList<T> left, IList<T> right)
 		{
-			if (left.Length != right.Length)
+			if (left.Count != right.Count)
 				Assert.Fail("Lists do not match in length");
 
-			for (int i = 0; i < left.Length; i++)
+			for (int i = 0; i < left.Count; i++)
 				Assert.AreEqual(left[i], right[i]);
 		}
 	}
