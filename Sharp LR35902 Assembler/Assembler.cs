@@ -93,7 +93,7 @@ namespace Sharp_LR35902_Assembler
 			{
 				Console.WriteLine("Compiles assembly code that uses the Sharp LR35902 instruction-set into a binary.");
 				Console.WriteLine();
-				Console.WriteLine("Compiler [options] [-i inputfilepath] [-o outputfilepath]");
+				Console.WriteLine("Compiler [options] [-in inputfilepath] [-out outputfilepath]");
 				Console.WriteLine("Options:");
 				Console.WriteLine("-FHS:	Fix currupted HALTs and STOPs by ensuring a following NOP");
 				// TODO: Add any switches here
