@@ -283,6 +283,19 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
+		public void CreateAST_Label_CropsName()
+		{
+			var tokens = new[] {
+				new Token(TokenType.ControlFlow, "label:")
+			};
+
+			var ast = CreateAST(tokens);
+			var children = ast.GetChildren();
+
+			Assert.AreEqual("label", (children[0] as LabelNode).Name);
+		}
+
+		[TestMethod]
 		public void CreateAST_Goto()
 		{
 			var labelname = "label";

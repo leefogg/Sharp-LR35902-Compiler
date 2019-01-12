@@ -103,7 +103,8 @@ namespace Sharp_LR35902_Compiler
 							currentnode.AddChild(new GotoNode(nextnode.Value));
 							break;
                         default: // Label
-                            currentnode.AddChild(new LabelNode(token.Value.Substring(0, token.Value.Length - 2)));
+							var colonindex = token.Value.IndexOf(':');
+                            currentnode.AddChild(new LabelNode(token.Value.Substring(0, colonindex)));
                         break;
                     }
                 }
