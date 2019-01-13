@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Common.Extensions;
 
 using static Sharp_LR35902_Compiler.TokenType;
+using System.Linq;
 
 namespace Sharp_LR35902_Compiler
 {
@@ -33,14 +34,26 @@ namespace Sharp_LR35902_Compiler
 					{
 						case "=":
 							// TODO: Remove byte cast when added support for ushorts
+							var assignedvariable = getVariable(token.Value, currentscope);
+
 							var valuenode = tokenlist[++i];
 							if (valuenode.Type == Variable)
-								currentnode.AddChild(new VariableAssignmentNode(token.Value, new VariableValueNode(valuenode.Value))); 
+							{
+								var valuevariable = getVariable(valuenode.Value, currentscope);
+								checkCanConvertTypes(valuevariable.DataType, assignedvariable.DataType);
+								currentnode.AddChild(new VariableAssignmentNode(token.Value, new VariableValueNode(valuenode.Value)));
+							}
 							else if (valuenode.Type == Immediate)
-								currentnode.AddChild(new VariableAssignmentNode(token.Value, new ImmediateValueNode((byte)Common.Parser.ParseImmediate(valuenode.Value))));
+							{
+								var existingvariable = currentscope.GetMember(token.Value);
+
+								var immediatevalue = Common.Parser.ParseImmediate(valuenode.Value);
+								var immediatedatatype = GetImmedateDataType(immediatevalue);
+								checkCanConvertTypes(immediatedatatype, existingvariable.DataType);
+								currentnode.AddChild(new VariableAssignmentNode(token.Value, new ImmediateValueNode(immediatevalue)));
+							}
 							else
 								throw new SyntaxException($"Unexpected token '{valuenode.Value} after ='");
-
 							break;
 						case "++":
 							currentnode.AddChild(new IncrementNode(token.Value));
@@ -56,18 +69,22 @@ namespace Sharp_LR35902_Compiler
 				else if (token.Type == DataType)
 				{
 					// DataType Variable = [Variable/Immediate]
-					var variablenode = tokenlist[++i];
-					if (variablenode.Type != Variable)
+					var variabletoken = tokenlist[++i];
+					if (variabletoken.Type != Variable)
 						throw new SyntaxException("Expected variable name after data type");
+
+					var variabledatatype = BuiltIn.DataTypes.Get(token.Value);
+					if (variabledatatype == null)
+						throw new SyntaxException($"Datatype {token.Value} does not exist.");
 
 					var operatornode = tokenlist[++i];
 					if (operatornode.Value == ";" || operatornode.Value == "=")
 					{
-						if (currentscope.MemberExists(variablenode.Value))
-							throw new SyntaxException($"A variable named '{variablenode.Value}' is already defined in this scope");
+						if (currentscope.GetMember(variabletoken.Value) != null)
+							throw new SyntaxException($"Variable {variabletoken.Value} already exists in the current scope.");
 
-						currentnode.AddChild(new VariableDeclarationNode(token.Value, variablenode.Value));
-						currentscope.AddMember(new VariableMember(token.Value, variablenode.Value));
+						currentnode.AddChild(new VariableDeclarationNode(token.Value, variabletoken.Value));
+						currentscope.AddMember(new VariableMember(variabledatatype, variabletoken.Value));
 
 						if (operatornode.Value == ";") // Just a decleration
 							continue;
@@ -80,9 +97,18 @@ namespace Sharp_LR35902_Compiler
 						throw new SyntaxException($"Unexpected symbol on variable assignment '{valuenode.Value}'");
 
 					if (valuenode.Type == Variable)
-						currentnode.AddChild(new VariableAssignmentNode(variablenode.Value, new VariableValueNode(valuenode.Value)));
+					{
+						var valuevariable = getVariable(valuenode.Value, currentscope);
+						checkCanConvertTypes(valuevariable.DataType, variabledatatype);
+						currentnode.AddChild(new VariableAssignmentNode(variabletoken.Value, new VariableValueNode(valuenode.Value)));
+					}
 					else if (valuenode.Type == Immediate)
-						currentnode.AddChild(new VariableAssignmentNode(variablenode.Value, new ImmediateValueNode((byte)Common.Parser.ParseImmediate(valuenode.Value))));
+					{
+						var immediatevalue = Common.Parser.ParseImmediate(valuenode.Value);
+						var immediatedatatype = GetImmedateDataType(immediatevalue);
+						checkCanConvertTypes(immediatedatatype, variabledatatype);
+						currentnode.AddChild(new VariableAssignmentNode(variabletoken.Value, new ImmediateValueNode(immediatevalue)));
+					}
 				}
                 else if (token.Type == ControlFlow)
                 {
@@ -99,7 +125,6 @@ namespace Sharp_LR35902_Compiler
 							var nextnode = tokenlist[++i];
 							if (nextnode.Type != Variable)
 								throw new SyntaxException("Expected label name after goto statement.");
-
 							currentnode.AddChild(new GotoNode(nextnode.Value));
 							break;
                         default: // Label
@@ -111,6 +136,34 @@ namespace Sharp_LR35902_Compiler
 			}
 
 			return rootnode;
+		}
+
+		public static PrimitiveDataType GetImmedateDataType(ushort value)
+		{
+			PrimitiveDataType smallestDataType = null;
+			foreach (var datatype in BuiltIn.DataTypes.All.Reverse())
+				if (value < datatype.MaxValue)
+					smallestDataType = datatype;
+
+			// Exeption cant possibly throw as ParseImmediate parses up to int data type
+			if (smallestDataType == null)
+				throw new SyntaxException($"No datatype suitable for value ({value})");
+
+			return smallestDataType;
+		}
+
+		private static void checkCanConvertTypes(PrimitiveDataType from, PrimitiveDataType to)
+		{
+			if (!BuiltIn.DataTypes.CanConvertTo(from, to))
+				throw new SyntaxException($"No conversion from {from.Name} to {to.Name}.");
+		}
+		private static VariableMember getVariable(string name, Scope scope)
+		{
+			var existingvariable = scope.GetMember(name);
+			if (existingvariable == null)
+				throw new SyntaxException($"Varible {name} does not exist in the current scope.");
+
+			return existingvariable;
 		}
     }
 }

@@ -2,9 +2,9 @@
 {
 	public class VariableMember : Member
 	{
-		public string DataType { get; }
+		public PrimitiveDataType DataType { get; }
 
-		public VariableMember(string datatype, string name) : base(name) {
+		public VariableMember(PrimitiveDataType datatype, string name) : base(name) {
 			DataType = datatype;
 		}
 	}

@@ -6,7 +6,7 @@ namespace Sharp_LR35902_Compiler_Tests
 	[TestClass]
 	public class Scope
 	{
-		private static VariableMember TestMember = new VariableMember("int", "test");
+		private static VariableMember TestMember = new VariableMember(BuiltIn.DataTypes.Byte, "test");
 
 		[TestMethod]
 		public void FindsLocalMember()

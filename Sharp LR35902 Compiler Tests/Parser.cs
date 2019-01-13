@@ -51,6 +51,49 @@ namespace Sharp_LR35902_Compiler_Tests
 		public void CreateAST_VariableAssignment_WithImmediate()
 		{
 			var variablename = "x";
+			var datatype = "byte";
+			byte variablevalue = 42;
+			var tokens = new List<Token>() {
+				new Token(TokenType.DataType, datatype),
+				new Token(TokenType.Variable, variablename),
+				new Token(TokenType.Grammar, ";"),
+				new Token(TokenType.Variable, variablename),
+				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Immediate, variablevalue.ToString())
+			};
+
+			var ast = CreateAST(tokens);
+
+			var expectedAST = new ASTNode();
+			expectedAST.AddChild(new VariableDeclarationNode(datatype, variablename));
+			expectedAST.AddChild(new VariableAssignmentNode(variablename, new ImmediateValueNode(variablevalue)));
+
+			Assert.IsTrue(compareNode(expectedAST, ast));
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void CreateAST_VariableAssignment_WithImmediate_CannotConvertToType()
+		{
+			var variablename = "x";
+			var variablevalue = 500;
+			var tokens = new List<Token>() {
+				new Token(TokenType.DataType, "byte"),
+				new Token(TokenType.Variable, variablename),
+				new Token(TokenType.Grammar, ";"),
+				new Token(TokenType.Variable, variablename),
+				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Immediate, variablevalue.ToString())
+			};
+
+			CreateAST(tokens);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void CreateAST_VariableAssignment_VariableExists()
+		{
+			var variablename = "x";
 			var variablevalue = 42;
 			var tokens = new List<Token>() {
 				new Token(TokenType.Variable, variablename),
@@ -58,35 +101,65 @@ namespace Sharp_LR35902_Compiler_Tests
 				new Token(TokenType.Immediate, variablevalue.ToString())
 			};
 
-			var ast = CreateAST(tokens);
-			var children = ast.GetChildren();
-
-			Assert.AreEqual(1, children.Length);
-			Assert.IsInstanceOfType(children[0], typeof(VariableAssignmentNode));
-			Assert.AreEqual(variablename, (children[0] as VariableAssignmentNode).VariableName);
-			Assert.IsInstanceOfType((children[0] as VariableAssignmentNode).Value, typeof(ImmediateValueNode));
-			Assert.AreEqual(variablevalue, ((children[0] as VariableAssignmentNode).Value as ImmediateValueNode).Value);
+			CreateAST(tokens);
 		}
 
 		[TestMethod]
 		public void CreateAST_VariableAssignment_WithVariable()
 		{
+			var datatype = "byte";
 			var variablename = "x";
 			var othervariablename = "y";
 			var tokens = new List<Token>() {
+				new Token(TokenType.DataType, datatype),
+				new Token(TokenType.Variable, variablename),
+				new Token(TokenType.Grammar, ";"),
+				new Token(TokenType.DataType, datatype),
+				new Token(TokenType.Variable, othervariablename),
+				new Token(TokenType.Grammar, ";"),
 				new Token(TokenType.Variable, variablename),
 				new Token(TokenType.Operator, "="),
 				new Token(TokenType.Variable, othervariablename)
 			};
 
 			var ast = CreateAST(tokens);
-			var children = ast.GetChildren();
 
-			Assert.AreEqual(1, children.Length);
-			Assert.IsInstanceOfType(children[0], typeof(VariableAssignmentNode));
-			Assert.AreEqual(variablename, (children[0] as VariableAssignmentNode).VariableName);
-			Assert.IsInstanceOfType((children[0] as VariableAssignmentNode).Value, typeof(VariableValueNode));
-			Assert.AreEqual(othervariablename, ((children[0] as VariableAssignmentNode).Value as VariableValueNode).VariableName);
+			var expectedAST = new ASTNode();
+			expectedAST.AddChild(new VariableDeclarationNode(datatype, variablename));
+			expectedAST.AddChild(new VariableDeclarationNode(datatype, othervariablename));
+			expectedAST.AddChild(new VariableAssignmentNode(variablename, new VariableValueNode(othervariablename)));
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void CreateAST_VariableAssignment_WithVariable_ValueDoesntExist()
+		{
+			var tokens = new List<Token>() {
+				new Token(TokenType.DataType, "byte"),
+				new Token(TokenType.Variable, "x"),
+				new Token(TokenType.Grammar, ";"),
+				new Token(TokenType.Variable, "x"),
+				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Variable, "y")
+			};
+
+			CreateAST(tokens);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void CreateAST_VariableAssignment_WithVariable_AssignedDoesntExist()
+		{
+			var tokens = new List<Token>() {
+				new Token(TokenType.DataType, "byte"),
+				new Token(TokenType.Variable, "y"),
+				new Token(TokenType.Grammar, ";"),
+				new Token(TokenType.Variable, "x"),
+				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Variable, "y")
+			};
+
+			CreateAST(tokens);
 		}
 
 		[TestMethod]
@@ -95,6 +168,9 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var variablename = "x";
 			var tokens = new List<Token>() {
+				new Token(TokenType.DataType, "byte"),
+				new Token(TokenType.Variable, variablename),
+				new Token(TokenType.Grammar, ";"),
 				new Token(TokenType.Variable, variablename),
 				new Token(TokenType.Operator, "="),
 				new Token(TokenType.Grammar, ";")
@@ -128,12 +204,26 @@ namespace Sharp_LR35902_Compiler_Tests
 			};
 
 			var ast = CreateAST(tokens);
-			var children = ast.GetChildren();
 
-			Assert.AreEqual(1, children.Length);
-			Assert.IsInstanceOfType(children[0], typeof(VariableDeclarationNode));
-			Assert.AreEqual(datatype, (children[0] as VariableDeclarationNode).DataType);
-			Assert.AreEqual(variablename, (children[0] as VariableDeclarationNode).VariableName);
+			var expectedAST = new ASTNode();
+			expectedAST.AddChild(new VariableDeclarationNode(datatype, variablename));
+
+			Assert.IsTrue(compareNode(expectedAST, ast));
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void CreateAST_DeclareVariable_DataTypeDoesntExists()
+		{
+			var datatype = "blah";
+			var variablename = "x";
+			var tokens = new List<Token>() {
+				new Token(TokenType.DataType, datatype),
+				new Token(TokenType.Variable, variablename),
+				new Token(TokenType.Grammar, ";")
+			};
+
+			CreateAST(tokens);
 		}
 
 		[TestMethod]
@@ -220,6 +310,9 @@ namespace Sharp_LR35902_Compiler_Tests
 			var othervariablename = "y";
 			var tokens = new List<Token>() {
 				new Token(TokenType.DataType, datatype),
+				new Token(TokenType.Variable, othervariablename),
+				new Token(TokenType.Grammar, ";"),
+				new Token(TokenType.DataType, datatype),
 				new Token(TokenType.Variable, variablename),
 				new Token(TokenType.Operator, "="),
 				new Token(TokenType.Variable, othervariablename)
@@ -229,10 +322,28 @@ namespace Sharp_LR35902_Compiler_Tests
 			var children = ast.GetChildren();
 
 			var expectedAST = new ASTNode();
+			expectedAST.AddChild(new VariableDeclarationNode(datatype, othervariablename));
 			expectedAST.AddChild(new VariableDeclarationNode(datatype, variablename));
 			expectedAST.AddChild(new VariableAssignmentNode(variablename, new VariableValueNode(othervariablename)));
 
 			Assert.IsTrue(compareNode(expectedAST, ast));
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void CreateAST_DeclareAndAssignVariable_WithVariable_DoesntExist()
+		{
+			var datatype = "byte";
+			var variablename = "x";
+			var othervariablename = "y";
+			var tokens = new List<Token>() {
+				new Token(TokenType.DataType, datatype),
+				new Token(TokenType.Variable, variablename),
+				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Variable, othervariablename)
+			};
+
+			CreateAST(tokens);
 		}
 
 		[TestMethod]
@@ -263,6 +374,23 @@ namespace Sharp_LR35902_Compiler_Tests
 				new Token(TokenType.Variable, variablename),
 				new Token(TokenType.Operator, "="),
 				new Token(TokenType.Grammar, ")")
+			};
+
+			CreateAST(tokens);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void CreateAST_DeclareAndAssignVariable_CannotConvertImmediate()
+		{
+			var datatype = "byte";
+			var variablename = "x";
+			var variablevalue = 500; // Too large for a byte
+			var tokens = new List<Token>() {
+				new Token(TokenType.DataType, datatype),
+				new Token(TokenType.Variable, variablename),
+				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Immediate, variablevalue.ToString())
 			};
 
 			CreateAST(tokens);
@@ -312,6 +440,14 @@ namespace Sharp_LR35902_Compiler_Tests
 			Assert.IsTrue(compareNode(expectedast, ast));
 		}
 
+		[TestMethod]
+		public void GetImmediateDataType_Smallest()
+		{
+			Assert.AreSame(BuiltIn.DataTypes.Byte, GetImmedateDataType(19));
+			Assert.AreSame(BuiltIn.DataTypes.Int, GetImmedateDataType(256));
+		}
+
+
 		private bool compareNode(Node expected, Node actual)
 		{
 			var actualchildren = actual.GetChildren();
@@ -329,5 +465,6 @@ namespace Sharp_LR35902_Compiler_Tests
 
 			return true; // Only if both have no children
 		}
+
 	}
 }

@@ -6,9 +6,9 @@ namespace Sharp_LR35902_Compiler.Nodes
 {
     public class ImmediateValueNode : ValueNode
     {
-		public byte Value { get; }
+		public ushort Value { get; }
 
-		public ImmediateValueNode(byte value)
+		public ImmediateValueNode(ushort value)
 		{
 			Value = value;
 		}
