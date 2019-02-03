@@ -271,5 +271,87 @@ namespace Sharp_LR35902_Compiler_Tests
 
             var asmlines = new List<string>(EmitAssembly(rootnode));
         }
-    }
+
+		[TestMethod]
+		public void EmitAssembly_AdditionAssignemn_WithVariable()
+		{
+			var rootnode = new ASTNode();
+			rootnode.AddChild(new VariableDeclarationNode("byte", "x"));
+			rootnode.AddChild(new VariableDeclarationNode("byte", "y"));
+			rootnode.AddChild(new VariableAssignmentNode("y", new ImmediateValueNode(5)));
+			rootnode.AddChild(new AdditionAssignmentNode("x", new VariableValueNode("y")));
+
+			var acctualASM = new List<string>(EmitAssembly(rootnode));
+
+			var expectedASM = new[]
+			{
+				"LD C, 5",
+				"LD A, B",
+				"ADD A, C",
+				"LD B, A"
+			};
+
+			ListEqual(expectedASM, acctualASM);
+		}
+
+		[TestMethod]
+		public void EmitAssembly_AdditionAssignemnt_WithImmedate()
+		{
+			var rootnode = new ASTNode();
+			rootnode.AddChild(new VariableDeclarationNode("byte", "x"));
+			rootnode.AddChild(new AdditionAssignmentNode("x", new ImmediateValueNode(5)));
+
+			var acctualASM = new List<string>(EmitAssembly(rootnode));
+
+			var expectedASM = new[]
+			{
+				"LD A, B",
+				"ADD A, 5",
+				"LD B, A"
+			};
+
+			ListEqual(expectedASM, acctualASM);
+		}
+
+		[TestMethod]
+		public void EmitAssembly_SubtractionAssignemnt_WithVariable()
+		{
+			var rootnode = new ASTNode();
+			rootnode.AddChild(new VariableDeclarationNode("byte", "x"));
+			rootnode.AddChild(new VariableDeclarationNode("byte", "y"));
+			rootnode.AddChild(new VariableAssignmentNode("y", new ImmediateValueNode(5)));
+			rootnode.AddChild(new SubtractionAssignmentNode("x", new VariableValueNode("y")));
+
+			var acctualASM = new List<string>(EmitAssembly(rootnode));
+
+			var expectedASM = new[]
+			{
+				"LD C, 5",
+				"LD A, B",
+				"SUB A, C",
+				"LD B, A"
+			};
+
+			ListEqual(expectedASM, acctualASM);
+		}
+
+		[TestMethod]
+		public void EmitAssembly_SubtractionAssignemnt_WithImmedate()
+		{
+			var rootnode = new ASTNode();
+			rootnode.AddChild(new VariableDeclarationNode("byte", "x"));
+			rootnode.AddChild(new SubtractionAssignmentNode("x", new ImmediateValueNode(5)));
+
+			var acctualASM = new List<string>(EmitAssembly(rootnode));
+
+			var expectedASM = new[]
+			{
+				"LD A, B",
+				"SUB A, 5",
+				"LD B, A"
+			};
+
+			ListEqual(expectedASM, acctualASM);
+		}
+	}
 }

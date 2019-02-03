@@ -303,6 +303,111 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
+		public void CreateAST_AdditionAssignment_WithVariable()
+		{
+			var tokens = new List<Token>
+			{
+				new Token(TokenType.DataType, "byte"),
+				new Token(TokenType.Variable, "x"),
+				new Token(TokenType.Grammar, ";"),
+				new Token(TokenType.DataType, "byte"),
+				new Token(TokenType.Variable, "y"),
+				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Immediate, "5"),
+
+				new Token(TokenType.Variable, "x"),
+				new Token(TokenType.Operator, "+="),
+				new Token(TokenType.Variable, "y")
+			};
+
+			var ast = CreateAST(tokens);
+
+			var expectedAST = new ASTNode();
+			expectedAST.AddChild(new VariableDeclarationNode("byte", "x"));
+			expectedAST.AddChild(new VariableDeclarationNode("byte", "y"));
+			expectedAST.AddChild(new VariableAssignmentNode("y", new ImmediateValueNode(5)));
+			expectedAST.AddChild(new AdditionAssignmentNode("x", new VariableValueNode("y")));
+
+			Assert.IsTrue(compareNode(expectedAST, ast));
+		}
+
+		[TestMethod]
+		public void CreateAST_AdditionAssignment_WithImmediate()
+		{
+			var tokens = new List<Token>
+			{
+				new Token(TokenType.DataType, "byte"),
+				new Token(TokenType.Variable, "x"),
+				new Token(TokenType.Grammar, ";"),
+
+				new Token(TokenType.Variable, "x"),
+				new Token(TokenType.Operator, "+="),
+				new Token(TokenType.Immediate, "10")
+			};
+
+			var ast = CreateAST(tokens);
+
+			var expectedAST = new ASTNode();
+			expectedAST.AddChild(new VariableDeclarationNode("byte", "x"));
+			expectedAST.AddChild(new AdditionAssignmentNode("x", new ImmediateValueNode(10)));
+
+			Assert.IsTrue(compareNode(expectedAST, ast));
+		}
+
+		[TestMethod]
+		public void CreateAST_SubtractionAssignment_WithVariable()
+		{
+			var tokens = new List<Token>
+			{
+				new Token(TokenType.DataType, "byte"),
+				new Token(TokenType.Variable, "x"),
+				new Token(TokenType.Grammar, ";"),
+				new Token(TokenType.DataType, "byte"),
+				new Token(TokenType.Variable, "y"),
+				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Immediate, "5"),
+
+				new Token(TokenType.Variable, "x"),
+				new Token(TokenType.Operator, "-="),
+				new Token(TokenType.Variable, "y")
+			};
+
+			var ast = CreateAST(tokens);
+
+			var expectedAST = new ASTNode();
+			expectedAST.AddChild(new VariableDeclarationNode("byte", "x"));
+			expectedAST.AddChild(new VariableDeclarationNode("byte", "y"));
+			expectedAST.AddChild(new VariableAssignmentNode("y", new ImmediateValueNode(5)));
+			expectedAST.AddChild(new SubtractionAssignmentNode("x", new VariableValueNode("y")));
+
+			Assert.IsTrue(compareNode(expectedAST, ast));
+		}
+
+		[TestMethod]
+		public void CreateAST_SubtractionAssignment_WithImmediate()
+		{
+			var tokens = new List<Token>
+			{
+				new Token(TokenType.DataType, "byte"),
+				new Token(TokenType.Variable, "x"),
+				new Token(TokenType.Grammar, ";"),
+
+				new Token(TokenType.Variable, "x"),
+				new Token(TokenType.Operator, "-="),
+				new Token(TokenType.Immediate, "10")
+			};
+
+			var ast = CreateAST(tokens);
+
+			var expectedAST = new ASTNode();
+			expectedAST.AddChild(new VariableDeclarationNode("byte", "x"));
+			expectedAST.AddChild(new SubtractionAssignmentNode("x", new ImmediateValueNode(10)));
+
+			Assert.IsTrue(compareNode(expectedAST, ast));
+		}
+
+
+		[TestMethod]
 		public void CreateAST_DeclareAndAssignVariable_WithVariable()
 		{
 			var datatype = "byte";

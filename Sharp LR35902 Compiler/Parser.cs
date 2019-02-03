@@ -29,14 +29,16 @@ namespace Sharp_LR35902_Compiler
 					var nexttoken = tokenlist[++i];
 					if (nexttoken.Type != Operator)
 						throw new SyntaxException("Expected operator after variable");
-					
+
+					Token valuenode;
+					VariableMember assignedvariable;
 					switch (nexttoken.Value)
 					{
 						case "=":
 							// TODO: Remove byte cast when added support for ushorts
-							var assignedvariable = getVariable(token.Value, currentscope);
+							assignedvariable = getVariable(token.Value, currentscope);
 
-							var valuenode = tokenlist[++i];
+							valuenode = tokenlist[++i];
 							if (valuenode.Type == Variable)
 							{
 								var valuevariable = getVariable(valuenode.Value, currentscope);
@@ -61,7 +63,36 @@ namespace Sharp_LR35902_Compiler
 						case "--":
 							currentnode.AddChild(new DecrementNode(token.Value));
 							break;
-						// TODO: Add += and -=
+						case "+=":
+							assignedvariable = getVariable(token.Value, currentscope);
+
+							valuenode = tokenlist[++i];
+							if (valuenode.Type == Variable)
+							{
+								var valuevariable = getVariable(valuenode.Value, currentscope);
+								currentnode.AddChild(new AdditionAssignmentNode(assignedvariable.Name, new VariableValueNode(valuevariable.Name)));
+							}
+							else if (valuenode.Type == Immediate)
+							{
+								var immediatevalue = Common.Parser.ParseImmediate(valuenode.Value);
+								currentnode.AddChild(new AdditionAssignmentNode(assignedvariable.Name, new ImmediateValueNode(immediatevalue)));
+							}
+							break;
+						case "-=":
+							assignedvariable = getVariable(token.Value, currentscope);
+
+							valuenode = tokenlist[++i];
+							if (valuenode.Type == Variable)
+							{
+								var valuevariable = getVariable(valuenode.Value, currentscope);
+								currentnode.AddChild(new SubtractionAssignmentNode(assignedvariable.Name, new VariableValueNode(valuevariable.Name)));
+							}
+							else if (valuenode.Type == Immediate)
+							{
+								var immediatevalue = Common.Parser.ParseImmediate(valuenode.Value);
+								currentnode.AddChild(new SubtractionAssignmentNode(assignedvariable.Name, new ImmediateValueNode(immediatevalue)));
+							}
+							break;
 						default:
 							throw new SyntaxException("Expected operator");
 					}

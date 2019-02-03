@@ -36,13 +36,12 @@ namespace Sharp_LR35902_Compiler
 			char getVariableRegister(string name) =>
 				registernames[variablealloc[name]];
 
+			// Cases must be in order of any inheritence because of the way `is` works
 			foreach (var node in astroot.GetChildren())
 			{
-				if (node is VariableAssignmentNode var) {
-					if (var.Value is VariableValueNode varval)
-						yield return $"LD {getVariableRegister(var.VariableName)}, {getVariableRegister(varval.VariableName)}";
-					else if (var.Value is ImmediateValueNode imval)
-						yield return $"LD {getVariableRegister(var.VariableName)}, {imval.Value}";
+				if (node is VariableDeclarationNode)
+				{
+					// Do nothing
 				} else if (node is IncrementNode inc) {
 					yield return $"INC {getVariableRegister(inc.VariableName)}";
 				} else if (node is DecrementNode dec) {
@@ -51,6 +50,27 @@ namespace Sharp_LR35902_Compiler
 					yield return label.Name + ':';
 				} else if (node is GotoNode gotonode) {
 					yield return "JP " + gotonode.LabelName;
+				} else if (node is SubtractionAssignmentNode subassignemntassignment) {
+					yield return $"LD A, {getVariableRegister(subassignemntassignment.VariableName)}";
+					if (subassignemntassignment.Value is VariableValueNode variable) {
+						yield return $"SUB A, {getVariableRegister(variable.VariableName)}";
+					} else if (subassignemntassignment.Value is ImmediateValueNode immediate) {
+						yield return $"SUB A, {immediate.Value}";
+					}
+					yield return $"LD {getVariableRegister(subassignemntassignment.VariableName)}, A";
+				} else if (node is AdditionAssignmentNode addassignment) {
+					yield return $"LD A, {getVariableRegister(addassignment.VariableName)}";
+					if (addassignment.Value is VariableValueNode variable) {
+						yield return $"ADD A, {getVariableRegister(variable.VariableName)}";
+					} else if (addassignment.Value is ImmediateValueNode immediate)	{
+						yield return $"ADD A, {immediate.Value}";
+					}
+					yield return $"LD {getVariableRegister(addassignment.VariableName)}, A";
+				} else if (node is VariableAssignmentNode var) {
+					if (var.Value is VariableValueNode varval)
+						yield return $"LD {getVariableRegister(var.VariableName)}, {getVariableRegister(varval.VariableName)}";
+					else if (var.Value is ImmediateValueNode imval)
+						yield return $"LD {getVariableRegister(var.VariableName)}, {imval.Value}";
 				}
 			}
 		}
