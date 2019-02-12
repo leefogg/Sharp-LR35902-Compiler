@@ -2,14 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <RootNamespace>Sharp_LR35902_Compiler_Tests</RootNamespace>
+    <RootNamespace>Common_Tests</RootNamespace>
 
     <IsPackable>false</IsPackable>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors />
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,8 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
-    <ProjectReference Include="..\Sharp LR35902 Compiler\Sharp LR35902 Compiler.csproj" />
-    <ProjectReference Include="..\Test Common\Test Common.csproj" />
+    <ProjectReference Include="..\Test Common\Test_Common.csproj" />
   </ItemGroup>
 
 </Project>

@@ -18,9 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Sharp LR35902 Assembler\Sharp LR35902 Assembler.csproj" />
+    <ProjectReference Include="..\Sharp LR35902 Assembler\Sharp_LR35902_Assembler.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
-    <ProjectReference Include="..\Test Common\Test Common.csproj" />
+    <ProjectReference Include="..\Test Common\Test_Common.csproj" />
   </ItemGroup>
 
 </Project>
