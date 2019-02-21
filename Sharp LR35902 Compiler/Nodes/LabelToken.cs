@@ -18,11 +18,8 @@ namespace Sharp_LR35902_Compiler.Nodes
 
 		public override bool Equals(object obj)
 		{
-			if (obj is LabelNode)
-			{
-				var other = obj as LabelNode;
+			if (obj is LabelNode other)
 				return other.Name == Name;
-			}
 
 			return false;
 		}

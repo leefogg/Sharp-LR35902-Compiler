@@ -20,11 +20,8 @@ namespace Sharp_LR35902_Compiler.Nodes
 
 		public override bool Equals(object obj)
 		{
-			if (obj is DecrementNode)
-			{
-				var other = obj as DecrementNode;
+			if (obj is DecrementNode other)
 				return other.VariableName == VariableName;
-			}
 
 			return false;
 		}

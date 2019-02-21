@@ -28,11 +28,8 @@ namespace Sharp_LR35902_Compiler.Nodes
 
 		public override bool Equals(object obj)
 		{
-			if (obj is ComparisonNode)
-			{
-				var other = obj as ComparisonNode;
+			if (obj is ComparisonNode other)
 				return other.Left.Equals(Left) && other.Right.Equals(Right);
-			}
 
 			return false;
 		}

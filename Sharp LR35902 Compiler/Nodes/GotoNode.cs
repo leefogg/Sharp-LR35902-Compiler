@@ -20,11 +20,8 @@ namespace Sharp_LR35902_Compiler.Nodes
 
 		public override bool Equals(object obj)
 		{
-			if (obj is GotoNode)
-			{
-				var other = obj as GotoNode;
+			if (obj is GotoNode other)
 				return other.LabelName == LabelName;
-			}
 
 			return false;
 		}

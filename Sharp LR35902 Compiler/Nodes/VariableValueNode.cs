@@ -20,11 +20,8 @@ namespace Sharp_LR35902_Compiler.Nodes
 
 		public override bool Equals(object obj)
 		{
-			if (obj is VariableValueNode)
-			{
-				var other = obj as VariableValueNode;
+			if (obj is VariableValueNode other)
 				return other.VariableName == VariableName;
-			}
 
 			return false;
 		}
