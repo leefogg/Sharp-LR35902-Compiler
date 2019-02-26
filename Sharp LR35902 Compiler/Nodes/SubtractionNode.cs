@@ -2,15 +2,9 @@
 {
 	public class SubtractionNode : OperatorNode
 	{
-		public SubtractionNode(ExpressionNode left, ExpressionNode right)
-		{
-			Left = left;
-			Right = right;
-		}
+		public SubtractionNode(ExpressionNode left, ExpressionNode right) : base(left, right) { }
 		// Allow valueless construction
-		public SubtractionNode()
-		{
-		}
+		public SubtractionNode() { }
 
 		public override ushort GetValue()
 			=> (ushort)(Left - Right);

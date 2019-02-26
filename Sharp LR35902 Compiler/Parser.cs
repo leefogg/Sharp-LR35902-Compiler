@@ -12,10 +12,11 @@ namespace Sharp_LR35902_Compiler
     public static class Parser
     {
 
-		private static readonly Dictionary<char, Func<OperatorNode>> Operators = new Dictionary<char, Func<OperatorNode>>()
+		private static readonly Dictionary<string, Func<OperatorNode>> Operators = new Dictionary<string, Func<OperatorNode>>()
 		{
-			{ '+', () => new AdditionNode() },
-			{ '-', () => new SubtractionNode() }
+			{ "+", () => new AdditionNode() },
+			{ "-", () => new SubtractionNode() },
+			{ "==", () => new EqualsComparisonNode() }
 		};
 
 
@@ -206,9 +207,8 @@ namespace Sharp_LR35902_Compiler
 			return ConvergeOperators(nodes);
 		}
 
-		private static ExpressionNode createOperator(string value)
+		private static ExpressionNode createOperator(string op)
 		{
-			var op = value[0];
 			return Operators[op]();
 		}
 
@@ -219,6 +219,9 @@ namespace Sharp_LR35902_Compiler
 			if (nodes.Count == 1)
 				return nodes[0];
 
+			// Boolean operators
+			ConvergeOperators<EqualsComparisonNode>(nodes);
+			// Math operators
 			ConvergeOperators<AdditionNode>(nodes);
 			ConvergeOperators<SubtractionNode>(nodes);
 

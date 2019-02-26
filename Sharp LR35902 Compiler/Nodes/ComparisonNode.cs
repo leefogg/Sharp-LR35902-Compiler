@@ -4,32 +4,20 @@ using System.Text;
 
 namespace Sharp_LR35902_Compiler.Nodes
 {
-    public abstract class ComparisonNode : Node
+    public abstract class ComparisonNode : OperatorNode
 	{
-		public ValueNode Left { get; }
-		public ValueNode Right { get; }
+		public ComparisonNode(ExpressionNode left, ExpressionNode right) : base(left, right) { }
+		// Allow valueless construction
+		public ComparisonNode() { }
 
-		public ComparisonOperator @Operator { get; }
+		public override ushort GetValue() => isTrue() ? (ushort)1 : (ushort)0;
 
-		public ComparisonNode(ValueNode left, ComparisonOperator op, ValueNode right)
-		{
-			Left = left;
-			Right = right;
-			Operator = op;
-		}
-
-        public override IEnumerable<string> GetUsedRegisterNames()
-        {
-            foreach (var variablename in Left.GetUsedRegisterNames())
-                yield return variablename;
-            foreach (var variablename in Right.GetUsedRegisterNames())
-                yield return variablename;
-        }
+		protected abstract bool isTrue();
 
 		public override bool Equals(object obj)
 		{
 			if (obj is ComparisonNode other)
-				return other.Left.Equals(Left) && other.Right.Equals(Right);
+				return Left.Equals(other.Left) && Right.Equals(other.Right);
 
 			return false;
 		}

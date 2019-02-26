@@ -2,15 +2,9 @@
 {
 	public class AdditionNode : OperatorNode
 	{
-		public AdditionNode(ExpressionNode left, ExpressionNode right)
-		{
-			Left = left;
-			Right = right;
-		}
+		public AdditionNode(ExpressionNode left, ExpressionNode right) : base(left, right) { }
 		// Allow valueless construction
-		public AdditionNode()
-		{
-		}
+		public AdditionNode() { }
 
 		public override ushort GetValue()
 			=> (ushort)(Left + Right);
