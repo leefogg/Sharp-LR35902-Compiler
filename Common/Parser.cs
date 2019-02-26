@@ -1,7 +1,5 @@
 ﻿using Common.Extensions;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Common
 {
@@ -12,7 +10,15 @@ namespace Common
 			if (ushort.TryParse(immediate, out ushort result))
 				return result;
 
-			if (immediate.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
+			if (immediate.Equals("true", StringComparison.InvariantCultureIgnoreCase))
+			{
+				return 1;
+			}
+			else if (immediate.Equals("false", StringComparison.InvariantCultureIgnoreCase))
+			{
+				return 0;
+			}
+			else if (immediate.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
 			{
 				if (immediate.Length == 2)
 					throw new FormatException("Expected 2 hex characters after 0x");

@@ -171,6 +171,13 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
+		public void GetTokenType_Booleans()
+		{
+			Assert.AreEqual(TokenType.Immediate, GetTokenType("true"));
+			Assert.AreEqual(TokenType.Immediate, GetTokenType("false"));
+		}
+
+		[TestMethod]
 		[ExpectedException(typeof(Common.Exceptions.SyntaxException))]
 		public void GetTokenType_Unknown()
 		{

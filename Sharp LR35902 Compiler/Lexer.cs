@@ -44,8 +44,10 @@ namespace Sharp_LR35902_Compiler
 			new TokenDescriptor(@"\{",			TokenType.Grammar),
 			new TokenDescriptor(@"\}",			TokenType.Grammar),
 			new TokenDescriptor(@"\;",			TokenType.Grammar),
-			new TokenDescriptor("[a-z]+",		TokenType.Variable),
+			new TokenDescriptor("true",			TokenType.Immediate),
+			new TokenDescriptor("false",		TokenType.Immediate),
 			new TokenDescriptor("[0-9]+",		TokenType.Immediate),
+			new TokenDescriptor("[a-z]+",		TokenType.Variable),
 		};
 
 		public static List<Token> GetTokenList(string line) => GetTokenList(new[] { line });
