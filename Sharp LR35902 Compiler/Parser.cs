@@ -2,15 +2,23 @@
 using Sharp_LR35902_Compiler.Nodes;
 using System;
 using System.Collections.Generic;
-using Common.Extensions;
+using System.Linq;
 
 using static Sharp_LR35902_Compiler.TokenType;
-using System.Linq;
+using static Common.Parser;
 
 namespace Sharp_LR35902_Compiler
 {
-    public class Parser
+    public static class Parser
     {
+
+		private static readonly Dictionary<char, Func<OperatorNode>> Operators = new Dictionary<char, Func<OperatorNode>>()
+		{
+			{ '+', () => new AdditionNode() },
+			{ '-', () => new SubtractionNode() }
+		};
+
+
 		public static Node CreateAST(IList<Token> tokenlist)
 		{
 			var rootnode = new ASTNode();
@@ -49,7 +57,7 @@ namespace Sharp_LR35902_Compiler
 							{
 								var existingvariable = currentscope.GetMember(token.Value);
 
-								var immediatevalue = Common.Parser.ParseImmediate(valuenode.Value);
+								var immediatevalue = ParseImmediate(valuenode.Value);
 								var immediatedatatype = GetImmedateDataType(immediatevalue);
 								checkCanConvertTypes(immediatedatatype, existingvariable.DataType);
 								currentnode.AddChild(new VariableAssignmentNode(token.Value, new ShortValueNode(immediatevalue)));
@@ -74,7 +82,7 @@ namespace Sharp_LR35902_Compiler
 							}
 							else if (valuenode.Type == Immediate)
 							{
-								var immediatevalue = Common.Parser.ParseImmediate(valuenode.Value);
+								var immediatevalue = ParseImmediate(valuenode.Value);
 								currentnode.AddChild(new AdditionAssignmentNode(assignedvariable.Name, new ShortValueNode(immediatevalue)));
 							}
 							break;
@@ -89,7 +97,7 @@ namespace Sharp_LR35902_Compiler
 							}
 							else if (valuenode.Type == Immediate)
 							{
-								var immediatevalue = Common.Parser.ParseImmediate(valuenode.Value);
+								var immediatevalue = ParseImmediate(valuenode.Value);
 								currentnode.AddChild(new SubtractionAssignmentNode(assignedvariable.Name, new ShortValueNode(immediatevalue)));
 							}
 							break;
@@ -135,7 +143,7 @@ namespace Sharp_LR35902_Compiler
 					}
 					else if (valuenode.Type == Immediate)
 					{
-						var immediatevalue = Common.Parser.ParseImmediate(valuenode.Value);
+						var immediatevalue = ParseImmediate(valuenode.Value);
 						var immediatedatatype = GetImmedateDataType(immediatevalue);
 						checkCanConvertTypes(immediatedatatype, variabledatatype);
 						currentnode.AddChild(new VariableAssignmentNode(variabletoken.Value, new ShortValueNode(immediatevalue)));
@@ -170,43 +178,33 @@ namespace Sharp_LR35902_Compiler
 		}
 
 		public static ExpressionNode CreateExpression(IList<Token> tokens, int index = 0)
-		{
-			return CreateExpression(tokens, out var tokensused);
-		}
+			=> CreateExpression(tokens, out var tokensused);
 		public static ExpressionNode CreateExpression(IList<Token> tokens, out int tokensused, int startindex = 0)
 		{
 			var index = startindex;
 			var nodes = new List<ExpressionNode>();
 
-			var currenttoken = tokens[index];
+			Token currenttoken;
 			do
 			{
+				currenttoken = tokens[index++];
+
 				if (currenttoken.Type == Immediate)
-					nodes.Add(new ShortValueNode(Common.Parser.ParseImmediate(currenttoken.Value)));
+					nodes.Add(new ShortValueNode(ParseImmediate(currenttoken.Value)));
 				else if (currenttoken.Type == Operator)
 					nodes.Add(createOperator(currenttoken.Value));
 				else if (currenttoken.Value == "(")
 				{
-					nodes.Add(CreateExpression(tokens, out tokensused, ++index));
+					nodes.Add(CreateExpression(tokens, out tokensused, index));
 					index += tokensused;
 				}
 
-				index++;
-				if (index >= tokens.Count)
-					break;
-				currenttoken = tokens[index];
-			} while (currenttoken.Value != ")" && currenttoken.Value != ";");
+			} while (index < tokens.Count && currenttoken.Value != ")" && currenttoken.Value != ";");
 
 			tokensused = index - startindex;
 
 			return ConvergeOperators(nodes);
 		}
-
-		private static readonly Dictionary<char, Func<OperatorNode>> Operators = new Dictionary<char, Func<OperatorNode>>()
-		{
-			{ '+', () => new AdditionNode() },
-			{ '-', () => new SubtractionNode() }
-		};
 
 		private static ExpressionNode createOperator(string value)
 		{
