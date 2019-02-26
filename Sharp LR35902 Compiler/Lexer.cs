@@ -37,6 +37,8 @@ namespace Sharp_LR35902_Compiler
 			new TokenDescriptor(@"\+\=",		TokenType.Operator),
 			new TokenDescriptor(@"\-\=",		TokenType.Operator),
 			new TokenDescriptor(@"\=",			TokenType.Operator),
+			new TokenDescriptor(@"\+",			TokenType.Operator),
+			new TokenDescriptor(@"\-",			TokenType.Operator),
 			new TokenDescriptor(@"\(",			TokenType.Grammar),
 			new TokenDescriptor(@"\)",			TokenType.Grammar),
 			new TokenDescriptor(@"\{",			TokenType.Grammar),

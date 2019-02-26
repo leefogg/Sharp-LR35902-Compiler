@@ -54,7 +54,7 @@ namespace Sharp_LR35902_Compiler
 					yield return $"LD A, {getVariableRegister(subassignemntassignment.VariableName)}";
 					if (subassignemntassignment.Value is VariableValueNode variable) {
 						yield return $"SUB A, {getVariableRegister(variable.VariableName)}";
-					} else if (subassignemntassignment.Value is ImmediateValueNode immediate) {
+					} else if (subassignemntassignment.Value is ShortValueNode immediate) {
 						yield return $"SUB A, {immediate.Value}";
 					}
 					yield return $"LD {getVariableRegister(subassignemntassignment.VariableName)}, A";
@@ -62,14 +62,14 @@ namespace Sharp_LR35902_Compiler
 					yield return $"LD A, {getVariableRegister(addassignment.VariableName)}";
 					if (addassignment.Value is VariableValueNode variable) {
 						yield return $"ADD A, {getVariableRegister(variable.VariableName)}";
-					} else if (addassignment.Value is ImmediateValueNode immediate)	{
+					} else if (addassignment.Value is ShortValueNode immediate)	{
 						yield return $"ADD A, {immediate.Value}";
 					}
 					yield return $"LD {getVariableRegister(addassignment.VariableName)}, A";
 				} else if (node is VariableAssignmentNode var) {
 					if (var.Value is VariableValueNode varval)
 						yield return $"LD {getVariableRegister(var.VariableName)}, {getVariableRegister(varval.VariableName)}";
-					else if (var.Value is ImmediateValueNode imval)
+					else if (var.Value is ShortValueNode imval)
 						yield return $"LD {getVariableRegister(var.VariableName)}, {imval.Value}";
 				}
 			}

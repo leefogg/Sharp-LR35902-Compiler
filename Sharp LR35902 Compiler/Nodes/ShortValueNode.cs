@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Sharp_LR35902_Compiler.Nodes
 {
-    public class ImmediateValueNode : ValueNode
+	public class ShortValueNode : ValueNode
     {
-		public ushort Value { get; }
+		public readonly ushort Value;
 
-		public ImmediateValueNode(ushort value)
+		public ShortValueNode(ushort value)
 		{
 			Value = value;
 		}
@@ -20,13 +18,13 @@ namespace Sharp_LR35902_Compiler.Nodes
 
 		public override bool Equals(object obj)
 		{
-			if (obj is ImmediateValueNode)
-			{
-				var other = obj as ImmediateValueNode;
+			if (obj is ShortValueNode other)
 				return other.Value == Value;
-			}
 
 			return false;
 		}
+
+		public override ushort GetValue()
+			=> Value;
 	}
 }

@@ -66,7 +66,7 @@ namespace Sharp_LR35902_Compiler_Tests
 
 			var expectedAST = new ASTNode();
 			expectedAST.AddChild(new VariableDeclarationNode(datatype, variablename));
-			expectedAST.AddChild(new VariableAssignmentNode(variablename, new ImmediateValueNode(variablevalue)));
+			expectedAST.AddChild(new VariableAssignmentNode(variablename, new ShortValueNode(variablevalue)));
 
 			Assert.IsTrue(compareNode(expectedAST, ast));
 		}
@@ -297,7 +297,7 @@ namespace Sharp_LR35902_Compiler_Tests
 
 			var expectedAST = new ASTNode();
 			expectedAST.AddChild(new VariableDeclarationNode(datatype, variablename));
-			expectedAST.AddChild(new VariableAssignmentNode(variablename, new ImmediateValueNode(variablevalue)));
+			expectedAST.AddChild(new VariableAssignmentNode(variablename, new ShortValueNode(variablevalue)));
 
 			Assert.IsTrue(compareNode(expectedAST, ast));
 		}
@@ -325,7 +325,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var expectedAST = new ASTNode();
 			expectedAST.AddChild(new VariableDeclarationNode("byte", "x"));
 			expectedAST.AddChild(new VariableDeclarationNode("byte", "y"));
-			expectedAST.AddChild(new VariableAssignmentNode("y", new ImmediateValueNode(5)));
+			expectedAST.AddChild(new VariableAssignmentNode("y", new ShortValueNode(5)));
 			expectedAST.AddChild(new AdditionAssignmentNode("x", new VariableValueNode("y")));
 
 			Assert.IsTrue(compareNode(expectedAST, ast));
@@ -349,7 +349,7 @@ namespace Sharp_LR35902_Compiler_Tests
 
 			var expectedAST = new ASTNode();
 			expectedAST.AddChild(new VariableDeclarationNode("byte", "x"));
-			expectedAST.AddChild(new AdditionAssignmentNode("x", new ImmediateValueNode(10)));
+			expectedAST.AddChild(new AdditionAssignmentNode("x", new ShortValueNode(10)));
 
 			Assert.IsTrue(compareNode(expectedAST, ast));
 		}
@@ -377,7 +377,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var expectedAST = new ASTNode();
 			expectedAST.AddChild(new VariableDeclarationNode("byte", "x"));
 			expectedAST.AddChild(new VariableDeclarationNode("byte", "y"));
-			expectedAST.AddChild(new VariableAssignmentNode("y", new ImmediateValueNode(5)));
+			expectedAST.AddChild(new VariableAssignmentNode("y", new ShortValueNode(5)));
 			expectedAST.AddChild(new SubtractionAssignmentNode("x", new VariableValueNode("y")));
 
 			Assert.IsTrue(compareNode(expectedAST, ast));
@@ -401,7 +401,7 @@ namespace Sharp_LR35902_Compiler_Tests
 
 			var expectedAST = new ASTNode();
 			expectedAST.AddChild(new VariableDeclarationNode("byte", "x"));
-			expectedAST.AddChild(new SubtractionAssignmentNode("x", new ImmediateValueNode(10)));
+			expectedAST.AddChild(new SubtractionAssignmentNode("x", new ShortValueNode(10)));
 
 			Assert.IsTrue(compareNode(expectedAST, ast));
 		}
@@ -543,6 +543,78 @@ namespace Sharp_LR35902_Compiler_Tests
 			expectedast.AddChild(new GotoNode(labelname));
 
 			Assert.IsTrue(compareNode(expectedast, ast));
+		}
+
+		[TestMethod]
+		public void CreateExpression_SingleShort()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "1")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			var expectedexpression = new ShortValueNode(1);
+
+			compareNode(expectedexpression, expression);
+		}
+
+		[TestMethod]
+		public void CreateExpression_Addition()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Immediate, "1")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			var expectedexpression = new AdditionNode(new ShortValueNode(1), new ShortValueNode(1));
+			
+			compareNode(expectedexpression, expression);
+		}
+
+		[TestMethod]
+		public void CreateExpression_Addition_GetValue()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Immediate, "1")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			Assert.AreEqual(2, expression.GetValue());
+		}
+
+		[TestMethod]
+		public void CreateExpression_Addition_Multiple()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Immediate, "1")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			var expectedexpression = new AdditionNode(
+				new AdditionNode(
+					new ShortValueNode(1),
+					new ShortValueNode(1)
+				),
+				new ShortValueNode(1)
+			);
+
+			compareNode(expectedexpression, expression);
 		}
 
 		[TestMethod]

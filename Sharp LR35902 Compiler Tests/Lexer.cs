@@ -44,6 +44,19 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
+		public void GetTokenType_Add()
+		{
+			Assert.AreEqual(TokenType.Operator, GetTokenType("+"));
+		}
+
+		[TestMethod]
+		public void GetTokenType_Subtract()
+		{
+			Assert.AreEqual(TokenType.Operator, GetTokenType("-"));
+		}
+
+
+		[TestMethod]
 		public void GetTokenType_Byte()
 		{
 			Assert.AreEqual(TokenType.DataType, GetTokenType("byte"));

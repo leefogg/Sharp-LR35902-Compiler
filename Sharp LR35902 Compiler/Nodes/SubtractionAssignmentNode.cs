@@ -6,7 +6,7 @@ namespace Sharp_LR35902_Compiler.Nodes
 {
 	public class SubtractionAssignmentNode : VariableAssignmentNode
 	{
-		public SubtractionAssignmentNode(string variableName, ValueNode value) : base(variableName, value)
+		public SubtractionAssignmentNode(string variableName, Node value) : base(variableName, value)
 		{
 		}
 

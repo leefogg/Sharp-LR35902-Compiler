@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Sharp_LR35902_Compiler.Nodes
 {
-    public class VariableValueNode : ValueNode
+    public class VariableValueNode : Node
     {
 		public string VariableName { get; }
 

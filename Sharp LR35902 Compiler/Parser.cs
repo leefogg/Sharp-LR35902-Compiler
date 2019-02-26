@@ -52,7 +52,7 @@ namespace Sharp_LR35902_Compiler
 								var immediatevalue = Common.Parser.ParseImmediate(valuenode.Value);
 								var immediatedatatype = GetImmedateDataType(immediatevalue);
 								checkCanConvertTypes(immediatedatatype, existingvariable.DataType);
-								currentnode.AddChild(new VariableAssignmentNode(token.Value, new ImmediateValueNode(immediatevalue)));
+								currentnode.AddChild(new VariableAssignmentNode(token.Value, new ShortValueNode(immediatevalue)));
 							}
 							else
 								throw new SyntaxException($"Unexpected token '{valuenode.Value} after ='");
@@ -75,7 +75,7 @@ namespace Sharp_LR35902_Compiler
 							else if (valuenode.Type == Immediate)
 							{
 								var immediatevalue = Common.Parser.ParseImmediate(valuenode.Value);
-								currentnode.AddChild(new AdditionAssignmentNode(assignedvariable.Name, new ImmediateValueNode(immediatevalue)));
+								currentnode.AddChild(new AdditionAssignmentNode(assignedvariable.Name, new ShortValueNode(immediatevalue)));
 							}
 							break;
 						case "-=":
@@ -90,7 +90,7 @@ namespace Sharp_LR35902_Compiler
 							else if (valuenode.Type == Immediate)
 							{
 								var immediatevalue = Common.Parser.ParseImmediate(valuenode.Value);
-								currentnode.AddChild(new SubtractionAssignmentNode(assignedvariable.Name, new ImmediateValueNode(immediatevalue)));
+								currentnode.AddChild(new SubtractionAssignmentNode(assignedvariable.Name, new ShortValueNode(immediatevalue)));
 							}
 							break;
 						default:
@@ -138,7 +138,7 @@ namespace Sharp_LR35902_Compiler
 						var immediatevalue = Common.Parser.ParseImmediate(valuenode.Value);
 						var immediatedatatype = GetImmedateDataType(immediatevalue);
 						checkCanConvertTypes(immediatedatatype, variabledatatype);
-						currentnode.AddChild(new VariableAssignmentNode(variabletoken.Value, new ImmediateValueNode(immediatevalue)));
+						currentnode.AddChild(new VariableAssignmentNode(variabletoken.Value, new ShortValueNode(immediatevalue)));
 					}
 				}
                 else if (token.Type == ControlFlow)
@@ -167,6 +167,86 @@ namespace Sharp_LR35902_Compiler
 			}
 
 			return rootnode;
+		}
+
+		public static ExpressionNode CreateExpression(IList<Token> tokens, int index = 0)
+		{
+			var nodes = new List<ExpressionNode>();
+
+			var currenttoken = tokens[index];
+			do
+			{
+				if (currenttoken.Type == Immediate)
+					nodes.Add(new ShortValueNode(Common.Parser.ParseImmediate(currenttoken.Value)));
+				if (currenttoken.Type == Operator)
+					nodes.Add(createOperator(currenttoken.Value));
+
+				index++;
+				if (index >= tokens.Count)
+					break;
+				currenttoken = tokens[index];
+			} while (currenttoken.Value != ")" && currenttoken.Value != ";");
+
+			return ConvergeOperators(nodes);
+		}
+
+		private static readonly Dictionary<char, Func<OperatorNode>> Operators = new Dictionary<char, Func<OperatorNode>>()
+		{
+			{ '+', () => new AdditionNode() }
+		};
+
+		private static ExpressionNode createOperator(string value)
+		{
+			var op = value[0];
+			return Operators[op]();
+		}
+
+		private static ExpressionNode ConvergeOperators(List<ExpressionNode> nodes)
+		{
+			if (nodes.Count == 0)
+				return null;
+			if (nodes.Count == 1)
+				return nodes[0];
+
+			ConvergeOperators<AdditionNode>(nodes);
+
+			return nodes[0];
+		}
+
+		private static void ConvergeOperators<T>(List<ExpressionNode> nodes) where T : OperatorNode
+		{
+			for(var i=0; i<nodes.Count - 1; i++)
+			{
+				if (!(nodes[i] is T))
+					continue;
+
+				// Validate the left and right sides
+				if (i - 1 < 0)
+					throw new SyntaxException("No expression found on the left of the operator.");
+				if (i + 1 >= nodes.Count)
+					throw new SyntaxException("No expression found on the right of the operator.");
+				if (nodes[i-1] is ExpressionNode left)
+				{
+					if (nodes[i+1] is ExpressionNode right)
+					{
+						var op = nodes[i] as OperatorNode;
+						op.Left = left;
+						op.Right = right;
+
+						nodes.RemoveAt(i - 1);
+						i--;
+						nodes.RemoveAt(i + 1);
+					} 
+					else
+					{
+						throw new SyntaxException("The right side of the operator is not an expresison.");
+					}
+				} 
+				else
+				{
+					throw new SyntaxException("The left side of the operator is not an expresison.");
+				}
+			}
 		}
 
 		public static PrimitiveDataType GetImmedateDataType(ushort value)

@@ -6,7 +6,7 @@ namespace Sharp_LR35902_Compiler.Nodes
 {
 	public class AdditionAssignmentNode : VariableAssignmentNode
 	{
-		public AdditionAssignmentNode(string variableName, ValueNode value) : base(variableName, value)
+		public AdditionAssignmentNode(string variableName, Node value) : base(variableName, value)
 		{
 		}
 
