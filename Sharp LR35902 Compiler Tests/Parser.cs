@@ -618,6 +618,105 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
+		public void CreateExpression_Subtraction()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "-"),
+				new Token(TokenType.Immediate, "1")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			var expectedexpression = new SubtractionNode(new ShortValueNode(1), new ShortValueNode(1));
+
+			compareNode(expectedexpression, expression);
+		}
+
+		[TestMethod]
+		public void CreateExpression_Subtraction_GetValue()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "-"),
+				new Token(TokenType.Immediate, "1")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			Assert.AreEqual(0, expression.GetValue());
+		}
+
+		[TestMethod]
+		public void CreateExpression_Subtraction_Multiple()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "-"),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "-"),
+				new Token(TokenType.Immediate, "1")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			var expectedexpression = new SubtractionNode(
+				new SubtractionNode(
+					new ShortValueNode(1),
+					new ShortValueNode(1)
+				),
+				new ShortValueNode(1)
+			);
+
+			compareNode(expectedexpression, expression);
+		}
+
+		[TestMethod]
+		public void CreateExpression_Subtraction_With_Addition()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "-"),
+				new Token(TokenType.Immediate, "1")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			var expectedexpression = new SubtractionNode(
+				new AdditionNode(
+					new ShortValueNode(1),
+					new ShortValueNode(1)
+				),
+				new ShortValueNode(1)
+			);
+
+			compareNode(expectedexpression, expression);
+		}
+
+		[TestMethod]
+		public void CreateExpression_Subtraction_With_Addition_Value()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "-"),
+				new Token(TokenType.Immediate, "1")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			Assert.AreEqual(1, expression.GetValue());
+		}
+
+		[TestMethod]
 		public void GetImmediateDataType_Smallest()
 		{
 			Assert.AreSame(BuiltIn.DataTypes.Byte, GetImmedateDataType(19));

@@ -192,7 +192,8 @@ namespace Sharp_LR35902_Compiler
 
 		private static readonly Dictionary<char, Func<OperatorNode>> Operators = new Dictionary<char, Func<OperatorNode>>()
 		{
-			{ '+', () => new AdditionNode() }
+			{ '+', () => new AdditionNode() },
+			{ '-', () => new SubtractionNode() }
 		};
 
 		private static ExpressionNode createOperator(string value)
@@ -209,6 +210,7 @@ namespace Sharp_LR35902_Compiler
 				return nodes[0];
 
 			ConvergeOperators<AdditionNode>(nodes);
+			ConvergeOperators<SubtractionNode>(nodes);
 
 			return nodes[0];
 		}
