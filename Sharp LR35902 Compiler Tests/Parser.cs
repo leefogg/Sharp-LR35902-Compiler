@@ -68,7 +68,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			expectedAST.AddChild(new VariableDeclarationNode(datatype, variablename));
 			expectedAST.AddChild(new VariableAssignmentNode(variablename, new ShortValueNode(variablevalue)));
 
-			Assert.IsTrue(compareNode(expectedAST, ast));
+			compareNode(expectedAST, ast);
 		}
 
 		[TestMethod]
@@ -208,7 +208,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var expectedAST = new ASTNode();
 			expectedAST.AddChild(new VariableDeclarationNode(datatype, variablename));
 
-			Assert.IsTrue(compareNode(expectedAST, ast));
+			compareNode(expectedAST, ast);
 		}
 
 		[TestMethod]
@@ -299,7 +299,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			expectedAST.AddChild(new VariableDeclarationNode(datatype, variablename));
 			expectedAST.AddChild(new VariableAssignmentNode(variablename, new ShortValueNode(variablevalue)));
 
-			Assert.IsTrue(compareNode(expectedAST, ast));
+			compareNode(expectedAST, ast);
 		}
 
 		[TestMethod]
@@ -328,7 +328,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			expectedAST.AddChild(new VariableAssignmentNode("y", new ShortValueNode(5)));
 			expectedAST.AddChild(new AdditionAssignmentNode("x", new VariableValueNode("y")));
 
-			Assert.IsTrue(compareNode(expectedAST, ast));
+			compareNode(expectedAST, ast);
 		}
 
 		[TestMethod]
@@ -351,7 +351,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			expectedAST.AddChild(new VariableDeclarationNode("byte", "x"));
 			expectedAST.AddChild(new AdditionAssignmentNode("x", new ShortValueNode(10)));
 
-			Assert.IsTrue(compareNode(expectedAST, ast));
+			compareNode(expectedAST, ast);
 		}
 
 		[TestMethod]
@@ -380,7 +380,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			expectedAST.AddChild(new VariableAssignmentNode("y", new ShortValueNode(5)));
 			expectedAST.AddChild(new SubtractionAssignmentNode("x", new VariableValueNode("y")));
 
-			Assert.IsTrue(compareNode(expectedAST, ast));
+			compareNode(expectedAST, ast);
 		}
 
 		[TestMethod]
@@ -403,7 +403,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			expectedAST.AddChild(new VariableDeclarationNode("byte", "x"));
 			expectedAST.AddChild(new SubtractionAssignmentNode("x", new ShortValueNode(10)));
 
-			Assert.IsTrue(compareNode(expectedAST, ast));
+			compareNode(expectedAST, ast);
 		}
 
 
@@ -431,7 +431,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			expectedAST.AddChild(new VariableDeclarationNode(datatype, variablename));
 			expectedAST.AddChild(new VariableAssignmentNode(variablename, new VariableValueNode(othervariablename)));
 
-			Assert.IsTrue(compareNode(expectedAST, ast));
+			compareNode(expectedAST, ast);
 		}
 
 		[TestMethod]
@@ -542,7 +542,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var expectedast = new ASTNode();
 			expectedast.AddChild(new GotoNode(labelname));
 
-			Assert.IsTrue(compareNode(expectedast, ast));
+			compareNode(expectedast, ast);
 		}
 
 		[TestMethod]
@@ -717,6 +717,86 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
+		public void CreateExpression_Parentheses()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Grammar, "("),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Grammar, ")")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			var expectedexpression = new AdditionNode(new ShortValueNode(1), new ShortValueNode(1));
+
+			compareNode(expectedexpression, expression);
+		}
+
+		[TestMethod]
+		public void CreateExpression_Parentheses_Order()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Grammar, "("),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Grammar, ")"),
+
+				new Token(TokenType.Operator, "-"),
+
+				new Token(TokenType.Grammar, "("),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Grammar, ")")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			var expected = new SubtractionNode(
+				new AdditionNode(
+					new ShortValueNode(1),
+					new ShortValueNode(1)
+				),
+				new AdditionNode(
+					new ShortValueNode(1),
+					new ShortValueNode(1)
+				)
+			);
+
+			compareNode(expected, expression);
+		}
+
+		[TestMethod]
+		public void CreateExpression_Parentheses_Order_Value()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Grammar, "("),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Grammar, ")"),
+
+				new Token(TokenType.Operator, "-"),
+
+				new Token(TokenType.Grammar, "("),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Grammar, ")")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			Assert.AreEqual(0, expression.GetValue());
+		}
+
+		[TestMethod]
 		public void GetImmediateDataType_Smallest()
 		{
 			Assert.AreSame(BuiltIn.DataTypes.Byte, GetImmedateDataType(19));
@@ -724,22 +804,20 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 
-		private bool compareNode(Node expected, Node actual)
+		private void compareNode(Node expected, Node actual)
 		{
 			var actualchildren = actual.GetChildren();
 			var expectedchilren = expected.GetChildren();
 
 			if (actualchildren.Length != expectedchilren.Length)
-				return false;
+				Assert.Fail();
 
 			for (var i = 0; i < expectedchilren.Length; i++)
 				if (!actualchildren[i].Equals(expectedchilren[i]))
-					return false;
+					Assert.Fail();
 
 			for (var i = 0; i < actualchildren.Length; i++)
-				return compareNode(expectedchilren[i], actualchildren[i]);
-
-			return true; // Only if both have no children
+				compareNode(expectedchilren[i], actualchildren[i]);
 		}
 
 	}

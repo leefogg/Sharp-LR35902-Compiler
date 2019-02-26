@@ -171,6 +171,11 @@ namespace Sharp_LR35902_Compiler
 
 		public static ExpressionNode CreateExpression(IList<Token> tokens, int index = 0)
 		{
+			return CreateExpression(tokens, out var tokensused);
+		}
+		public static ExpressionNode CreateExpression(IList<Token> tokens, out int tokensused, int startindex = 0)
+		{
+			var index = startindex;
 			var nodes = new List<ExpressionNode>();
 
 			var currenttoken = tokens[index];
@@ -178,14 +183,21 @@ namespace Sharp_LR35902_Compiler
 			{
 				if (currenttoken.Type == Immediate)
 					nodes.Add(new ShortValueNode(Common.Parser.ParseImmediate(currenttoken.Value)));
-				if (currenttoken.Type == Operator)
+				else if (currenttoken.Type == Operator)
 					nodes.Add(createOperator(currenttoken.Value));
+				else if (currenttoken.Value == "(")
+				{
+					nodes.Add(CreateExpression(tokens, out tokensused, ++index));
+					index += tokensused;
+				}
 
 				index++;
 				if (index >= tokens.Count)
 					break;
 				currenttoken = tokens[index];
 			} while (currenttoken.Value != ")" && currenttoken.Value != ";");
+
+			tokensused = index - startindex;
 
 			return ConvergeOperators(nodes);
 		}
@@ -217,7 +229,7 @@ namespace Sharp_LR35902_Compiler
 
 		private static void ConvergeOperators<T>(List<ExpressionNode> nodes) where T : OperatorNode
 		{
-			for(var i=0; i<nodes.Count - 1; i++)
+			for(var i=1; i<nodes.Count - 1; i++)
 			{
 				if (!(nodes[i] is T))
 					continue;

@@ -4,5 +4,7 @@
 	{
 		public ExpressionNode Left { get; set; }
 		public ExpressionNode Right { get; set; }
+
+		public override Node[] GetChildren() => new[] { Left, Right };
 	}
 }

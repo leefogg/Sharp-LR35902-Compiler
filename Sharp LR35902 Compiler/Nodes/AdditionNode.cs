@@ -14,5 +14,13 @@
 
 		public override ushort GetValue()
 			=> (ushort)(Left + Right);
+
+		public override bool Equals(object obj)
+		{
+			if (obj is AdditionNode other)
+				return Left.Equals(other.Left) && Right.Equals(other.Right);
+
+			return false;
+		}
 	}
 }
