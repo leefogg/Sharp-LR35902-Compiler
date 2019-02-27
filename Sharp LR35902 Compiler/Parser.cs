@@ -14,9 +14,11 @@ namespace Sharp_LR35902_Compiler
 
 		private static readonly Dictionary<string, Func<OperatorNode>> Operators = new Dictionary<string, Func<OperatorNode>>()
 		{
-			{ "+", () => new AdditionNode() },
-			{ "-", () => new SubtractionNode() },
-			{ "==", () => new EqualsComparisonNode() }
+			{ "+",  () => new AdditionNode() },
+			{ "-",  () => new SubtractionNode() },
+			{ "==", () => new EqualsComparisonNode() },
+			{ ">",  () => new MoreThanComparisonNode() },
+			{ "<",  () => new LessThanComparisonNode() }
 		};
 
 
@@ -220,7 +222,8 @@ namespace Sharp_LR35902_Compiler
 				return nodes[0];
 
 			// Boolean operators
-			ConvergeOperators<EqualsComparisonNode>(nodes);
+			// Should be converged in order of appearance
+			ConvergeOperators<ComparisonNode>(nodes);
 			// Math operators
 			ConvergeOperators<AdditionNode>(nodes);
 			ConvergeOperators<SubtractionNode>(nodes);

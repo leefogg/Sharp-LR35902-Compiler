@@ -873,6 +873,136 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
+		public void CreateExpression_LessThan()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "<"),
+				new Token(TokenType.Immediate, "2")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			var expected = new LessThanComparisonNode(
+				new ShortValueNode(1),
+				new ShortValueNode(2)
+			);
+
+			compareNode(expected, expression);
+		}
+
+		[TestMethod]
+		public void CreateExpression_LessThan_Pass()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "<"),
+				new Token(TokenType.Immediate, "2")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			Assert.AreEqual(1, expression.GetValue());
+		}
+
+		[TestMethod]
+		public void CreateExpression_LessThan_Fail()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "2"),
+				new Token(TokenType.Operator, "<"),
+				new Token(TokenType.Immediate, "1")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			Assert.AreEqual(0, expression.GetValue());
+		}
+
+		[TestMethod]
+		public void CreateExpression_MoreThan()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "2"),
+				new Token(TokenType.Operator, ">"),
+				new Token(TokenType.Immediate, "1")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			var expected = new MoreThanComparisonNode(
+				new ShortValueNode(2),
+				new ShortValueNode(1)
+			);
+
+			compareNode(expected, expression);
+		}
+
+		[TestMethod]
+		public void CreateExpression_MoreThan_Pass()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "2"),
+				new Token(TokenType.Operator, ">"),
+				new Token(TokenType.Immediate, "1")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			Assert.AreEqual(1, expression.GetValue());
+		}
+
+		[TestMethod]
+		public void CreateExpression_MoreThan_Fail()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, ">"),
+				new Token(TokenType.Immediate, "2")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			Assert.AreEqual(0, expression.GetValue());
+		}
+
+		[TestMethod]
+		public void CreateExpression_Comparisons_Order()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, ">"),
+				new Token(TokenType.Immediate, "2"),
+				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "<"),
+				new Token(TokenType.Immediate, "2")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			var expected = new AdditionNode(
+				new MoreThanComparisonNode(
+					new ShortValueNode(1),
+					new ShortValueNode(2)
+				),
+				new LessThanComparisonNode(
+					new ShortValueNode(1),
+					new ShortValueNode(2)
+				)
+			);
+
+			compareNode(expected, expression);
+		}
+
+		[TestMethod]
 		public void GetImmediateDataType_Smallest()
 		{
 			Assert.AreSame(BuiltIn.DataTypes.Byte, GetImmedateDataType(19));
