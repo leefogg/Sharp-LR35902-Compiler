@@ -19,7 +19,9 @@ namespace Sharp_LR35902_Compiler
 			{ "==", () => new EqualsComparisonNode() },
 			{ ">",  () => new MoreThanComparisonNode() },
 			{ "<",  () => new LessThanComparisonNode() },
-			{ "!",	() => new NegateNode() }
+			{ "&&", () => new AndComparisonNode() },
+			{ "||", () => new OrComparisonOperatorNode() },
+			{ "!",  () => new NegateNode() }
 		};
 
 

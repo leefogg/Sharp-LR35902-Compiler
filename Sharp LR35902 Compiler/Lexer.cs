@@ -1,5 +1,4 @@
 ﻿using Common.Exceptions;
-using Common.Extensions;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -32,6 +31,8 @@ namespace Sharp_LR35902_Compiler
 			new TokenDescriptor("byte",			TokenType.DataType),
 			new TokenDescriptor(@"\=\=",		TokenType.Comparison),
 			new TokenDescriptor(@"\!\=",		TokenType.Comparison),
+			new TokenDescriptor(@"\&\&",		TokenType.Comparison),
+			new TokenDescriptor(@"\|\|",		TokenType.Comparison),
 			new TokenDescriptor(@"\+\+",		TokenType.Operator),
 			new TokenDescriptor(@"\-\-",		TokenType.Operator), 
 			new TokenDescriptor(@"\+\=",		TokenType.Operator),

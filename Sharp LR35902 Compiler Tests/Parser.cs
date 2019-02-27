@@ -1033,6 +1033,77 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
+		public void CreateExpression_And()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "&&"),
+				new Token(TokenType.Immediate, "1")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			var expected = new AndComparisonNode(
+				new ShortValueNode(1),
+				new ShortValueNode(1)
+			);
+
+			compareNode(expected, expression);
+		}
+
+		[TestMethod]
+		public void CreateExpression_And_Value()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "&&"),
+				new Token(TokenType.Immediate, "1")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			Assert.AreEqual(1, expression.GetValue());
+		}
+
+		[TestMethod]
+		public void CreateExpression_Or()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "||"),
+				new Token(TokenType.Immediate, "0")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			var expected = new OrComparisonOperatorNode(
+				new ShortValueNode(1),
+				new ShortValueNode(0)
+			);
+
+			compareNode(expected, expression);
+		}
+
+		[TestMethod]
+		public void CreateExpression_Or_Value()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "||"),
+				new Token(TokenType.Immediate, "0")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			Assert.AreEqual(1, expression.GetValue());
+		}
+
+
+		[TestMethod]
 		public void GetImmediateDataType_Smallest()
 		{
 			Assert.AreSame(BuiltIn.DataTypes.Byte, GetImmedateDataType(19));
