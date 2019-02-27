@@ -30,7 +30,6 @@ namespace Sharp_LR35902_Compiler
 			new TokenDescriptor("goto",			TokenType.ControlFlow),
 			new TokenDescriptor("byte",			TokenType.DataType),
 			new TokenDescriptor(@"\=\=",		TokenType.Comparison),
-			new TokenDescriptor(@"\!\=",		TokenType.Comparison),
 			new TokenDescriptor(@"\&\&",		TokenType.Comparison),
 			new TokenDescriptor(@"\|\|",		TokenType.Comparison),
 			new TokenDescriptor(@"\+\+",		TokenType.Operator),

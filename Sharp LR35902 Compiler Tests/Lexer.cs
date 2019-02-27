@@ -69,12 +69,6 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void GetTokenType_NotEquals()
-		{
-			Assert.AreEqual(TokenType.Comparison, GetTokenType("!="));
-		}
-
-		[TestMethod]
 		public void GetTokenType_If()
 		{
 			Assert.AreEqual(TokenType.ControlFlow, GetTokenType("if"));
