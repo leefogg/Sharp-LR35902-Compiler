@@ -178,6 +178,12 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
+		public void GetTokenType_Negate()
+		{
+			Assert.AreEqual(TokenType.Operator, GetTokenType("!"));
+		}
+
+		[TestMethod]
 		[ExpectedException(typeof(Common.Exceptions.SyntaxException))]
 		public void GetTokenType_Unknown()
 		{

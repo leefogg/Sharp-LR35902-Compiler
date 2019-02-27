@@ -1003,6 +1003,36 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
+		public void CreateExpression_Negate()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Operator, "!"),
+				new Token(TokenType.Immediate, "0")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			var expected = new NegateNode(new ShortValueNode(0));
+
+			compareNode(expected, expression);
+		}
+
+		[TestMethod]
+		public void CreateExpression_Negate_Value()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Operator, "!"),
+				new Token(TokenType.Immediate, "0")
+			};
+
+			var expression = CreateExpression(tokens);
+
+			Assert.AreEqual(1, expression.GetValue());
+		}
+
+		[TestMethod]
 		public void GetImmediateDataType_Smallest()
 		{
 			Assert.AreSame(BuiltIn.DataTypes.Byte, GetImmedateDataType(19));

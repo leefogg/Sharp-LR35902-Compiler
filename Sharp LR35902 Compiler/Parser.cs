@@ -12,13 +12,14 @@ namespace Sharp_LR35902_Compiler
     public static class Parser
     {
 
-		private static readonly Dictionary<string, Func<OperatorNode>> Operators = new Dictionary<string, Func<OperatorNode>>()
+		private static readonly Dictionary<string, Func<ExpressionNode>> Operators = new Dictionary<string, Func<ExpressionNode>>()
 		{
 			{ "+",  () => new AdditionNode() },
 			{ "-",  () => new SubtractionNode() },
 			{ "==", () => new EqualsComparisonNode() },
 			{ ">",  () => new MoreThanComparisonNode() },
-			{ "<",  () => new LessThanComparisonNode() }
+			{ "<",  () => new LessThanComparisonNode() },
+			{ "!",	() => new NegateNode() }
 		};
 
 
@@ -224,10 +225,12 @@ namespace Sharp_LR35902_Compiler
 			// Boolean operators
 			// Should be converged in order of appearance
 			ConvergeOperators<ComparisonNode>(nodes);
+			ConvergeNegateOperator(nodes);
 			// Math operators
 			ConvergeOperators<AdditionNode>(nodes);
 			ConvergeOperators<SubtractionNode>(nodes);
 
+			// TODO: Throw if there is more than one as expresion isn't complete
 			return nodes[0];
 		}
 
@@ -263,6 +266,30 @@ namespace Sharp_LR35902_Compiler
 				else
 				{
 					throw new SyntaxException("The left side of the operator is not an expresison.");
+				}
+			}
+		}
+
+		// Annoyingly the negate operator is the only one that requires a right side expression only
+		private static void ConvergeNegateOperator(List<ExpressionNode> nodes)
+		{
+			for (var i=0; i<nodes.Count-1; i++)
+			{
+				if (!(nodes[i] is NegateNode))
+					continue;
+
+				// No need to check bounds as its enforced in the loop condition
+
+				if (nodes[i+1] is ExpressionNode right)
+				{
+					var negate = nodes[i] as NegateNode;
+					negate.Expression = right;
+
+					nodes.RemoveAt(i+1);
+				}
+				else
+				{
+					throw new SyntaxException("The right side of the operator is not an expresison.");
 				}
 			}
 		}
