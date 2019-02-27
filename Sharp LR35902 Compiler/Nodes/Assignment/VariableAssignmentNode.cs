@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Sharp_LR35902_Compiler.Nodes
 {
-    public class VariableAssignmentNode : Node
-    {
+	public class VariableAssignmentNode : Node
+	{
 		public string VariableName { get; }
 		public Node Value { get; }
 
@@ -15,13 +13,13 @@ namespace Sharp_LR35902_Compiler.Nodes
 			Value = value;
 		}
 
-        public override IEnumerable<string> GetUsedRegisterNames()
-        {
-            yield return VariableName;
+		public override IEnumerable<string> GetUsedRegisterNames()
+		{
+			yield return VariableName;
 
-            foreach (var usedvariable in Value.GetUsedRegisterNames())
-                yield return usedvariable;
-        }
+			foreach (var usedvariable in Value.GetUsedRegisterNames())
+				yield return usedvariable;
+		}
 
 		public override bool Equals(object obj)
 		{
@@ -30,5 +28,7 @@ namespace Sharp_LR35902_Compiler.Nodes
 
 			return false;
 		}
+
+		public override Node[] GetChildren() => new[] { Value };
 	}
 }

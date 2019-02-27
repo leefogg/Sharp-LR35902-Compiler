@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Sharp_LR35902_Compiler.Nodes
 {
-    public class IfNode : Node
+	public class IfNode : Node
     {
 		public ExpressionNode Condition { get; }
-        public Node IfTrue { get; }
+        public BlockNode IfTrue { get; }
 
-        public IfNode(ExpressionNode condition, Node iftrue)
+        public IfNode(ExpressionNode condition, BlockNode iftrue)
 		{
             Condition = condition;
             IfTrue = iftrue;
@@ -30,5 +29,7 @@ namespace Sharp_LR35902_Compiler.Nodes
 
 			return false;
 		}
+
+		public override Node[] GetChildren() => Condition.GetChildren().Concat(IfTrue.GetChildren()).ToArray();
 	}
 }

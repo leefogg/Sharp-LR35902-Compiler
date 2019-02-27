@@ -2,5 +2,6 @@
 {
 	public abstract class ValueNode : ExpressionNode
 	{
+		public override Node[] GetChildren() => NoChildren;
 	}
 }

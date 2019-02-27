@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Sharp_LR35902_Compiler.Nodes
 {
-    public class IncrementNode : Node
+	public class IncrementNode : Node
     {
 		public string VariableName { get; }
 
@@ -25,5 +23,7 @@ namespace Sharp_LR35902_Compiler.Nodes
 
 			return false;
 		}
+
+		public override Node[] GetChildren() => NoChildren;
 	}
 }

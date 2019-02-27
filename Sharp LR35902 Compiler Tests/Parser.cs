@@ -19,7 +19,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var variablename = "x";
 			var tokens = new List<Token>() {
 				new Token(TokenType.Variable, variablename),
-				new Token(TokenType.Operator, "++")
+				new Token(TokenType.Operator, BuiltIn.Operators.Increment)
 			};
 
 			var ast = CreateAST(tokens);
@@ -36,7 +36,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var variablename = "x";
 			var tokens = new List<Token>() {
 				new Token(TokenType.Variable, variablename),
-				new Token(TokenType.Operator, "--")
+				new Token(TokenType.Operator, BuiltIn.Operators.Decrement)
 			};
 
 			var ast = CreateAST(tokens);
@@ -58,7 +58,7 @@ namespace Sharp_LR35902_Compiler_Tests
 				new Token(TokenType.Variable, variablename),
 				new Token(TokenType.Grammar, ";"),
 				new Token(TokenType.Variable, variablename),
-				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
 				new Token(TokenType.Immediate, variablevalue.ToString())
 			};
 
@@ -82,7 +82,7 @@ namespace Sharp_LR35902_Compiler_Tests
 				new Token(TokenType.Variable, variablename),
 				new Token(TokenType.Grammar, ";"),
 				new Token(TokenType.Variable, variablename),
-				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
 				new Token(TokenType.Immediate, variablevalue.ToString())
 			};
 
@@ -97,7 +97,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var variablevalue = 42;
 			var tokens = new List<Token>() {
 				new Token(TokenType.Variable, variablename),
-				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
 				new Token(TokenType.Immediate, variablevalue.ToString())
 			};
 
@@ -118,7 +118,7 @@ namespace Sharp_LR35902_Compiler_Tests
 				new Token(TokenType.Variable, othervariablename),
 				new Token(TokenType.Grammar, ";"),
 				new Token(TokenType.Variable, variablename),
-				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
 				new Token(TokenType.Variable, othervariablename)
 			};
 
@@ -139,7 +139,7 @@ namespace Sharp_LR35902_Compiler_Tests
 				new Token(TokenType.Variable, "x"),
 				new Token(TokenType.Grammar, ";"),
 				new Token(TokenType.Variable, "x"),
-				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
 				new Token(TokenType.Variable, "y")
 			};
 
@@ -155,7 +155,7 @@ namespace Sharp_LR35902_Compiler_Tests
 				new Token(TokenType.Variable, "y"),
 				new Token(TokenType.Grammar, ";"),
 				new Token(TokenType.Variable, "x"),
-				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
 				new Token(TokenType.Variable, "y")
 			};
 
@@ -172,7 +172,7 @@ namespace Sharp_LR35902_Compiler_Tests
 				new Token(TokenType.Variable, variablename),
 				new Token(TokenType.Grammar, ";"),
 				new Token(TokenType.Variable, variablename),
-				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
 				new Token(TokenType.Grammar, ";")
 			};
 
@@ -267,7 +267,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new List<Token>() {
 				new Token(TokenType.DataType, "byte"),
 				new Token(TokenType.Variable, "x"),
-				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
 				new Token(TokenType.Immediate, "42"),
 				new Token(TokenType.Grammar, ";"),
 				new Token(TokenType.DataType, "byte"),
@@ -289,7 +289,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new List<Token>() {
 				new Token(TokenType.DataType, datatype),
 				new Token(TokenType.Variable, variablename),
-				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
 				new Token(TokenType.Immediate, variablevalue.ToString())
 			};
 
@@ -312,7 +312,7 @@ namespace Sharp_LR35902_Compiler_Tests
 				new Token(TokenType.Grammar, ";"),
 				new Token(TokenType.DataType, "byte"),
 				new Token(TokenType.Variable, "y"),
-				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
 				new Token(TokenType.Immediate, "5"),
 
 				new Token(TokenType.Variable, "x"),
@@ -364,7 +364,7 @@ namespace Sharp_LR35902_Compiler_Tests
 				new Token(TokenType.Grammar, ";"),
 				new Token(TokenType.DataType, "byte"),
 				new Token(TokenType.Variable, "y"),
-				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
 				new Token(TokenType.Immediate, "5"),
 
 				new Token(TokenType.Variable, "x"),
@@ -419,7 +419,7 @@ namespace Sharp_LR35902_Compiler_Tests
 				new Token(TokenType.Grammar, ";"),
 				new Token(TokenType.DataType, datatype),
 				new Token(TokenType.Variable, variablename),
-				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
 				new Token(TokenType.Variable, othervariablename)
 			};
 
@@ -444,7 +444,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new List<Token>() {
 				new Token(TokenType.DataType, datatype),
 				new Token(TokenType.Variable, variablename),
-				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
 				new Token(TokenType.Variable, othervariablename)
 			};
 
@@ -461,7 +461,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new List<Token>() {
 				new Token(TokenType.DataType, datatype),
 				new Token(TokenType.Variable, variablename),
-				new Token(TokenType.Operator, "-"), // oops, programmer typo
+				new Token(TokenType.Operator, BuiltIn.Operators.Subtract), // oops, programmer typo
 				new Token(TokenType.Variable, othervariablename)
 			};
 
@@ -477,7 +477,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new List<Token>() {
 				new Token(TokenType.DataType, datatype),
 				new Token(TokenType.Variable, variablename),
-				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
 				new Token(TokenType.Grammar, ")")
 			};
 
@@ -494,7 +494,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new List<Token>() {
 				new Token(TokenType.DataType, datatype),
 				new Token(TokenType.Variable, variablename),
-				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
 				new Token(TokenType.Immediate, variablevalue.ToString())
 			};
 
@@ -566,7 +566,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Add),
 				new Token(TokenType.Immediate, "1")
 			};
 
@@ -583,7 +583,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Add),
 				new Token(TokenType.Immediate, "1")
 			};
 
@@ -598,9 +598,9 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Add),
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Add),
 				new Token(TokenType.Immediate, "1")
 			};
 
@@ -623,7 +623,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "-"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Subtract),
 				new Token(TokenType.Immediate, "1")
 			};
 
@@ -640,7 +640,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "-"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Subtract),
 				new Token(TokenType.Immediate, "1")
 			};
 
@@ -655,9 +655,9 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "-"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Subtract),
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "-"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Subtract),
 				new Token(TokenType.Immediate, "1")
 			};
 
@@ -680,9 +680,9 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Add),
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "-"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Subtract),
 				new Token(TokenType.Immediate, "1")
 			};
 
@@ -705,9 +705,9 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Add),
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "-"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Subtract),
 				new Token(TokenType.Immediate, "1")
 			};
 
@@ -723,7 +723,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			{
 				new Token(TokenType.Grammar, "("),
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Add),
 				new Token(TokenType.Immediate, "1"),
 				new Token(TokenType.Grammar, ")")
 			};
@@ -742,15 +742,15 @@ namespace Sharp_LR35902_Compiler_Tests
 			{
 				new Token(TokenType.Grammar, "("),
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Add),
 				new Token(TokenType.Immediate, "1"),
 				new Token(TokenType.Grammar, ")"),
 
-				new Token(TokenType.Operator, "-"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Subtract),
 
 				new Token(TokenType.Grammar, "("),
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Add),
 				new Token(TokenType.Immediate, "1"),
 				new Token(TokenType.Grammar, ")")
 			};
@@ -778,15 +778,15 @@ namespace Sharp_LR35902_Compiler_Tests
 			{
 				new Token(TokenType.Grammar, "("),
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Add),
 				new Token(TokenType.Immediate, "1"),
 				new Token(TokenType.Grammar, ")"),
 
-				new Token(TokenType.Operator, "-"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Subtract),
 
 				new Token(TokenType.Grammar, "("),
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Add),
 				new Token(TokenType.Immediate, "1"),
 				new Token(TokenType.Grammar, ")")
 			};
@@ -980,7 +980,7 @@ namespace Sharp_LR35902_Compiler_Tests
 				new Token(TokenType.Immediate, "1"),
 				new Token(TokenType.Operator, ">"),
 				new Token(TokenType.Immediate, "2"),
-				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Add),
 				new Token(TokenType.Immediate, "1"),
 				new Token(TokenType.Operator, "<"),
 				new Token(TokenType.Immediate, "2")
@@ -1007,7 +1007,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var tokens = new[]
 			{
-				new Token(TokenType.Operator, "!"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Not),
 				new Token(TokenType.Immediate, "0")
 			};
 
@@ -1023,7 +1023,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var tokens = new[]
 			{
-				new Token(TokenType.Operator, "!"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Not),
 				new Token(TokenType.Immediate, "0")
 			};
 
@@ -1038,7 +1038,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "&&"),
+				new Token(TokenType.Operator, BuiltIn.Operators.And),
 				new Token(TokenType.Immediate, "1")
 			};
 
@@ -1058,7 +1058,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "&&"),
+				new Token(TokenType.Operator, BuiltIn.Operators.And),
 				new Token(TokenType.Immediate, "1")
 			};
 
@@ -1073,13 +1073,13 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "||"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Or),
 				new Token(TokenType.Immediate, "0")
 			};
 
 			var expression = CreateExpression(tokens);
 
-			var expected = new OrComparisonOperatorNode(
+			var expected = new OrComparisonNode(
 				new ShortValueNode(1),
 				new ShortValueNode(0)
 			);
@@ -1093,7 +1093,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "||"),
+				new Token(TokenType.Operator, BuiltIn.Operators.Or),
 				new Token(TokenType.Immediate, "0")
 			};
 

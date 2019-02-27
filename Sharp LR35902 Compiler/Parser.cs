@@ -14,18 +14,18 @@ namespace Sharp_LR35902_Compiler
 
 		private static readonly Dictionary<string, Func<ExpressionNode>> Operators = new Dictionary<string, Func<ExpressionNode>>()
 		{
-			{ "+",  () => new AdditionNode() },
-			{ "-",  () => new SubtractionNode() },
-			{ "==", () => new EqualsComparisonNode() },
-			{ ">",  () => new MoreThanComparisonNode() },
-			{ "<",  () => new LessThanComparisonNode() },
-			{ "&&", () => new AndComparisonNode() },
-			{ "||", () => new OrComparisonOperatorNode() },
-			{ "!",  () => new NegateNode() }
+			{ BuiltIn.Operators.Add,		() => new AdditionNode() },
+			{ BuiltIn.Operators.Subtract,	() => new SubtractionNode() },
+			{ BuiltIn.Operators.Equal,		() => new EqualsComparisonNode() },
+			{ BuiltIn.Operators.MoreThan,	() => new MoreThanComparisonNode() },
+			{ BuiltIn.Operators.LessThan,	() => new LessThanComparisonNode() },
+			{ BuiltIn.Operators.And,		() => new AndComparisonNode() },
+			{ BuiltIn.Operators.Or,			() => new OrComparisonNode() },
+			{ BuiltIn.Operators.Not,		() => new NegateNode() }
 		};
 
 
-		public static Node CreateAST(IList<Token> tokenlist)
+		public static BlockNode CreateAST(IList<Token> tokenlist)
 		{
 			var rootnode = new ASTNode();
 
@@ -184,7 +184,7 @@ namespace Sharp_LR35902_Compiler
 		}
 
 		public static ExpressionNode CreateExpression(IList<Token> tokens, int index = 0)
-			=> CreateExpression(tokens, out var tokensused);
+			=> CreateExpression(tokens, out var tokensused, index);
 		public static ExpressionNode CreateExpression(IList<Token> tokens, out int tokensused, int startindex = 0)
 		{
 			var index = startindex;

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Sharp_LR35902_Compiler.Nodes
+﻿namespace Sharp_LR35902_Compiler.Nodes
 {
-    public abstract class ComparisonNode : OperatorNode
+	public abstract class ComparisonNode : OperatorNode
 	{
 		public ComparisonNode(ExpressionNode left, ExpressionNode right) : base(left, right) { }
 		// Allow valueless construction

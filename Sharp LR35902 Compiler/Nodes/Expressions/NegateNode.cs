@@ -12,5 +12,7 @@
 		public NegateNode() { }
 
 		public override ushort GetValue() => Expression.GetValue() == 0 ? (ushort)1 : (ushort)0;
+
+		public override Node[] GetChildren() => NoChildren;
 	}
 }
