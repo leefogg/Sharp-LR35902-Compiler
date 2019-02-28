@@ -1085,6 +1085,20 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void CreateExpression_UnbalancedOperators()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Immediate, "1"),
+				// No operator
+				new Token(TokenType.Immediate, "1")
+			};
+
+			CreateExpression(tokens);
+		}
+
+		[TestMethod]
 		public void CreateExpression_And_Value()
 		{
 			var tokens = new[]

@@ -232,7 +232,8 @@ namespace Sharp_LR35902_Compiler
 			ConvergeOperators<AdditionNode>(nodes);
 			ConvergeOperators<SubtractionNode>(nodes);
 
-			// TODO: Throw if there is more than one as expresion isn't complete
+			if (nodes.Count > 1)
+				throw new SyntaxException("Not a valid expression. Operators are not balanced.");
 			return nodes[0];
 		}
 
