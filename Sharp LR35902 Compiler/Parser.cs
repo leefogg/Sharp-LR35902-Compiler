@@ -204,7 +204,7 @@ namespace Sharp_LR35902_Compiler
 				if (currenttoken.Type == Immediate)
 					nodes.Add(new ShortValueNode(ParseImmediate(currenttoken.Value)));
 				else if (currenttoken.Type == Operator)
-					nodes.Add(createOperator(currenttoken.Value));
+					nodes.Add(CreateOperator(currenttoken.Value));
 				else if (currenttoken.Value == "(")
 				{
 					nodes.Add(CreateExpression(tokens, ref index));
@@ -215,12 +215,9 @@ namespace Sharp_LR35902_Compiler
 			return ConvergeOperators(nodes);
 		}
 
-		private static ExpressionNode createOperator(string op)
-		{
-			return Operators[op]();
-		}
+		private static ExpressionNode CreateOperator(string op) => Operators[op]();
 
-		private static ExpressionNode ConvergeOperators(List<ExpressionNode> nodes)
+		private static ExpressionNode ConvergeOperators(IList<ExpressionNode> nodes)
 		{
 			if (nodes.Count == 0)
 				return null;
@@ -239,7 +236,7 @@ namespace Sharp_LR35902_Compiler
 			return nodes[0];
 		}
 
-		private static void ConvergeOperators<T>(List<ExpressionNode> nodes) where T : OperatorNode
+		private static void ConvergeOperators<T>(IList<ExpressionNode> nodes) where T : OperatorNode
 		{
 			for (var i = 1; i < nodes.Count - 1; i++)
 			{
@@ -276,7 +273,7 @@ namespace Sharp_LR35902_Compiler
 		}
 
 		// Annoyingly the negate operator is the only one that requires a right side expression only
-		private static void ConvergeNegateOperator(List<ExpressionNode> nodes)
+		private static void ConvergeNegateOperator(IList<ExpressionNode> nodes)
 		{
 			for (var i = 0; i < nodes.Count - 1; i++)
 			{
