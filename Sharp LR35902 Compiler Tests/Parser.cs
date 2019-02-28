@@ -303,6 +303,36 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
+		public void CreateAST_DeclareAndAssignVariable_WithExpression()
+		{
+			var datatype = "byte";
+			var variablename = "x";
+			var tokens = new List<Token>() {
+				new Token(TokenType.DataType, datatype),
+				new Token(TokenType.Variable, variablename),
+				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
+				new Token(TokenType.Immediate, "5"),
+				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Immediate, "5"),
+				new Token(TokenType.Grammar, ";"),
+				new Token(TokenType.DataType, datatype),
+				new Token(TokenType.Variable, "y"),
+				new Token(TokenType.Grammar, BuiltIn.Operators.Assign),
+				new Token(TokenType.Immediate, "5")
+			};
+
+			var ast = CreateAST(tokens);
+
+			var expectedAST = new ASTNode();
+			expectedAST.AddChild(new VariableDeclarationNode(datatype, variablename));
+			expectedAST.AddChild(new VariableAssignmentNode(variablename, new ShortValueNode(10)));
+			expectedAST.AddChild(new VariableDeclarationNode(datatype, "y"));
+			expectedAST.AddChild(new VariableAssignmentNode("y", new ShortValueNode(5)));
+
+			compareNode(expectedAST, ast);
+		}
+
+		[TestMethod]
 		public void CreateAST_AdditionAssignment_WithVariable()
 		{
 			var tokens = new List<Token>
@@ -314,6 +344,7 @@ namespace Sharp_LR35902_Compiler_Tests
 				new Token(TokenType.Variable, "y"),
 				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
 				new Token(TokenType.Immediate, "5"),
+				new Token(TokenType.Grammar, ";"),
 
 				new Token(TokenType.Variable, "x"),
 				new Token(TokenType.Operator, "+="),
@@ -366,6 +397,7 @@ namespace Sharp_LR35902_Compiler_Tests
 				new Token(TokenType.Variable, "y"),
 				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
 				new Token(TokenType.Immediate, "5"),
+				new Token(TokenType.Grammar, ";"),
 
 				new Token(TokenType.Variable, "x"),
 				new Token(TokenType.Operator, "-="),

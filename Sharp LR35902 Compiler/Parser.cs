@@ -9,23 +9,23 @@ using static Common.Parser;
 
 namespace Sharp_LR35902_Compiler
 {
-    public static class Parser
-    {
+	public static class Parser
+	{
 
 		private static readonly Dictionary<string, Func<ExpressionNode>> Operators = new Dictionary<string, Func<ExpressionNode>>()
 		{
-			{ BuiltIn.Operators.Add,		() => new AdditionNode() },
-			{ BuiltIn.Operators.Subtract,	() => new SubtractionNode() },
-			{ BuiltIn.Operators.Equal,		() => new EqualsComparisonNode() },
-			{ BuiltIn.Operators.MoreThan,	() => new MoreThanComparisonNode() },
-			{ BuiltIn.Operators.LessThan,	() => new LessThanComparisonNode() },
-			{ BuiltIn.Operators.And,		() => new AndComparisonNode() },
-			{ BuiltIn.Operators.Or,			() => new OrComparisonNode() },
-			{ BuiltIn.Operators.Not,		() => new NegateNode() }
+			{ BuiltIn.Operators.Add,        () => new AdditionNode() },
+			{ BuiltIn.Operators.Subtract,   () => new SubtractionNode() },
+			{ BuiltIn.Operators.Equal,      () => new EqualsComparisonNode() },
+			{ BuiltIn.Operators.MoreThan,   () => new MoreThanComparisonNode() },
+			{ BuiltIn.Operators.LessThan,   () => new LessThanComparisonNode() },
+			{ BuiltIn.Operators.And,        () => new AndComparisonNode() },
+			{ BuiltIn.Operators.Or,         () => new OrComparisonNode() },
+			{ BuiltIn.Operators.Not,        () => new NegateNode() }
 		};
 
 
-		public static BlockNode CreateAST(IList<Token> tokenlist)
+		public static BlockNode CreateAST(IList<Token> tokens)
 		{
 			var rootnode = new ASTNode();
 
@@ -33,14 +33,14 @@ namespace Sharp_LR35902_Compiler
 
 			var currentscope = new Scope();
 
-			for(int i=0; i < tokenlist.Count; i++)
+			for (int i = 0; i < tokens.Count; i++)
 			{
-				var token = tokenlist[i];
+				var token = tokens[i];
 
 				if (token.Type == Variable)
 				{
 					// Variable[++/--] or Variable = [Variable/Immediate]
-					var nexttoken = tokenlist[++i];
+					var nexttoken = tokens[++i];
 					if (nexttoken.Type != Operator)
 						throw new SyntaxException("Expected operator after variable");
 
@@ -52,7 +52,7 @@ namespace Sharp_LR35902_Compiler
 							// TODO: Remove byte cast when added support for ushorts
 							assignedvariable = getVariable(token.Value, currentscope);
 
-							valuenode = tokenlist[++i];
+							valuenode = tokens[++i];
 							if (valuenode.Type == Variable)
 							{
 								var valuevariable = getVariable(valuenode.Value, currentscope);
@@ -63,10 +63,11 @@ namespace Sharp_LR35902_Compiler
 							{
 								var existingvariable = currentscope.GetMember(token.Value);
 
-								var immediatevalue = ParseImmediate(valuenode.Value);
-								var immediatedatatype = GetImmedateDataType(immediatevalue);
+								var expression = CreateExpression(tokens, ref i);
+								i--;
+								var immediatedatatype = GetImmedateDataType(expression);
 								checkCanConvertTypes(immediatedatatype, existingvariable.DataType);
-								currentnode.AddChild(new VariableAssignmentNode(token.Value, new ShortValueNode(immediatevalue)));
+								currentnode.AddChild(new VariableAssignmentNode(token.Value, new ShortValueNode(expression)));
 							}
 							else
 								throw new SyntaxException($"Unexpected token '{valuenode.Value} after ='");
@@ -80,7 +81,7 @@ namespace Sharp_LR35902_Compiler
 						case "+=":
 							assignedvariable = getVariable(token.Value, currentscope);
 
-							valuenode = tokenlist[++i];
+							valuenode = tokens[++i];
 							if (valuenode.Type == Variable)
 							{
 								var valuevariable = getVariable(valuenode.Value, currentscope);
@@ -88,14 +89,15 @@ namespace Sharp_LR35902_Compiler
 							}
 							else if (valuenode.Type == Immediate)
 							{
-								var immediatevalue = ParseImmediate(valuenode.Value);
-								currentnode.AddChild(new AdditionAssignmentNode(assignedvariable.Name, new ShortValueNode(immediatevalue)));
+								var expression = CreateExpression(tokens, ref i);
+								i--;
+								currentnode.AddChild(new AdditionAssignmentNode(assignedvariable.Name, new ShortValueNode(expression)));
 							}
 							break;
 						case "-=":
 							assignedvariable = getVariable(token.Value, currentscope);
 
-							valuenode = tokenlist[++i];
+							valuenode = tokens[++i];
 							if (valuenode.Type == Variable)
 							{
 								var valuevariable = getVariable(valuenode.Value, currentscope);
@@ -103,18 +105,19 @@ namespace Sharp_LR35902_Compiler
 							}
 							else if (valuenode.Type == Immediate)
 							{
-								var immediatevalue = ParseImmediate(valuenode.Value);
-								currentnode.AddChild(new SubtractionAssignmentNode(assignedvariable.Name, new ShortValueNode(immediatevalue)));
+								var expression = CreateExpression(tokens, ref i);
+								i--;
+								currentnode.AddChild(new SubtractionAssignmentNode(assignedvariable.Name, new ShortValueNode(expression)));
 							}
 							break;
 						default:
 							throw new SyntaxException("Expected operator");
 					}
-				} 
+				}
 				else if (token.Type == DataType)
 				{
 					// DataType Variable = [Variable/Immediate]
-					var variabletoken = tokenlist[++i];
+					var variabletoken = tokens[++i];
 					if (variabletoken.Type != Variable)
 						throw new SyntaxException("Expected variable name after data type");
 
@@ -122,7 +125,7 @@ namespace Sharp_LR35902_Compiler
 					if (variabledatatype == null)
 						throw new SyntaxException($"Datatype {token.Value} does not exist.");
 
-					var operatornode = tokenlist[++i];
+					var operatornode = tokens[++i];
 					if (operatornode.Value == ";" || operatornode.Value == "=")
 					{
 						if (currentscope.GetMember(variabletoken.Value) != null)
@@ -137,7 +140,7 @@ namespace Sharp_LR35902_Compiler
 					if (operatornode.Value != "=")
 						throw new SyntaxException("Expected token '='");
 
-					var valuenode = tokenlist[++i];
+					var valuenode = tokens[++i];
 					if (valuenode.Type != Immediate && valuenode.Type != Variable)
 						throw new SyntaxException($"Unexpected symbol on variable assignment '{valuenode.Value}'");
 
@@ -149,45 +152,48 @@ namespace Sharp_LR35902_Compiler
 					}
 					else if (valuenode.Type == Immediate)
 					{
-						var immediatevalue = ParseImmediate(valuenode.Value);
+						var immediatevalue = CreateExpression(tokens, ref i);
+						i--;
 						var immediatedatatype = GetImmedateDataType(immediatevalue);
 						checkCanConvertTypes(immediatedatatype, variabledatatype);
 						currentnode.AddChild(new VariableAssignmentNode(variabletoken.Value, new ShortValueNode(immediatevalue)));
 					}
 				}
-                else if (token.Type == ControlFlow)
-                {
-                    switch(token.Value)
-                    {
-                        case "while": break;
-                        case "do": break;
-                        case "for": break;
-                        case "return": break;
-                        case "continue": break;
-                        case "else": break;
-                        case "if": break;
+				else if (token.Type == ControlFlow)
+				{
+					switch (token.Value)
+					{
+						case "while": break;
+						case "do": break;
+						case "for": break;
+						case "return": break;
+						case "continue": break;
+						case "else": break;
+						case "if": break;
 						case "goto":
-							var nextnode = tokenlist[++i];
+							var nextnode = tokens[++i];
 							if (nextnode.Type != Variable)
 								throw new SyntaxException("Expected label name after goto statement.");
 							currentnode.AddChild(new GotoNode(nextnode.Value));
 							break;
-                        default: // Label
+						default: // Label
 							var colonindex = token.Value.IndexOf(':');
-                            currentnode.AddChild(new LabelNode(token.Value.Substring(0, colonindex)));
-                        break;
-                    }
-                }
+							currentnode.AddChild(new LabelNode(token.Value.Substring(0, colonindex)));
+							break;
+					}
+				}
 			}
 
 			return rootnode;
 		}
 
-		public static ExpressionNode CreateExpression(IList<Token> tokens, int index = 0)
-			=> CreateExpression(tokens, out var tokensused, index);
-		public static ExpressionNode CreateExpression(IList<Token> tokens, out int tokensused, int startindex = 0)
+		public static ExpressionNode CreateExpression(IList<Token> tokens)
 		{
-			var index = startindex;
+			var x = 0;
+			return CreateExpression(tokens, ref x);
+		}
+		public static ExpressionNode CreateExpression(IList<Token> tokens, ref int index)
+		{
 			var nodes = new List<ExpressionNode>();
 
 			Token currenttoken;
@@ -201,13 +207,10 @@ namespace Sharp_LR35902_Compiler
 					nodes.Add(createOperator(currenttoken.Value));
 				else if (currenttoken.Value == "(")
 				{
-					nodes.Add(CreateExpression(tokens, out tokensused, index));
-					index += tokensused;
+					nodes.Add(CreateExpression(tokens, ref index));
 				}
 
 			} while (index < tokens.Count && currenttoken.Value != ")" && currenttoken.Value != ";");
-
-			tokensused = index - startindex;
 
 			return ConvergeOperators(nodes);
 		}
@@ -238,7 +241,7 @@ namespace Sharp_LR35902_Compiler
 
 		private static void ConvergeOperators<T>(List<ExpressionNode> nodes) where T : OperatorNode
 		{
-			for(var i=1; i<nodes.Count - 1; i++)
+			for (var i = 1; i < nodes.Count - 1; i++)
 			{
 				if (!(nodes[i] is T))
 					continue;
@@ -248,9 +251,9 @@ namespace Sharp_LR35902_Compiler
 					throw new SyntaxException("No expression found on the left of the operator.");
 				if (i + 1 >= nodes.Count)
 					throw new SyntaxException("No expression found on the right of the operator.");
-				if (nodes[i-1] is ExpressionNode left)
+				if (nodes[i - 1] is ExpressionNode left)
 				{
-					if (nodes[i+1] is ExpressionNode right)
+					if (nodes[i + 1] is ExpressionNode right)
 					{
 						var op = nodes[i] as OperatorNode;
 						op.Left = left;
@@ -259,12 +262,12 @@ namespace Sharp_LR35902_Compiler
 						nodes.RemoveAt(i - 1);
 						i--;
 						nodes.RemoveAt(i + 1);
-					} 
+					}
 					else
 					{
 						throw new SyntaxException("The right side of the operator is not an expresison.");
 					}
-				} 
+				}
 				else
 				{
 					throw new SyntaxException("The left side of the operator is not an expresison.");
@@ -275,19 +278,19 @@ namespace Sharp_LR35902_Compiler
 		// Annoyingly the negate operator is the only one that requires a right side expression only
 		private static void ConvergeNegateOperator(List<ExpressionNode> nodes)
 		{
-			for (var i=0; i<nodes.Count-1; i++)
+			for (var i = 0; i < nodes.Count - 1; i++)
 			{
 				if (!(nodes[i] is NegateNode))
 					continue;
 
 				// No need to check bounds as its enforced in the loop condition
 
-				if (nodes[i+1] is ExpressionNode right)
+				if (nodes[i + 1] is ExpressionNode right)
 				{
 					var negate = nodes[i] as NegateNode;
 					negate.Expression = right;
 
-					nodes.RemoveAt(i+1);
+					nodes.RemoveAt(i + 1);
 				}
 				else
 				{
@@ -323,5 +326,5 @@ namespace Sharp_LR35902_Compiler
 
 			return existingvariable;
 		}
-    }
+	}
 }
