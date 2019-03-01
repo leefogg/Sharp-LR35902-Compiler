@@ -244,6 +244,10 @@ namespace Sharp_LR35902_Compiler
 				if (!(nodes[i] is T))
 					continue;
 
+				var op = nodes[i] as OperatorNode;
+				if (op.Left != null || op.Right != null)
+					continue;
+
 				// Validate the left and right sides
 				if (i - 1 < 0)
 					throw new SyntaxException("No expression found on the left of the operator.");
@@ -253,7 +257,6 @@ namespace Sharp_LR35902_Compiler
 				{
 					if (nodes[i + 1] is ExpressionNode right)
 					{
-						var op = nodes[i] as OperatorNode;
 						op.Left = left;
 						op.Right = right;
 

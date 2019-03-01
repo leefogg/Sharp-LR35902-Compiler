@@ -1150,6 +1150,34 @@ namespace Sharp_LR35902_Compiler_Tests
 
 
 		[TestMethod]
+		public void CreateExpresssion_MultipleSubexpressions()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Grammar, "("),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Comparison, "=="),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Grammar, ")"),
+				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Grammar, "("),
+				new Token(TokenType.Immediate, "2"),
+				new Token(TokenType.Comparison, ">"),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Grammar, ")"),
+				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Grammar, "("),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Grammar, ")")
+			};
+			var expression = CreateExpression(tokens);
+
+			Assert.AreEqual(4, expression.GetValue());
+		}
+
+		[TestMethod]
 		public void GetImmediateDataType_Smallest()
 		{
 			Assert.AreSame(BuiltIn.DataTypes.Byte, GetImmedateDataType(19));
