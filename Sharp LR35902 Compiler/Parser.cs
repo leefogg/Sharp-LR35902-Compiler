@@ -203,7 +203,7 @@ namespace Sharp_LR35902_Compiler
 
 				if (currenttoken.Type == Immediate)
 					nodes.Add(new ShortValueNode(ParseImmediate(currenttoken.Value)));
-				else if (currenttoken.Type == Operator)
+				else if (currenttoken.Type == Operator || currenttoken.Type == Comparison)
 					nodes.Add(CreateOperator(currenttoken.Value));
 				else if (currenttoken.Value == "(")
 				{

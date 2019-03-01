@@ -32,6 +32,8 @@ namespace Sharp_LR35902_Compiler
 			new TokenDescriptor(@"\=\=",		TokenType.Comparison),
 			new TokenDescriptor(@"\&\&",		TokenType.Comparison),
 			new TokenDescriptor(@"\|\|",		TokenType.Comparison),
+			new TokenDescriptor(@"\<",			TokenType.Comparison),
+			new TokenDescriptor(@"\>",			TokenType.Comparison),
 			new TokenDescriptor(@"\+\+",		TokenType.Operator),
 			new TokenDescriptor(@"\-\-",		TokenType.Operator), 
 			new TokenDescriptor(@"\+\=",		TokenType.Operator),

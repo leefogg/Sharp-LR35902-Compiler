@@ -860,7 +860,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "=="),
+				new Token(TokenType.Comparison, "=="),
 				new Token(TokenType.Immediate, "1")
 			};
 
@@ -880,7 +880,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "=="),
+				new Token(TokenType.Comparison, "=="),
 				new Token(TokenType.Immediate, "1")
 			};
 
@@ -895,7 +895,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "=="),
+				new Token(TokenType.Comparison, "=="),
 				new Token(TokenType.Immediate, "2")
 			};
 
@@ -910,7 +910,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "<"),
+				new Token(TokenType.Comparison, "<"),
 				new Token(TokenType.Immediate, "2")
 			};
 
@@ -930,7 +930,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "<"),
+				new Token(TokenType.Comparison, "<"),
 				new Token(TokenType.Immediate, "2")
 			};
 
@@ -945,7 +945,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "2"),
-				new Token(TokenType.Operator, "<"),
+				new Token(TokenType.Comparison, "<"),
 				new Token(TokenType.Immediate, "1")
 			};
 
@@ -960,7 +960,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "2"),
-				new Token(TokenType.Operator, ">"),
+				new Token(TokenType.Comparison, ">"),
 				new Token(TokenType.Immediate, "1")
 			};
 
@@ -980,7 +980,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "2"),
-				new Token(TokenType.Operator, ">"),
+				new Token(TokenType.Comparison, ">"),
 				new Token(TokenType.Immediate, "1")
 			};
 
@@ -995,7 +995,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, ">"),
+				new Token(TokenType.Comparison, ">"),
 				new Token(TokenType.Immediate, "2")
 			};
 
@@ -1010,11 +1010,11 @@ namespace Sharp_LR35902_Compiler_Tests
 			var tokens = new[]
 			{
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, ">"),
+				new Token(TokenType.Comparison, ">"),
 				new Token(TokenType.Immediate, "2"),
 				new Token(TokenType.Operator, BuiltIn.Operators.Add),
 				new Token(TokenType.Immediate, "1"),
-				new Token(TokenType.Operator, "<"),
+				new Token(TokenType.Comparison, "<"),
 				new Token(TokenType.Immediate, "2")
 			};
 
