@@ -1178,6 +1178,18 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void CreateExpression_OnlyOperator()
+		{
+			var tokens = new[]
+			{
+				new Token(TokenType.Operator, "+")
+			};
+
+			CreateExpression(tokens);
+		}
+
+		[TestMethod]
 		public void GetImmediateDataType_Smallest()
 		{
 			Assert.AreSame(BuiltIn.DataTypes.Byte, GetImmedateDataType(19));

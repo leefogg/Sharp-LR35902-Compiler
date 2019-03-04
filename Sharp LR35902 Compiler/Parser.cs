@@ -11,7 +11,6 @@ namespace Sharp_LR35902_Compiler
 {
 	public static class Parser
 	{
-
 		private static readonly Dictionary<string, Func<ExpressionNode>> Operators = new Dictionary<string, Func<ExpressionNode>>()
 		{
 			{ BuiltIn.Operators.Add,        () => new AdditionNode() },
@@ -221,8 +220,12 @@ namespace Sharp_LR35902_Compiler
 		{
 			if (nodes.Count == 0)
 				return null;
-			if (nodes.Count == 1)
-				return nodes[0];
+			if (nodes.Count == 1) {
+				if (nodes[0] is ValueNode)
+					return nodes[0];
+				else
+					throw new SyntaxException("Left or right hand side of expression is missing.");
+			}
 
 			// Boolean operators
 			// Should be converged in order of appearance
