@@ -1,13 +1,43 @@
 ﻿using Sharp_LR35902_Compiler.Nodes;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Sharp_LR35902_Compiler
 {
 	public static class Optimizer
 	{
+		public static bool PropagateConstants(BlockNode block)
+		{
+			var changesmade = false;
+
+			var variablevalues = new Dictionary<string, ushort>();
+			var children = block.GetChildren();
+
+			for (var i=0; i<children.Length; i++)
+			{
+				var node = children[i];
+
+				if (node is VariableAssignmentNode assignment)
+				{
+					if (assignment.Value is ValueNode value)
+						if (variablevalues.ContainsKey(assignment.VariableName))
+							variablevalues[assignment.VariableName] = value.GetValue();
+						else
+							variablevalues.Add(assignment.VariableName, value.GetValue());
+					else if (assignment.Value is VariableValueNode varval)
+					{
+						if (variablevalues.ContainsKey(varval.VariableName))
+						{
+							assignment.Value = new ShortValueNode(variablevalues[varval.VariableName]);
+							changesmade = true;
+							i--; // We know this is a valuenode now so go to top to add it to known values
+						}
+					}
+				}
+			}
+
+			return changesmade;
+		}
+
 		public static bool RemoveUnusedVariables(BlockNode block)
 		{
 			// Dictionary should be safe as parser checks for redeclarations
