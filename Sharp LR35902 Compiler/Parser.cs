@@ -223,7 +223,7 @@ namespace Sharp_LR35902_Compiler
 			if (nodes.Count == 1) {
 				if (nodes[0] is ValueNode)
 					return nodes[0];
-				else
+				else if (nodes[0] is OperatorNode op && (op.Left == null || op.Right == null))
 					throw new SyntaxException("Left or right hand side of expression is missing.");
 			}
 
