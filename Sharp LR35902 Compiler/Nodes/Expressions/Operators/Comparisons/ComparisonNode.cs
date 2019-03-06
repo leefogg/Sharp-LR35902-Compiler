@@ -6,7 +6,7 @@
 		// Allow valueless construction
 		public ComparisonNode() { }
 
-		public override ushort GetValue() => isTrue() ? (ushort)1 : (ushort)0;
+		public override ushort GetValue() => booleanToShort(isTrue());
 
 		protected abstract bool isTrue();
 

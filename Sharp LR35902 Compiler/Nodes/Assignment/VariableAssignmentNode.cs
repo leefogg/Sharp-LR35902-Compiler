@@ -5,9 +5,9 @@ namespace Sharp_LR35902_Compiler.Nodes
 	public class VariableAssignmentNode : Node
 	{
 		public string VariableName { get; set; }
-		public Node Value { get; set; }
+		public ExpressionNode Value { get; set; }
 
-		public VariableAssignmentNode(string variablename, Node value)
+		public VariableAssignmentNode(string variablename, ExpressionNode value)
 		{
 			VariableName = variablename;
 			Value = value;

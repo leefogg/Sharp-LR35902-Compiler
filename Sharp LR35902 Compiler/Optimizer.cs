@@ -19,21 +19,17 @@ namespace Sharp_LR35902_Compiler
 
 				if (node is VariableAssignmentNode assignment)
 				{
-					if (assignment.Value is ValueNode value)
+					var newvalue = assignment.Value.Optimize(variablevalues);
+					if (assignment.Value != newvalue)
+						changesmade = true;
+					assignment.Value = newvalue;
+
+					if (assignment.Value is ConstantNode value)
 					{
 						if (variablevalues.ContainsKey(assignment.VariableName))
 							variablevalues[assignment.VariableName] = value.GetValue();
 						else
 							variablevalues.Add(assignment.VariableName, value.GetValue());
-					}
-					else if (assignment.Value is VariableValueNode varval)
-					{
-						if (variablevalues.ContainsKey(varval.VariableName))
-						{
-							assignment.Value = new ShortValueNode(variablevalues[varval.VariableName]);
-							changesmade = true;
-							i--; // We know this is a valuenode now so go to top to add it to known values
-						}
 					}
 				} 
 				else if (node is IncrementNode inc)

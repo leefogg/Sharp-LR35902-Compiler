@@ -2,7 +2,7 @@
 {
 	public class AdditionAssignmentNode : VariableAssignmentNode
 	{
-		public AdditionAssignmentNode(string variableName, Node value) : base(variableName, value)
+		public AdditionAssignmentNode(string variableName, ExpressionNode value) : base(variableName, value)
 		{
 		}
 

@@ -2,7 +2,7 @@
 
 namespace Sharp_LR35902_Compiler.Nodes
 {
-	public class ShortValueNode : ValueNode
+	public class ShortValueNode : ConstantNode
     {
 		public readonly ushort Value;
 

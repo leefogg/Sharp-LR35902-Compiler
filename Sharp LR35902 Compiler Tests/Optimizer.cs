@@ -83,6 +83,36 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
+		public void PropagateConstants_ResolvesExpressions()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "a"));
+			var expression = new VariableAssignmentNode("a", new AdditionNode(new ShortValueNode(1), new ShortValueNode(5)));
+			ast.AddChild(expression);
+
+			var changed = PropagateConstants(ast);
+
+			Assert.IsTrue(changed);
+			Assert.IsInstanceOfType(expression.Value, typeof(ConstantNode));
+		}
+
+		[TestMethod]
+		public void PropagateConstants_ResolvesExpressions_WithVariable()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5)));
+			ast.AddChild(new VariableDeclarationNode("byte", "a"));
+			var expression = new VariableAssignmentNode("a", new AdditionNode(new ShortValueNode(1), new VariableValueNode("x")));
+			ast.AddChild(expression);
+
+			var changed = PropagateConstants(ast);
+
+			Assert.IsTrue(changed);
+			Assert.IsInstanceOfType(expression.Value, typeof(ConstantNode));
+		}
+
+		[TestMethod]
 		public void PropagateConstants_UsesLatestValue()
 		{
 			var ast = new ASTNode();
