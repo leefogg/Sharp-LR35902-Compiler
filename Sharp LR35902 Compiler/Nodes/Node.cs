@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Sharp_LR35902_Compiler
+namespace Sharp_LR35902_Compiler.Nodes
 {
 	public abstract class Node
 	{
