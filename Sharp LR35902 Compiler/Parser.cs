@@ -62,7 +62,7 @@ namespace Sharp_LR35902_Compiler
 							{
 								var existingvariable = currentscope.GetMember(token.Value);
 
-								var expression = CreateExpression(tokens, ref i);
+								var expression = CreateExpression(tokens, currentscope, ref i);
 								i--;
 								var immediatedatatype = GetImmedateDataType(expression);
 								checkCanConvertTypes(immediatedatatype, existingvariable.DataType);
@@ -88,7 +88,7 @@ namespace Sharp_LR35902_Compiler
 							}
 							else if (valuenode.Type == Immediate)
 							{
-								var expression = CreateExpression(tokens, ref i);
+								var expression = CreateExpression(tokens, currentscope, ref i);
 								i--;
 								currentnode.AddChild(new AdditionAssignmentNode(assignedvariable.Name, new ShortValueNode(expression)));
 							}
@@ -104,7 +104,7 @@ namespace Sharp_LR35902_Compiler
 							}
 							else if (valuenode.Type == Immediate)
 							{
-								var expression = CreateExpression(tokens, ref i);
+								var expression = CreateExpression(tokens, currentscope, ref i);
 								i--;
 								currentnode.AddChild(new SubtractionAssignmentNode(assignedvariable.Name, new ShortValueNode(expression)));
 							}
@@ -143,20 +143,11 @@ namespace Sharp_LR35902_Compiler
 					if (valuenode.Type != Immediate && valuenode.Type != Variable)
 						throw new SyntaxException($"Unexpected symbol on variable assignment '{valuenode.Value}'");
 
-					if (valuenode.Type == Variable)
-					{
-						var valuevariable = getVariable(valuenode.Value, currentscope);
-						checkCanConvertTypes(valuevariable.DataType, variabledatatype);
-						currentnode.AddChild(new VariableAssignmentNode(variabletoken.Value, new VariableValueNode(valuenode.Value)));
-					}
-					else if (valuenode.Type == Immediate)
-					{
-						var immediatevalue = CreateExpression(tokens, ref i);
-						i--;
-						var immediatedatatype = GetImmedateDataType(immediatevalue);
-						checkCanConvertTypes(immediatedatatype, variabledatatype);
-						currentnode.AddChild(new VariableAssignmentNode(variabletoken.Value, new ShortValueNode(immediatevalue)));
-					}
+					var expression = CreateExpression(tokens, currentscope, ref i);
+					i--;
+					//var immediatedatatype = GetImmedateDataType(expression);
+					//checkCanConvertTypes(immediatedatatype, variabledatatype);
+					currentnode.AddChild(new VariableAssignmentNode(variabletoken.Value, expression));
 				}
 				else if (token.Type == ControlFlow)
 				{
@@ -189,9 +180,9 @@ namespace Sharp_LR35902_Compiler
 		public static ExpressionNode CreateExpression(IList<Token> tokens)
 		{
 			var x = 0;
-			return CreateExpression(tokens, ref x);
+			return CreateExpression(tokens, new Scope(), ref x);
 		}
-		public static ExpressionNode CreateExpression(IList<Token> tokens, ref int index)
+		public static ExpressionNode CreateExpression(IList<Token> tokens, Scope scope, ref int index)
 		{
 			var nodes = new List<ExpressionNode>();
 
@@ -204,9 +195,14 @@ namespace Sharp_LR35902_Compiler
 					nodes.Add(new ShortValueNode(ParseImmediate(currenttoken.Value)));
 				else if (currenttoken.Type == Operator || currenttoken.Type == Comparison)
 					nodes.Add(CreateOperator(currenttoken.Value));
+				else if (currenttoken.Type == Variable) {
+					var var = getVariable(currenttoken.Value, scope);
+					// TODO: Decide on what intermedate values' types are and check for type compatibility
+					nodes.Add(new VariableValueNode(var.Name));
+				}
 				else if (currenttoken.Value == "(")
 				{
-					nodes.Add(CreateExpression(tokens, ref index));
+					nodes.Add(CreateExpression(tokens, scope, ref index));
 				}
 
 			} while (index < tokens.Count && currenttoken.Value != ")" && currenttoken.Value != ";");

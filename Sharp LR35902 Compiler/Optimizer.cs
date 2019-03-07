@@ -6,6 +6,22 @@ namespace Sharp_LR35902_Compiler
 {
 	public static class Optimizer
 	{
+		public static void Optimize(BlockNode block)
+		{
+			bool changesmade;
+			do
+			{
+				changesmade = false;
+
+				if (PropagateConstants(block))
+					changesmade = true;
+
+				if (RemoveUnusedVariables(block))
+					changesmade = true;
+
+			} while (changesmade);
+		}
+
 		public static bool PropagateConstants(BlockNode block)
 		{
 			var changesmade = false;

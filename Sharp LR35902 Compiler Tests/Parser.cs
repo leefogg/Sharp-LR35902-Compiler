@@ -325,7 +325,7 @@ namespace Sharp_LR35902_Compiler_Tests
 
 			var expectedAST = new ASTNode();
 			expectedAST.AddChild(new VariableDeclarationNode(datatype, variablename));
-			expectedAST.AddChild(new VariableAssignmentNode(variablename, new ShortValueNode(10)));
+			expectedAST.AddChild(new VariableAssignmentNode(variablename, new AdditionNode(new ShortValueNode(5), new ShortValueNode(5))));
 			expectedAST.AddChild(new VariableDeclarationNode(datatype, "y"));
 			expectedAST.AddChild(new VariableAssignmentNode("y", new ShortValueNode(5)));
 
@@ -467,6 +467,40 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
+		public void CreateAST_DeclareAndAssignVariable_WithVariableExpression()
+		{
+			var datatype = "byte";
+			var variablename = "x";
+			var variablename1 = "y";
+			var variablename2 = "z";
+			var tokens = new List<Token>() {
+				new Token(TokenType.DataType, datatype),
+				new Token(TokenType.Variable, variablename1),
+				new Token(TokenType.Grammar, ";"),
+				new Token(TokenType.DataType, datatype),
+				new Token(TokenType.Variable, variablename2),
+				new Token(TokenType.Grammar, ";"),
+				new Token(TokenType.DataType, datatype),
+				new Token(TokenType.Variable, variablename),
+				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
+				new Token(TokenType.Variable, variablename1),
+				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Variable, variablename2),
+			};
+
+			var ast = CreateAST(tokens);
+			var children = ast.GetChildren();
+
+			var expectedAST = new ASTNode();
+			expectedAST.AddChild(new VariableDeclarationNode(datatype, variablename1));
+			expectedAST.AddChild(new VariableDeclarationNode(datatype, variablename2));
+			expectedAST.AddChild(new VariableDeclarationNode(datatype, variablename));
+			expectedAST.AddChild(new VariableAssignmentNode(variablename, new AdditionNode(new VariableValueNode(variablename1), new VariableValueNode(variablename2))));
+
+			compareNode(expectedAST, ast);
+		}
+
+		[TestMethod]
 		[ExpectedException(typeof(SyntaxException))]
 		public void CreateAST_DeclareAndAssignVariable_WithVariable_DoesntExist()
 		{
@@ -516,22 +550,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			CreateAST(tokens);
 		}
 
-		[TestMethod]
-		[ExpectedException(typeof(SyntaxException))]
-		public void CreateAST_DeclareAndAssignVariable_CannotConvertImmediate()
-		{
-			var datatype = "byte";
-			var variablename = "x";
-			var variablevalue = 500; // Too large for a byte
-			var tokens = new List<Token>() {
-				new Token(TokenType.DataType, datatype),
-				new Token(TokenType.Variable, variablename),
-				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
-				new Token(TokenType.Immediate, variablevalue.ToString())
-			};
-
-			CreateAST(tokens);
-		}
+		// TODO: Test validating expression's return type being assigned to incompatible type variable
 
 		[TestMethod]
 		public void CreateAST_Label()
