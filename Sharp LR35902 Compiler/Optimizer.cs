@@ -36,7 +36,7 @@ namespace Sharp_LR35902_Compiler
 				if (node is VariableAssignmentNode assignment)
 				{
 					var newvalue = assignment.Value.Optimize(variablevalues);
-					if (assignment.Value != newvalue)
+					if (assignment.Value != newvalue) // TODO: This doesn't detect child node changes!
 						changesmade = true;
 					assignment.Value = newvalue;
 
