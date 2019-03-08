@@ -109,7 +109,21 @@ namespace Sharp_LR35902_Compiler_Tests
 			var changed = PropagateConstants(ast);
 
 			Assert.IsTrue(changed);
-			Assert.IsInstanceOfType(expression.Value, typeof(ConstantNode));
+		}
+
+		[TestMethod]
+		public void PropagateConstants_DetectsSubNodeChanges()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5)));
+			ast.AddChild(new VariableDeclarationNode("byte", "a"));
+			var value = new AdditionNode(new VariableValueNode("y"), new VariableValueNode("x"));
+			ast.AddChild(new VariableAssignmentNode("a", value));
+
+			var changed = PropagateConstants(ast);
+
+			Assert.IsTrue(changed);
 		}
 
 		[TestMethod]

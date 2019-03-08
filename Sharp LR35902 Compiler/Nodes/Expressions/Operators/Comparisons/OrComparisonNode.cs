@@ -12,11 +12,11 @@ namespace Sharp_LR35902_Compiler.Nodes
 
 		public override ExpressionNode Optimize(IDictionary<string, ushort> knownvariables)
 		{
-			Left = Left.Optimize(knownvariables);
-			Right = Right.Optimize(knownvariables);
-			if (Left is ConstantNode l && isTrue(l.GetValue()))
+			var left = Left.Optimize(knownvariables);
+			var right = Right.Optimize(knownvariables);
+			if (left is ConstantNode l && isTrue(l.GetValue()))
 				return new ShortValueNode(booleanToShort(true));
-			else if (Right is ConstantNode r && isTrue(r.GetValue()))
+			else if (right is ConstantNode r && isTrue(r.GetValue()))
 				return new ShortValueNode(booleanToShort(true));
 
 			return this;
