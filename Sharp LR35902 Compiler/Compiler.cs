@@ -24,7 +24,7 @@ namespace Sharp_LR35902_Compiler
 
 		public static IEnumerable<string> EmitAssembly(Node astroot)
 		{
-			char[] registernames = new[] { 'B', 'C', 'D', 'E', 'H', 'L' };
+			char[] registernames = new[] { 'C', 'D', 'E', 'H', 'L' };
 
 			var variablealloc = AllocateRegisters(astroot);
 
@@ -35,6 +35,16 @@ namespace Sharp_LR35902_Compiler
 
 			char getVariableRegister(string name) =>
 				registernames[variablealloc[name]];
+
+			string writeToRegister(ExpressionNode value, string outputreg)
+			{
+				if (value is VariableValueNode vval)
+					return $"LD {outputreg}, {getVariableRegister(vval.VariableName)}";
+				else if (value is ShortValueNode cval)
+					return $"LD {outputreg}, {cval.Value}";
+
+				throw new NotSupportedException("This operator is not yet supported inside the assembler. Please implement.");
+			}
 
 			// Cases must be in order of any inheritence because of the way `is` works
 			foreach (var node in astroot.GetChildren())
@@ -71,6 +81,16 @@ namespace Sharp_LR35902_Compiler
 						yield return $"LD {getVariableRegister(var.VariableName)}, {getVariableRegister(varval.VariableName)}";
 					else if (var.Value is ShortValueNode imval)
 						yield return $"LD {getVariableRegister(var.VariableName)}, {imval.Value}";
+					else if (var.Value is OperatorNode addition)
+					{
+						yield return writeToRegister(addition.Left, "B");
+						yield return writeToRegister(addition.Right, "A");
+						if (var.Value is AdditionNode)
+							yield return "ADD A, B";
+						else if (var.Value is SubtractionNode)
+							yield return "SUB A, B";
+						yield return $"LD {getVariableRegister(var.VariableName)}, A";
+					}
 				}
 			}
 		}
