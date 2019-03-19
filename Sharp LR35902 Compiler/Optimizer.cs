@@ -22,6 +22,20 @@ namespace Sharp_LR35902_Compiler
 			} while (changesmade);
 		}
 
+		public static void Simplify(BlockNode block)
+		{
+			bool changesmade;
+			do
+			{
+				changesmade = false;
+
+				if (TransformAdditionAssignmentToExpression(block))
+					changesmade = true;
+				if (TransformSubtractionAssignmentToExpression(block))
+					changesmade = true;
+			} while (changesmade);
+		}
+
 		public static bool PropagateConstants(BlockNode block)
 		{
 			var changesmade = false;
@@ -107,6 +121,42 @@ namespace Sharp_LR35902_Compiler
 				}
 
 				i++;
+			}
+
+			return changesmade;
+		}
+
+		public static bool TransformAdditionAssignmentToExpression(BlockNode block)
+		{
+			var changesmade = false;
+			var children = block.GetChildren();
+			for (var i=0; i <children.Length; i++)
+			{
+				var node = children[i];
+				if (node is AdditionAssignmentNode assignment)
+				{
+					block.RemoveChild(i);
+					block.InsertAt(new VariableAssignmentNode(assignment.VariableName, new AdditionNode(new VariableValueNode(assignment.VariableName), assignment.Value)), i);
+					changesmade = true;
+				}
+			}
+
+			return changesmade;
+		}
+
+		public static bool TransformSubtractionAssignmentToExpression(BlockNode block)
+		{
+			var changesmade = false;
+			var children = block.GetChildren();
+			for (var i = 0; i < children.Length; i++)
+			{
+				var node = children[i];
+				if (node is SubtractionAssignmentNode assignment)
+				{
+					block.RemoveChild(i);
+					block.InsertAt(new VariableAssignmentNode(assignment.VariableName, new SubtractionNode(new VariableValueNode(assignment.VariableName), assignment.Value)), i);
+					changesmade = true;
+				}
 			}
 
 			return changesmade;

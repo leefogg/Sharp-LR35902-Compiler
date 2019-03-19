@@ -60,22 +60,6 @@ namespace Sharp_LR35902_Compiler
 					yield return label.Name + ':';
 				} else if (node is GotoNode gotonode) {
 					yield return "JP " + gotonode.LabelName;
-				} else if (node is SubtractionAssignmentNode subassignemntassignment) {
-					yield return $"LD A, {getVariableRegister(subassignemntassignment.VariableName)}";
-					if (subassignemntassignment.Value is VariableValueNode variable) {
-						yield return $"SUB A, {getVariableRegister(variable.VariableName)}";
-					} else if (subassignemntassignment.Value is ShortValueNode immediate) {
-						yield return $"SUB A, {immediate.Value}";
-					}
-					yield return $"LD {getVariableRegister(subassignemntassignment.VariableName)}, A";
-				} else if (node is AdditionAssignmentNode addassignment) {
-					yield return $"LD A, {getVariableRegister(addassignment.VariableName)}";
-					if (addassignment.Value is VariableValueNode variable) {
-						yield return $"ADD A, {getVariableRegister(variable.VariableName)}";
-					} else if (addassignment.Value is ShortValueNode immediate)	{
-						yield return $"ADD A, {immediate.Value}";
-					}
-					yield return $"LD {getVariableRegister(addassignment.VariableName)}, A";
 				} else if (node is VariableAssignmentNode var) {
 					if (var.Value is VariableValueNode varval)
 						yield return $"LD {getVariableRegister(var.VariableName)}, {getVariableRegister(varval.VariableName)}";

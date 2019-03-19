@@ -277,5 +277,39 @@ namespace Sharp_LR35902_Compiler_Tests
 			Assert.IsInstanceOfType(after.Value, typeof(ShortValueNode));
 			Assert.AreEqual(4, ((ShortValueNode)after.Value).GetValue());
 		}
+
+		[TestMethod]
+		public void Transform_AdditionAssignmentToExpression()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new AdditionAssignmentNode("x", new ShortValueNode(5)));
+
+			var changed = TransformAdditionAssignmentToExpression(ast);
+
+			Assert.IsTrue(changed);
+			Assert.IsInstanceOfType(ast.GetChildren()[1], typeof(VariableAssignmentNode));
+			var assignment = ast.GetChildren()[1] as VariableAssignmentNode;
+			Assert.IsInstanceOfType(assignment.Value, typeof(AdditionNode));
+			Assert.IsInstanceOfType(((AdditionNode)assignment.Value).Left, typeof(VariableValueNode));
+			Assert.IsInstanceOfType(((AdditionNode)assignment.Value).Right, typeof(ShortValueNode));
+		}
+
+		[TestMethod]
+		public void Transform_SubtractionAssignmentToExpression()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new SubtractionAssignmentNode("x", new ShortValueNode(5)));
+
+			var changed = TransformSubtractionAssignmentToExpression(ast);
+
+			Assert.IsTrue(changed);
+			Assert.IsInstanceOfType(ast.GetChildren()[1], typeof(VariableAssignmentNode));
+			var assignment = ast.GetChildren()[1] as VariableAssignmentNode;
+			Assert.IsInstanceOfType(assignment.Value, typeof(SubtractionNode));
+			Assert.IsInstanceOfType(((SubtractionNode)assignment.Value).Left, typeof(VariableValueNode));
+			Assert.IsInstanceOfType(((SubtractionNode)assignment.Value).Right, typeof(ShortValueNode));
+		}
 	}
 }
