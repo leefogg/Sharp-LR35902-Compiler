@@ -311,5 +311,108 @@ namespace Sharp_LR35902_Compiler_Tests
 			Assert.IsInstanceOfType(((SubtractionNode)assignment.Value).Left, typeof(VariableValueNode));
 			Assert.IsInstanceOfType(((SubtractionNode)assignment.Value).Right, typeof(ShortValueNode));
 		}
+
+		[TestMethod]
+		public void FlattenExpression_Constant_NotAffected()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new SubtractionAssignmentNode("x", new ShortValueNode(5)));
+
+			var changes = FlattenExpression(ast, 1);
+
+			Assert.IsTrue(changes == 0);
+		}
+
+		[TestMethod]
+		public void FlattenExpression_FlatExpression_NotAffected()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new SubtractionAssignmentNode("x", new AdditionNode(new ShortValueNode(5), new ShortValueNode(1))));
+
+			var changes = FlattenExpression(ast, 1);
+
+			Assert.IsTrue(changes == 0);
+		}
+
+		[TestMethod]
+		public void FlattenExpression_SubexpressionExtracted()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new AdditionNode(
+				new AdditionNode(
+					new ShortValueNode(5),
+					new ShortValueNode(5)
+				),
+				new ShortValueNode(1)
+			)));
+
+			var changes = FlattenExpression(ast, 1);
+
+			Assert.IsTrue(changes > 0);
+			var children = ast.GetChildren();
+			Assert.AreEqual(4, children.Length);
+			Assert.IsInstanceOfType(children[0], typeof(VariableDeclarationNode));
+			Assert.IsInstanceOfType(children[1], typeof(VariableDeclarationNode));
+			Assert.IsInstanceOfType(children[2], typeof(VariableAssignmentNode));
+			Assert.IsInstanceOfType(children[3], typeof(VariableAssignmentNode));
+		}
+
+		[TestMethod]
+		public void FlattenExpression_SideSubexpressionExtracted()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new SubtractionNode(
+				new AdditionNode(
+					new ShortValueNode(1),
+					new ShortValueNode(2)
+				),
+				new AdditionNode(
+					new ShortValueNode(3),
+					new ShortValueNode(4)
+				)
+			)));
+
+			var changedes = FlattenExpression(ast, 1);
+
+			Assert.IsTrue(changedes > 0);
+			var children = ast.GetChildren();
+			Assert.AreEqual(6, children.Length);
+			Assert.IsInstanceOfType(children[0], typeof(VariableDeclarationNode));
+			Assert.IsInstanceOfType(children[1], typeof(VariableDeclarationNode));
+			Assert.IsInstanceOfType(children[2], typeof(VariableAssignmentNode));
+			Assert.IsInstanceOfType(children[3], typeof(VariableDeclarationNode));
+			Assert.IsInstanceOfType(children[4], typeof(VariableAssignmentNode));
+			Assert.IsInstanceOfType(children[5], typeof(VariableAssignmentNode));
+		}
+
+		[TestMethod]
+		public void FlattenExpressions_FlattensAll()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new SubtractionNode(
+				new AdditionNode(
+					new ShortValueNode(1),
+					new ShortValueNode(2)
+				),
+				new ShortValueNode(3)
+			)));
+			ast.AddChild(new VariableDeclarationNode("byte", "y"));
+			ast.AddChild(new VariableAssignmentNode("y", new SubtractionNode(
+				new AdditionNode(
+					new ShortValueNode(1),
+					new ShortValueNode(2)
+				),
+				new ShortValueNode(3)
+			)));
+			
+			var changed = FlattenExpressions(ast);
+
+			Assert.IsTrue(changed);
+		}
 	}
 }
