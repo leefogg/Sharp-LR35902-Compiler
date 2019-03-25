@@ -297,7 +297,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			rootnode.AddChild(new VariableDeclarationNode("byte", "x"));
 			rootnode.AddChild(new VariableAssignmentNode("x", new SubtractionNode(new ShortValueNode(5), new ShortValueNode(6))));
 
-			var acctualASM = new List<string>(EmitAssembly(rootnode));
+			var actualASM = new List<string>(EmitAssembly(rootnode));
 
 			var expectedASM = new[]
 			{
@@ -307,7 +307,56 @@ namespace Sharp_LR35902_Compiler_Tests
 				"LD C, A"
 			};
 
-			ListEqual(expectedASM, acctualASM);
+			ListEqual(expectedASM, actualASM);
+		}
+
+		[TestMethod]
+		public void EmitAssembly_Expression_LessThen()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", 
+				new LessThanComparisonNode(
+					new ShortValueNode(1),
+					new ShortValueNode(2)
+				)
+			));
+
+			var asm = EmitAssembly(ast).ToArray();
+
+			ListEqual(new[] {
+				"LD A, 1",
+				"LD B, 2",
+				"CP B",
+				"JP NC generatedLabel1",
+				"LD C 1",
+				"generatedLabel1:"
+			}, asm);
+		}
+
+		[TestMethod]
+		public void EmitAssembly_Expression_MoreThen()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x",
+				new MoreThanComparisonNode(
+					new ShortValueNode(1),
+					new ShortValueNode(2)
+				)
+			));
+
+			var asm = EmitAssembly(ast).ToArray();
+
+			ListEqual(new[] {
+				"LD A, 1",
+				"LD B, 2",
+				"CP B",
+				"JP C generatedLabel1",
+				"JP NZ generatedLabel1",
+				"LD C 1",
+				"generatedLabel1:"
+			}, asm);
 		}
 	}
 }

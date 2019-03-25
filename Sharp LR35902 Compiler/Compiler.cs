@@ -47,6 +47,7 @@ namespace Sharp_LR35902_Compiler
 			}
 
 			// Cases must be in order of any inheritence because of the way `is` works
+			var i = 1;
 			foreach (var node in astroot.GetChildren())
 			{
 				if (node is VariableDeclarationNode)
@@ -65,17 +66,38 @@ namespace Sharp_LR35902_Compiler
 						yield return $"LD {getVariableRegister(var.VariableName)}, {getVariableRegister(varval.VariableName)}";
 					else if (var.Value is ShortValueNode imval)
 						yield return $"LD {getVariableRegister(var.VariableName)}, {imval.Value}";
-					else if (var.Value is OperatorNode addition)
+					else if (var.Value is OperatorNode oprator)
 					{
-						yield return writeToRegister(addition.Left, "B");
-						yield return writeToRegister(addition.Right, "A");
-						if (var.Value is AdditionNode)
-							yield return "ADD A, B";
-						else if (var.Value is SubtractionNode)
-							yield return "SUB A, B";
-						yield return $"LD {getVariableRegister(var.VariableName)}, A";
+						if (var.Value is ComparisonNode comparison)
+						{
+							yield return writeToRegister(comparison.Left, "A");
+							yield return writeToRegister(comparison.Right, "B");
+							yield return "CP B";
+							var skiplabelname = "generatedLabel" + i++;
+							if (var.Value is LessThanComparisonNode)
+							{
+								yield return "JP NC " + skiplabelname;
+							} 
+							else if (var.Value is MoreThanComparisonNode)
+							{
+								yield return "JP C " + skiplabelname;
+								yield return "JP NZ " + skiplabelname;
+							}
+							yield return $"LD {getVariableRegister(var.VariableName)} 1";
+							yield return skiplabelname + ':';
+						}
+						else
+						{
+							yield return writeToRegister(oprator.Left, "B");
+							yield return writeToRegister(oprator.Right, "A");
+							if (var.Value is AdditionNode)
+								yield return "ADD A, B";
+							else if (var.Value is SubtractionNode)
+								yield return "SUB A, B";
+							yield return $"LD {getVariableRegister(var.VariableName)}, A";
+						}
 					}
-				}
+				} 
 			}
 		}
 
