@@ -277,7 +277,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			rootnode.AddChild(new VariableDeclarationNode("byte", "x"));
 			rootnode.AddChild(new VariableAssignmentNode("x", new AdditionNode(new ShortValueNode(5), new ShortValueNode(6))));
 
-			var acctualASM = new List<string>(EmitAssembly(rootnode));
+			var actualASM = new List<string>(EmitAssembly(rootnode));
 
 			var expectedASM = new[]
 			{
@@ -287,7 +287,7 @@ namespace Sharp_LR35902_Compiler_Tests
 				"LD C, A"
 			};
 
-			ListEqual(expectedASM, acctualASM);
+			ListEqual(expectedASM, actualASM);
 		}
 
 		[TestMethod]
