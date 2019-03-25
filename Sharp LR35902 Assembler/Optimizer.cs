@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using System.Text.RegularExpressions;
+using Common.Extensions;
 
 namespace Sharp_LR35902_Assembler
 {
-    public class Optimizer
+	public class Optimizer
     {
+		private static readonly string[] AllRegisters = new[] { "A", "B", "C", "D", "E", "H", "L", "AF", "BC", "DE", "HL" };
+
 		public static void Optimize(List<string> instructions, byte level)
 		{
 			if (level == 0)
@@ -23,7 +24,43 @@ namespace Sharp_LR35902_Assembler
 			}
 
 			IncludeNearIncDec(instructions);
+			while (RemoveRedundantWrites(instructions)) { };
 		}
+
+		public static bool RemoveRedundantWrites(IList<string> instructions)
+		{
+			var changesmade = false;
+			for (var i=0; i<instructions.Count; i++)
+			{
+				if (instructions[i].StartsWith("LD "))
+				{
+					var parts = instructions[i].Split(' ');
+					var destinationregister = parts.Get(1);
+					if (!isRegister(destinationregister))
+						continue;
+					
+					for (var j=i+1; j<instructions.Count; j++)
+					{
+						var otherinstructionparts = instructions[j].Split(' ');
+						if (isJump(instructions[j]))
+							break;
+						if (otherinstructionparts[0].StartsWith("LD") && otherinstructionparts.Get(1) == destinationregister) {
+							instructions.RemoveAt(i--);
+							changesmade = true;
+							break;
+						}
+						if (otherinstructionparts.Get(1) == destinationregister || otherinstructionparts.Get(2) == destinationregister)
+							break;
+					}
+				}
+			}
+
+			return changesmade;
+		}
+
+		private static bool isJump(string instruction) => instruction.StartsWith("JP") || instruction.StartsWith("JR");
+
+		private static bool isRegister(string possibleregister) => AllRegisters.Contains(possibleregister);
 
 		/*
 		Utilizes LDD and LDI optimization instructions by 
@@ -75,7 +112,7 @@ namespace Sharp_LR35902_Assembler
 						i = j-1; 
 						break;
 					}
-					else if (incdecinstruction.StartsWith("JP") || incdecinstruction.StartsWith("JR"))
+					else if (isJump(incdecinstruction))
 					{
 						// Start again from the next line
 						i = j; 
@@ -89,11 +126,9 @@ namespace Sharp_LR35902_Assembler
 
 		private static IEnumerable<string> getUsedRegisters(string instruction)
 		{
-			var registers = new[] { "A", "B", "C", "D", "E", "H", "L", "AF", "BC", "DE", "HL" };
-
 			instruction = instruction.Replace("(", string.Empty).Replace(")", string.Empty).Replace(",", string.Empty);
 			var parts = instruction.Split(" ");
-			return parts.Skip(1).Intersect(registers);
+			return parts.Skip(1).Intersect(AllRegisters);
 		}
 
 		// Deletes code between non-conditional jumps/calls and the next label

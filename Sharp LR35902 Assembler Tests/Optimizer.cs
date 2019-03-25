@@ -296,5 +296,89 @@ namespace Sharp_LR35902_Assembler_Tests
 
 			Assert.AreEqual(0, changedlines);
 		}
+
+		[TestMethod]
+		public void RemoveRedundantWrites_Simple()
+		{
+			var instructions = new List<string>()
+			{
+				"LD A 10",
+				"LD A 5",
+				"LD A 1"
+			};
+
+			var changesmade = RemoveRedundantWrites(instructions);
+
+			Assert.IsTrue(changesmade);
+			ListEqual(new[] { 
+				"LD A 1"
+			}, instructions);
+		}
+
+		[TestMethod]
+		public void RemoveRedundantWrites_Searches()
+		{
+			var instructions = new List<string>()
+			{
+				"LD A 10",
+				"NOP",
+				"CP 1",
+				"LD A 1"
+			};
+
+			var changesmade = RemoveRedundantWrites(instructions);
+
+			Assert.IsTrue(changesmade);
+			ListEqual(new[] {
+				"NOP",
+				"CP 1",
+				"LD A 1"
+			}, instructions);
+		}
+
+		[TestMethod]
+		public void RemoveRedundantWrites_JumpCancels_JP()
+		{
+			var instructions = new List<string>()
+			{
+				"LD A 10",
+				"JP 100",
+				"LD A 1"
+			};
+
+			var changesmade = RemoveRedundantWrites(instructions);
+
+			Assert.IsFalse(changesmade);
+		}
+
+		[TestMethod]
+		public void RemoveRedundantWrites_JumpCancels_JR()
+		{
+			var instructions = new List<string>()
+			{
+				"LD A 10",
+				"JR 100",
+				"LD A 1"
+			};
+
+			var changesmade = RemoveRedundantWrites(instructions);
+
+			Assert.IsFalse(changesmade);
+		}
+
+		[TestMethod]
+		public void RemoveRedundantWrites_ReadCancels()
+		{
+			var instructions = new List<string>()
+			{
+				"LD A 10",
+				"LD B A",
+				"LD A 1"
+			};
+
+			var changesmade = RemoveRedundantWrites(instructions);
+
+			Assert.IsFalse(changesmade);
+		}
 	}
 }
