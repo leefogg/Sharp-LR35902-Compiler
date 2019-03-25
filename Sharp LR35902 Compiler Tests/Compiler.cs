@@ -281,10 +281,10 @@ namespace Sharp_LR35902_Compiler_Tests
 
 			var expectedASM = new[]
 			{
-				"LD B, 5",
-				"LD A, 6",
-				"ADD A, B",
-				"LD C, A"
+				"LD B 5",
+				"LD A 6",
+				"ADD A B",
+				"LD C A"
 			};
 
 			ListEqual(expectedASM, actualASM);
@@ -301,10 +301,10 @@ namespace Sharp_LR35902_Compiler_Tests
 
 			var expectedASM = new[]
 			{
-				"LD B, 5",
-				"LD A, 6",
-				"SUB A, B",
-				"LD C, A"
+				"LD B 5",
+				"LD A 6",
+				"SUB A B",
+				"LD C A"
 			};
 
 			ListEqual(expectedASM, actualASM);
@@ -325,8 +325,8 @@ namespace Sharp_LR35902_Compiler_Tests
 			var asm = EmitAssembly(ast).ToArray();
 
 			ListEqual(new[] {
-				"LD A, 1",
-				"LD B, 2",
+				"LD A 1",
+				"LD B 2",
 				"CP B",
 				"JP NC generatedLabel1",
 				"LD C 1",
@@ -349,8 +349,8 @@ namespace Sharp_LR35902_Compiler_Tests
 			var asm = EmitAssembly(ast).ToArray();
 
 			ListEqual(new[] {
-				"LD A, 1",
-				"LD B, 2",
+				"LD A 1",
+				"LD B 2",
 				"CP B",
 				"JP C generatedLabel1",
 				"JP NZ generatedLabel1",

@@ -39,9 +39,9 @@ namespace Sharp_LR35902_Compiler
 			string writeToRegister(ExpressionNode value, string outputreg)
 			{
 				if (value is VariableValueNode vval)
-					return $"LD {outputreg}, {getVariableRegister(vval.VariableName)}";
+					return $"LD {outputreg} {getVariableRegister(vval.VariableName)}";
 				else if (value is ShortValueNode cval)
-					return $"LD {outputreg}, {cval.Value}";
+					return $"LD {outputreg} {cval.Value}";
 
 				throw new NotSupportedException("This operator is not yet supported inside the assembler. Please implement.");
 			}
@@ -91,10 +91,10 @@ namespace Sharp_LR35902_Compiler
 							yield return writeToRegister(oprator.Left, "B");
 							yield return writeToRegister(oprator.Right, "A");
 							if (var.Value is AdditionNode)
-								yield return "ADD A, B";
+								yield return "ADD A B";
 							else if (var.Value is SubtractionNode)
-								yield return "SUB A, B";
-							yield return $"LD {getVariableRegister(var.VariableName)}, A";
+								yield return "SUB A B";
+							yield return $"LD {getVariableRegister(var.VariableName)} A";
 						}
 					}
 				} 
