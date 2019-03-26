@@ -224,5 +224,30 @@ namespace Sharp_LR35902_Compiler
 
 			return intermediateVariableName;
 		}
+
+		public static IEnumerable<List<Node>> CreateBasicBlocks(BlockNode block)
+		{
+			var children = block.GetChildren();
+			var currentblock = new List<Node>();
+			foreach (var child in children)
+			{
+				if (currentblock.Any() && child is LabelNode)
+				{
+					yield return currentblock;
+					currentblock = new List<Node>();
+				}
+
+				currentblock.Add(child);
+
+				if (currentblock.Any() && child is GotoNode)
+				{
+					yield return currentblock;
+					currentblock = new List<Node>();
+				}
+			}
+
+			if (currentblock.Any())
+				yield return currentblock;
+		}
 	}
 }

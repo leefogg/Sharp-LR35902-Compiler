@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using static Sharp_LR35902_Compiler.Optimizer;
+using System.Linq;
 
 namespace Sharp_LR35902_Compiler_Tests
 {
@@ -413,6 +414,71 @@ namespace Sharp_LR35902_Compiler_Tests
 			var changed = FlattenExpressions(ast);
 
 			Assert.IsTrue(changed);
+		}
+
+		[TestMethod]
+		public void CreateBasicBlocks_OneBlock()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableDeclarationNode("byte", "y"));
+			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5)));
+
+			var blocks = CreateBasicBlocks(ast).ToArray();
+
+			Assert.AreEqual(1, blocks.Length);
+			Assert.AreEqual(3, blocks[0].Count);
+		}
+
+		[TestMethod]
+		public void CreateBasicBlocks_LabelSeperates()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5)));
+			ast.AddChild(new LabelNode("label1"));
+			ast.AddChild(new VariableDeclarationNode("byte", "y"));
+
+			var blocks = CreateBasicBlocks(ast).ToArray();
+
+			Assert.AreEqual(2, blocks.Length);
+			Assert.AreEqual(2, blocks[0].Count);
+			Assert.AreEqual(2, blocks[1].Count);
+			Assert.IsInstanceOfType(blocks[0][0], typeof(VariableDeclarationNode));
+			Assert.IsInstanceOfType(blocks[1][0], typeof(LabelNode));
+		}
+
+		[TestMethod]
+		public void CreateBasicBlocks_JumpSeperates()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5)));
+			ast.AddChild(new GotoNode("label1"));
+			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(10)));
+
+			var blocks = CreateBasicBlocks(ast).ToArray();
+
+			Assert.AreEqual(2, blocks.Length);
+			Assert.AreEqual(3, blocks[0].Count);
+			Assert.AreEqual(1, blocks[1].Count);
+			Assert.IsInstanceOfType(blocks[0][0], typeof(VariableDeclarationNode));
+			Assert.IsInstanceOfType(blocks[1][0], typeof(VariableAssignmentNode));
+		}
+
+		[TestMethod]
+		public void CreateBasicBlocks_NoEmpty()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5)));
+			ast.AddChild(new GotoNode("label1"));
+			ast.AddChild(new LabelNode("label1"));
+			ast.AddChild(new VariableDeclarationNode("byte", "y"));
+
+			var blocks = CreateBasicBlocks(ast).ToArray();
+
+			Assert.AreEqual(2, blocks.Length);
 		}
 	}
 }
