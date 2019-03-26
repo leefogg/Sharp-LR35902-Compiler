@@ -44,6 +44,19 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
+		public void GetTokenType_Add()
+		{
+			Assert.AreEqual(TokenType.Operator, GetTokenType("+"));
+		}
+
+		[TestMethod]
+		public void GetTokenType_Subtract()
+		{
+			Assert.AreEqual(TokenType.Operator, GetTokenType("-"));
+		}
+
+
+		[TestMethod]
 		public void GetTokenType_Byte()
 		{
 			Assert.AreEqual(TokenType.DataType, GetTokenType("byte"));
@@ -53,12 +66,6 @@ namespace Sharp_LR35902_Compiler_Tests
 		public void GetTokenType_Equals()
 		{
 			Assert.AreEqual(TokenType.Comparison, GetTokenType("=="));
-		}
-
-		[TestMethod]
-		public void GetTokenType_NotEquals()
-		{
-			Assert.AreEqual(TokenType.Comparison, GetTokenType("!="));
 		}
 
 		[TestMethod]
@@ -157,6 +164,42 @@ namespace Sharp_LR35902_Compiler_Tests
 			Assert.AreEqual(TokenType.Immediate, GetTokenType("42"));
 		}
 
+		[TestMethod]
+		public void GetTokenType_Booleans()
+		{
+			Assert.AreEqual(TokenType.Immediate, GetTokenType("true"));
+			Assert.AreEqual(TokenType.Immediate, GetTokenType("false"));
+		}
+
+		[TestMethod]
+		public void GetTokenType_Negate()
+		{
+			Assert.AreEqual(TokenType.Operator, GetTokenType("!"));
+		}
+
+		[TestMethod]
+		public void GetTokenType_And()
+		{
+			Assert.AreEqual(TokenType.Comparison, GetTokenType("&&"));
+		}
+
+		[TestMethod]
+		public void GetTokenType_Or()
+		{
+			Assert.AreEqual(TokenType.Comparison, GetTokenType("||"));
+		}
+
+		[TestMethod]
+		public void GetTokenType_LessThan()
+		{
+			Assert.AreEqual(TokenType.Comparison, GetTokenType("<"));
+		}
+
+		[TestMethod]
+		public void GetTokenType_MoreThan()
+		{
+			Assert.AreEqual(TokenType.Comparison, GetTokenType(">"));
+		}
 		[TestMethod]
 		[ExpectedException(typeof(Common.Exceptions.SyntaxException))]
 		public void GetTokenType_Unknown()

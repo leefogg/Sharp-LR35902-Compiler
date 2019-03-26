@@ -2,14 +2,14 @@
 
 namespace Sharp_LR35902_Compiler.Nodes
 {
-    public class LabelNode : Node
+	public class ShortValueNode : ConstantNode
     {
-        public string Name { get; }
+		public readonly ushort Value;
 
-        public LabelNode(string name)
-        {
-            Name = name;
-        }
+		public ShortValueNode(ushort value)
+		{
+			Value = value;
+		}
 
         public override IEnumerable<string> GetUsedRegisterNames()
         {
@@ -18,10 +18,13 @@ namespace Sharp_LR35902_Compiler.Nodes
 
 		public override bool Equals(object obj)
 		{
-			if (obj is LabelNode other)
-				return other.Name == Name;
+			if (obj is ShortValueNode other)
+				return other.Value == Value;
 
 			return false;
 		}
+
+		public override ushort GetValue()
+			=> Value;
 	}
 }

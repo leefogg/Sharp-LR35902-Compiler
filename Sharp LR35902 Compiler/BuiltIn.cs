@@ -18,5 +18,21 @@ namespace Sharp_LR35902_Compiler
 			public static PrimitiveDataType Get(string name) => All.FirstOrDefault(dt => dt.Name == name);
 			public static bool CanConvertTo(PrimitiveDataType from, PrimitiveDataType to) => to.NumBits >= from.NumBits;
 		}
+
+		public static class Operators
+		{
+			public static readonly string
+				Add = "+",
+				Subtract = "-",
+				Assign = "=",
+				Equal = "==",
+				Increment = "++",
+				Decrement = "--",
+				MoreThan = ">",
+				LessThan = "<",
+				And = "&&",
+				Or = "||",
+				Not = "!";
+		}
 	}
 }

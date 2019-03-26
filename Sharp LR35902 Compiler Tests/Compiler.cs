@@ -20,7 +20,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			var expectedvariables = new[] { "x", "y", "z" };
 			var rootnode = new ASTNode();
 			rootnode.AddChild(new VariableDeclarationNode("int", expectedvariables[0])); // int x
-			rootnode.AddChild(new VariableAssignmentNode(expectedvariables[0], new ImmediateValueNode(5))); // x = 5
+			rootnode.AddChild(new VariableAssignmentNode(expectedvariables[0], new ShortValueNode(5))); // x = 5
 			rootnode.AddChild(new VariableDeclarationNode("int", expectedvariables[1])); // int y
 			rootnode.AddChild(new VariableAssignmentNode(expectedvariables[1], new VariableValueNode(expectedvariables[0]))); // y = x
 			rootnode.AddChild(new VariableDeclarationNode("int", expectedvariables[2])); // int z
@@ -41,7 +41,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var rootnode = new ASTNode();
 			rootnode.AddChild(new VariableDeclarationNode("int", "x")); // int x
-			rootnode.AddChild(new VariableAssignmentNode("x", new ImmediateValueNode(5))); // x = 5
+			rootnode.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5))); // x = 5
 			rootnode.AddChild(new VariableDeclarationNode("int", "y")); // int y
 			rootnode.AddChild(new VariableAssignmentNode("y", new VariableValueNode("x"))); // y = x
 			rootnode.AddChild(new VariableDeclarationNode("int", "z")); // int z
@@ -55,7 +55,7 @@ namespace Sharp_LR35902_Compiler_Tests
         {
             var rootnode = new ASTNode();
             rootnode.AddChild(new VariableDeclarationNode("int", "x")); // int x
-            rootnode.AddChild(new VariableAssignmentNode("x", new ImmediateValueNode(5))); // x = 5
+            rootnode.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5))); // x = 5
             rootnode.AddChild(new VariableDeclarationNode("int", "y")); // int y
             rootnode.AddChild(new VariableAssignmentNode("y", new VariableValueNode("x"))); // y = x
             rootnode.AddChild(new VariableDeclarationNode("int", "z")); // int z
@@ -69,7 +69,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		{
 			var rootnode = new ASTNode();
 			rootnode.AddChild(new VariableDeclarationNode("int", "x")); // int x
-			rootnode.AddChild(new VariableAssignmentNode("x", new ImmediateValueNode(5))); // x = 5
+			rootnode.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5))); // x = 5
 			rootnode.AddChild(new VariableDeclarationNode("int", "y")); // int y
 			rootnode.AddChild(new VariableAssignmentNode("y", new VariableValueNode("x"))); // y = x
 			rootnode.AddChild(new VariableDeclarationNode("int", "z")); // int z
@@ -126,11 +126,11 @@ namespace Sharp_LR35902_Compiler_Tests
         {
             var rootnode = new ASTNode();
             rootnode.AddChild(new VariableDeclarationNode("int", "x")); // int x
-            rootnode.AddChild(new VariableAssignmentNode("x", new ImmediateValueNode(5))); // x = 5
+            rootnode.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5))); // x = 5
 
             var asmlines = new List<string>(EmitAssembly(rootnode));
             Assert.AreEqual(1, asmlines.Count);
-            Assert.AreEqual("LD B, 5", asmlines[0]);
+            Assert.AreEqual("LD C, 5", asmlines[0]);
         }
 
         [TestMethod]
@@ -138,14 +138,14 @@ namespace Sharp_LR35902_Compiler_Tests
         {
             var rootnode = new ASTNode();
             rootnode.AddChild(new VariableDeclarationNode("int", "x")); // int x
-            rootnode.AddChild(new VariableAssignmentNode("x", new ImmediateValueNode(5))); // x = 5
+            rootnode.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5))); // x = 5
             rootnode.AddChild(new VariableDeclarationNode("int", "y")); // int y
             rootnode.AddChild(new VariableAssignmentNode("y", new VariableValueNode("x"))); // y = x
 
             var asmlines = new List<string>(EmitAssembly(rootnode));
             Assert.AreEqual(2, asmlines.Count);
-            Assert.AreEqual("LD B, 5", asmlines[0]);
-            Assert.AreEqual("LD C, B", asmlines[1]);
+            Assert.AreEqual("LD C, 5", asmlines[0]);
+            Assert.AreEqual("LD D, C", asmlines[1]);
         }
 
         [TestMethod]
@@ -153,13 +153,13 @@ namespace Sharp_LR35902_Compiler_Tests
         {
             var rootnode = new ASTNode();
             rootnode.AddChild(new VariableDeclarationNode("int", "x")); // int x
-            rootnode.AddChild(new VariableAssignmentNode("x", new ImmediateValueNode(5))); // x = 5
+            rootnode.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5))); // x = 5
             rootnode.AddChild(new IncrementNode("x")); // x++
 
             var asmlines = new List<string>(EmitAssembly(rootnode));
             Assert.AreEqual(2, asmlines.Count);
-            Assert.AreEqual("LD B, 5", asmlines[0]);
-            Assert.AreEqual("INC B", asmlines[1]);
+            Assert.AreEqual("LD C, 5", asmlines[0]);
+            Assert.AreEqual("INC C", asmlines[1]);
         }
 
         [TestMethod]
@@ -167,13 +167,13 @@ namespace Sharp_LR35902_Compiler_Tests
         {
             var rootnode = new ASTNode();
             rootnode.AddChild(new VariableDeclarationNode("int", "x")); // int x
-            rootnode.AddChild(new VariableAssignmentNode("x", new ImmediateValueNode(5))); // x = 5
+            rootnode.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5))); // x = 5
             rootnode.AddChild(new DecrementNode("x")); // x++
 
             var asmlines = new List<string>(EmitAssembly(rootnode));
             Assert.AreEqual(2, asmlines.Count);
-            Assert.AreEqual("LD B, 5", asmlines[0]);
-            Assert.AreEqual("DEC B", asmlines[1]);
+            Assert.AreEqual("LD C, 5", asmlines[0]);
+            Assert.AreEqual("DEC C", asmlines[1]);
         }
 
 		[TestMethod]
@@ -214,32 +214,28 @@ namespace Sharp_LR35902_Compiler_Tests
         {
             var rootnode = new ASTNode();
             rootnode.AddChild(new VariableDeclarationNode("int", "b")); // int b
-            rootnode.AddChild(new VariableAssignmentNode("b", new ImmediateValueNode(5))); // b = 5
+            rootnode.AddChild(new VariableAssignmentNode("b", new ShortValueNode(5))); // b = 5
             rootnode.AddChild(new VariableDeclarationNode("int", "c")); // int c
-            rootnode.AddChild(new VariableAssignmentNode("c", new ImmediateValueNode(5))); // c = 5
+            rootnode.AddChild(new VariableAssignmentNode("c", new ShortValueNode(5))); // c = 5
             rootnode.AddChild(new VariableDeclarationNode("int", "d")); // int d
-            rootnode.AddChild(new VariableAssignmentNode("d", new ImmediateValueNode(5))); // d = 5
+            rootnode.AddChild(new VariableAssignmentNode("d", new ShortValueNode(5))); // d = 5
             rootnode.AddChild(new VariableDeclarationNode("int", "e")); // int e
-            rootnode.AddChild(new VariableAssignmentNode("e", new ImmediateValueNode(5))); // e = 5
+            rootnode.AddChild(new VariableAssignmentNode("e", new ShortValueNode(5))); // e = 5
             rootnode.AddChild(new VariableDeclarationNode("int", "h")); // int h
-            rootnode.AddChild(new VariableAssignmentNode("h", new ImmediateValueNode(5))); // h = 5
-            rootnode.AddChild(new VariableDeclarationNode("int", "l")); // int l
-            rootnode.AddChild(new VariableAssignmentNode("l", new ImmediateValueNode(5))); // l = 5
+            rootnode.AddChild(new VariableAssignmentNode("h", new ShortValueNode(5))); // h = 5
             rootnode.AddChild(new IncrementNode("b"));
             rootnode.AddChild(new IncrementNode("c"));
             rootnode.AddChild(new IncrementNode("d"));
             rootnode.AddChild(new IncrementNode("e"));
             rootnode.AddChild(new IncrementNode("h"));
-            rootnode.AddChild(new IncrementNode("l"));
 
             var asmlines = new List<string>(EmitAssembly(rootnode));
-            Assert.AreEqual(12, asmlines.Count);
-            Assert.AreEqual("LD B, 5", asmlines[0]);
-            Assert.AreEqual("LD C, 5", asmlines[1]);
-            Assert.AreEqual("LD D, 5", asmlines[2]);
-            Assert.AreEqual("LD E, 5", asmlines[3]);
-            Assert.AreEqual("LD H, 5", asmlines[4]);
-            Assert.AreEqual("LD L, 5", asmlines[5]);
+            Assert.AreEqual(10, asmlines.Count);
+            Assert.AreEqual("LD C, 5", asmlines[0]);
+            Assert.AreEqual("LD D, 5", asmlines[1]);
+            Assert.AreEqual("LD E, 5", asmlines[2]);
+            Assert.AreEqual("LD H, 5", asmlines[3]);
+            Assert.AreEqual("LD L, 5", asmlines[4]);
         }
 
         [TestMethod]
@@ -248,19 +244,19 @@ namespace Sharp_LR35902_Compiler_Tests
         {
             var rootnode = new ASTNode();
             rootnode.AddChild(new VariableDeclarationNode("int", "b")); // int b
-            rootnode.AddChild(new VariableAssignmentNode("b", new ImmediateValueNode(5))); // b = 5
+            rootnode.AddChild(new VariableAssignmentNode("b", new ShortValueNode(5))); // b = 5
             rootnode.AddChild(new VariableDeclarationNode("int", "c")); // int c
-            rootnode.AddChild(new VariableAssignmentNode("c", new ImmediateValueNode(5))); // c = 5
+            rootnode.AddChild(new VariableAssignmentNode("c", new ShortValueNode(5))); // c = 5
             rootnode.AddChild(new VariableDeclarationNode("int", "d")); // int d
-            rootnode.AddChild(new VariableAssignmentNode("d", new ImmediateValueNode(5))); // d = 5
+            rootnode.AddChild(new VariableAssignmentNode("d", new ShortValueNode(5))); // d = 5
             rootnode.AddChild(new VariableDeclarationNode("int", "e")); // int e
-            rootnode.AddChild(new VariableAssignmentNode("e", new ImmediateValueNode(5))); // e = 5
+            rootnode.AddChild(new VariableAssignmentNode("e", new ShortValueNode(5))); // e = 5
             rootnode.AddChild(new VariableDeclarationNode("int", "h")); // int h
-            rootnode.AddChild(new VariableAssignmentNode("h", new ImmediateValueNode(5))); // h = 5
+            rootnode.AddChild(new VariableAssignmentNode("h", new ShortValueNode(5))); // h = 5
             rootnode.AddChild(new VariableDeclarationNode("int", "l")); // int l
-            rootnode.AddChild(new VariableAssignmentNode("l", new ImmediateValueNode(5))); // l = 5
+            rootnode.AddChild(new VariableAssignmentNode("l", new ShortValueNode(5))); // l = 5
             rootnode.AddChild(new VariableDeclarationNode("int", "overflow")); // int overflow
-            rootnode.AddChild(new VariableAssignmentNode("overflow", new ImmediateValueNode(5))); // overflow = 5
+            rootnode.AddChild(new VariableAssignmentNode("overflow", new ShortValueNode(5))); // overflow = 5
             rootnode.AddChild(new IncrementNode("b"));
             rootnode.AddChild(new IncrementNode("c"));
             rootnode.AddChild(new IncrementNode("d"));
@@ -272,86 +268,95 @@ namespace Sharp_LR35902_Compiler_Tests
             var asmlines = new List<string>(EmitAssembly(rootnode));
         }
 
+		
+
 		[TestMethod]
-		public void EmitAssembly_AdditionAssignemn_WithVariable()
+		public void EmitAssembly_Expression_Addition()
 		{
 			var rootnode = new ASTNode();
 			rootnode.AddChild(new VariableDeclarationNode("byte", "x"));
-			rootnode.AddChild(new VariableDeclarationNode("byte", "y"));
-			rootnode.AddChild(new VariableAssignmentNode("y", new ImmediateValueNode(5)));
-			rootnode.AddChild(new AdditionAssignmentNode("x", new VariableValueNode("y")));
+			rootnode.AddChild(new VariableAssignmentNode("x", new AdditionNode(new ShortValueNode(5), new ShortValueNode(6))));
 
-			var acctualASM = new List<string>(EmitAssembly(rootnode));
+			var actualASM = new List<string>(EmitAssembly(rootnode));
 
 			var expectedASM = new[]
 			{
-				"LD C, 5",
-				"LD A, B",
-				"ADD A, C",
-				"LD B, A"
+				"LD B 5",
+				"LD A 6",
+				"ADD A B",
+				"LD C A"
 			};
 
-			ListEqual(expectedASM, acctualASM);
+			ListEqual(expectedASM, actualASM);
 		}
 
 		[TestMethod]
-		public void EmitAssembly_AdditionAssignemnt_WithImmedate()
+		public void EmitAssembly_Expression_Subtraction()
 		{
 			var rootnode = new ASTNode();
 			rootnode.AddChild(new VariableDeclarationNode("byte", "x"));
-			rootnode.AddChild(new AdditionAssignmentNode("x", new ImmediateValueNode(5)));
+			rootnode.AddChild(new VariableAssignmentNode("x", new SubtractionNode(new ShortValueNode(5), new ShortValueNode(6))));
 
-			var acctualASM = new List<string>(EmitAssembly(rootnode));
+			var actualASM = new List<string>(EmitAssembly(rootnode));
 
 			var expectedASM = new[]
 			{
-				"LD A, B",
-				"ADD A, 5",
-				"LD B, A"
+				"LD B 5",
+				"LD A 6",
+				"SUB A B",
+				"LD C A"
 			};
 
-			ListEqual(expectedASM, acctualASM);
+			ListEqual(expectedASM, actualASM);
 		}
 
 		[TestMethod]
-		public void EmitAssembly_SubtractionAssignemnt_WithVariable()
+		public void EmitAssembly_Expression_LessThen()
 		{
-			var rootnode = new ASTNode();
-			rootnode.AddChild(new VariableDeclarationNode("byte", "x"));
-			rootnode.AddChild(new VariableDeclarationNode("byte", "y"));
-			rootnode.AddChild(new VariableAssignmentNode("y", new ImmediateValueNode(5)));
-			rootnode.AddChild(new SubtractionAssignmentNode("x", new VariableValueNode("y")));
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", 
+				new LessThanComparisonNode(
+					new ShortValueNode(1),
+					new ShortValueNode(2)
+				)
+			));
 
-			var acctualASM = new List<string>(EmitAssembly(rootnode));
+			var asm = EmitAssembly(ast).ToArray();
 
-			var expectedASM = new[]
-			{
-				"LD C, 5",
-				"LD A, B",
-				"SUB A, C",
-				"LD B, A"
-			};
-
-			ListEqual(expectedASM, acctualASM);
+			ListEqual(new[] {
+				"LD A 1",
+				"LD B 2",
+				"CP B",
+				"JP NC generatedLabel1",
+				"LD C 1",
+				"generatedLabel1:"
+			}, asm);
 		}
 
 		[TestMethod]
-		public void EmitAssembly_SubtractionAssignemnt_WithImmedate()
+		public void EmitAssembly_Expression_MoreThen()
 		{
-			var rootnode = new ASTNode();
-			rootnode.AddChild(new VariableDeclarationNode("byte", "x"));
-			rootnode.AddChild(new SubtractionAssignmentNode("x", new ImmediateValueNode(5)));
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x",
+				new MoreThanComparisonNode(
+					new ShortValueNode(1),
+					new ShortValueNode(2)
+				)
+			));
 
-			var acctualASM = new List<string>(EmitAssembly(rootnode));
+			var asm = EmitAssembly(ast).ToArray();
 
-			var expectedASM = new[]
-			{
-				"LD A, B",
-				"SUB A, 5",
-				"LD B, A"
-			};
-
-			ListEqual(expectedASM, acctualASM);
+			ListEqual(new[] {
+				"LD A 1",
+				"LD B 2",
+				"CP B",
+				"JP C generatedLabel1",
+				"JP NZ generatedLabel1",
+				"LD C 1",
+				"generatedLabel1:"
+			}, asm);
 		}
 	}
 }

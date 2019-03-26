@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Sharp_LR35902_Compiler.Nodes
 {
-    public class VariableValueNode : ValueNode
+	public class IncrementNode : Node
     {
 		public string VariableName { get; }
 
-		public VariableValueNode(string name)
+		public IncrementNode(string variablename)
 		{
-			VariableName = name;
+			VariableName = variablename;
 		}
 
         public override IEnumerable<string> GetUsedRegisterNames()
@@ -20,10 +18,12 @@ namespace Sharp_LR35902_Compiler.Nodes
 
 		public override bool Equals(object obj)
 		{
-			if (obj is VariableValueNode other)
+			if (obj is IncrementNode other)
 				return other.VariableName == VariableName;
 
 			return false;
 		}
+
+		public override Node[] GetChildren() => NoChildren;
 	}
 }

@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Sharp_LR35902_Compiler.Nodes
 {
-    public class IfNode : Node
+	public class IfNode : Node
     {
-		public ComparisonNode Condition { get; }
-        public Node IfTrue { get; }
+		public ExpressionNode Condition { get; }
+        public BlockNode IfTrue { get; }
 
-        public IfNode(ComparisonNode condition, Node iftrue)
+        public IfNode(ExpressionNode condition, BlockNode iftrue)
 		{
             Condition = condition;
             IfTrue = iftrue;
@@ -26,9 +25,11 @@ namespace Sharp_LR35902_Compiler.Nodes
 		public override bool Equals(object obj)
 		{
 			if (obj is IfNode other)
-				return other.Condition == Condition && other.IfTrue.Equals(IfTrue);
+				return other.Condition.Equals(Condition) && other.IfTrue.Equals(IfTrue);
 
 			return false;
 		}
+
+		public override Node[] GetChildren() => Condition.GetChildren().Concat(IfTrue.GetChildren()).ToArray();
 	}
 }

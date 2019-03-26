@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Sharp_LR35902_Compiler.Nodes
+﻿namespace Sharp_LR35902_Compiler.Nodes
 {
 	public class AdditionAssignmentNode : VariableAssignmentNode
 	{
-		public AdditionAssignmentNode(string variableName, ValueNode value) : base(variableName, value)
+		public AdditionAssignmentNode(string variableName, ExpressionNode value) : base(variableName, value)
 		{
 		}
 

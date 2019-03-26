@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Sharp_LR35902_Compiler.Nodes
 {
@@ -25,5 +23,7 @@ namespace Sharp_LR35902_Compiler.Nodes
 
 			return false;
 		}
+
+		public override Node[] GetChildren() => NoChildren;
 	}
 }

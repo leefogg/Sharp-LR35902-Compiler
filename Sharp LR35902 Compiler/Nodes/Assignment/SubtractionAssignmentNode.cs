@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Sharp_LR35902_Compiler.Nodes
+﻿namespace Sharp_LR35902_Compiler.Nodes
 {
 	public class SubtractionAssignmentNode : VariableAssignmentNode
 	{
-		public SubtractionAssignmentNode(string variableName, ValueNode value) : base(variableName, value)
+		public SubtractionAssignmentNode(string variableName, ExpressionNode value) : base(variableName, value)
 		{
 		}
 

@@ -21,13 +21,13 @@ namespace Test_Common
 				Assert.AreEqual(expected[i], actual[i]);
 		}
 
-		public static void ListEqual<T>(IList<T> expected, IList<T> acctual)
+		public static void ListEqual<T>(IList<T> expected, IList<T> actual)
 		{
-			if (expected.Count != acctual.Count)
+			if (expected.Count != actual.Count)
 				Assert.Fail("Lists do not match in length");
 
 			for (int i = 0; i < expected.Count; i++)
-				Assert.AreEqual(expected[i], acctual[i]);
+				Assert.AreEqual(expected[i], actual[i]);
 		}
 	}
 }

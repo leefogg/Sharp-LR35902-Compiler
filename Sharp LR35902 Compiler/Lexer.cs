@@ -1,5 +1,4 @@
 ﻿using Common.Exceptions;
-using Common.Extensions;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -31,19 +30,27 @@ namespace Sharp_LR35902_Compiler
 			new TokenDescriptor("goto",			TokenType.ControlFlow),
 			new TokenDescriptor("byte",			TokenType.DataType),
 			new TokenDescriptor(@"\=\=",		TokenType.Comparison),
-			new TokenDescriptor(@"\!\=",		TokenType.Comparison),
+			new TokenDescriptor(@"\&\&",		TokenType.Comparison),
+			new TokenDescriptor(@"\|\|",		TokenType.Comparison),
+			new TokenDescriptor(@"\<",			TokenType.Comparison),
+			new TokenDescriptor(@"\>",			TokenType.Comparison),
 			new TokenDescriptor(@"\+\+",		TokenType.Operator),
 			new TokenDescriptor(@"\-\-",		TokenType.Operator), 
 			new TokenDescriptor(@"\+\=",		TokenType.Operator),
 			new TokenDescriptor(@"\-\=",		TokenType.Operator),
 			new TokenDescriptor(@"\=",			TokenType.Operator),
+			new TokenDescriptor(@"\+",			TokenType.Operator),
+			new TokenDescriptor(@"\-",			TokenType.Operator),
+			new TokenDescriptor(@"\!",			TokenType.Operator),
 			new TokenDescriptor(@"\(",			TokenType.Grammar),
 			new TokenDescriptor(@"\)",			TokenType.Grammar),
 			new TokenDescriptor(@"\{",			TokenType.Grammar),
 			new TokenDescriptor(@"\}",			TokenType.Grammar),
 			new TokenDescriptor(@"\;",			TokenType.Grammar),
-			new TokenDescriptor("[a-z]+",		TokenType.Variable),
+			new TokenDescriptor("true",			TokenType.Immediate),
+			new TokenDescriptor("false",		TokenType.Immediate),
 			new TokenDescriptor("[0-9]+",		TokenType.Immediate),
+			new TokenDescriptor("[a-z]+",		TokenType.Variable),
 		};
 
 		public static List<Token> GetTokenList(string line) => GetTokenList(new[] { line });

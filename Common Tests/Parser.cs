@@ -67,5 +67,30 @@ namespace Common_Tests
 		{
 			ParseImmediate("x");
 		}
+
+
+		[TestMethod]
+		public void ParseImmediate_True()
+		{
+			Assert.AreEqual(1, ParseImmediate("true"));
+		}
+
+		[TestMethod]
+		public void ParseImmediate_False()
+		{
+			Assert.AreEqual(0, ParseImmediate("false"));
+		}
+
+		[TestMethod]
+		public void ParseImmediate_True_IgnoreCase()
+		{
+			Assert.AreEqual(1, ParseImmediate("True"));
+		}
+
+		[TestMethod]
+		public void ParseImmediate_False_IgnoreCase()
+		{
+			Assert.AreEqual(0, ParseImmediate("False"));
+		}
 	}
 }
