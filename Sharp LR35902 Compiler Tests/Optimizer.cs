@@ -1,19 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sharp_LR35902_Compiler.Nodes;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using static Sharp_LR35902_Compiler.Optimizer;
-using System.Linq;
 
-namespace Sharp_LR35902_Compiler_Tests
-{
+namespace Sharp_LR35902_Compiler_Tests {
 	[TestClass]
-	public class Optimizer
-	{
+	public class Optimizer {
 		[TestMethod]
-		public void RemoveUnusedVariables_DeclaredButNotUsed_Removes()
-		{
+		public void RemoveUnusedVariables_DeclaredButNotUsed_Removes() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "a"));
 
@@ -23,8 +17,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void RemoveUnusedVariables_WriteButNoRead_Removes()
-		{
+		public void RemoveUnusedVariables_WriteButNoRead_Removes() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "a"));
 			ast.AddChild(new VariableAssignmentNode("a", new ShortValueNode(5)));
@@ -35,8 +28,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void RemoveUnusedVariables_ReadOnce_Remains()
-		{
+		public void RemoveUnusedVariables_ReadOnce_Remains() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "a"));
 			ast.AddChild(new VariableAssignmentNode("a", new ShortValueNode(5)));
@@ -49,8 +41,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void RemoveUnusedVariables_ReducesChain()
-		{
+		public void RemoveUnusedVariables_ReducesChain() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "a"));
 			ast.AddChild(new VariableAssignmentNode("a", new ShortValueNode(5)));
@@ -60,7 +51,7 @@ namespace Sharp_LR35902_Compiler_Tests
 			ast.AddChild(new VariableAssignmentNode("c", new VariableValueNode("b")));
 
 			var iterations = 0;
-			while(RemoveUnusedVariables(ast))
+			while (RemoveUnusedVariables(ast))
 				iterations++;
 
 			Assert.AreEqual(3, iterations);
@@ -68,8 +59,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void PropagateConstants_CopiesOver()
-		{
+		public void PropagateConstants_CopiesOver() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "a"));
 			ast.AddChild(new VariableAssignmentNode("a", new ShortValueNode(5)));
@@ -84,8 +74,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void PropagateConstants_ResolvesExpressions()
-		{
+		public void PropagateConstants_ResolvesExpressions() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "a"));
 			var expression = new VariableAssignmentNode("a", new AdditionNode(new ShortValueNode(1), new ShortValueNode(5)));
@@ -98,8 +87,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void PropagateConstants_ResolvesExpressions_WithVariable()
-		{
+		public void PropagateConstants_ResolvesExpressions_WithVariable() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
 			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5)));
@@ -113,8 +101,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void PropagateConstants_DetectsSubNodeChanges()
-		{
+		public void PropagateConstants_DetectsSubNodeChanges() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
 			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5)));
@@ -128,8 +115,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void PropagateConstants_UsesLatestValue()
-		{
+		public void PropagateConstants_UsesLatestValue() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "a"));
 			ast.AddChild(new VariableAssignmentNode("a", new ShortValueNode(5)));
@@ -145,8 +131,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void PropagateConstants_Chains()
-		{
+		public void PropagateConstants_Chains() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "a"));
 			ast.AddChild(new VariableAssignmentNode("a", new ShortValueNode(5)));
@@ -168,8 +153,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void PropagateConstants_RemovesIncrement()
-		{
+		public void PropagateConstants_RemovesIncrement() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "a"));
 			ast.AddChild(new VariableAssignmentNode("a", new ShortValueNode(5)));
@@ -186,8 +170,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void PropagateConstants_RemovesIncrement_Multiple()
-		{
+		public void PropagateConstants_RemovesIncrement_Multiple() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "a"));
 			ast.AddChild(new VariableAssignmentNode("a", new ShortValueNode(5)));
@@ -202,8 +185,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void PropagateConstants_RemovesDecrement_Multiple()
-		{
+		public void PropagateConstants_RemovesDecrement_Multiple() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "a"));
 			ast.AddChild(new VariableAssignmentNode("a", new ShortValueNode(5)));
@@ -218,8 +200,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void PropagateConstants_Increment_BeforeAndAfter()
-		{
+		public void PropagateConstants_Increment_BeforeAndAfter() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "a"));
 			ast.AddChild(new VariableAssignmentNode("a", new ShortValueNode(5)));
@@ -240,8 +221,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void PropagateConstants_RemovesDecrement()
-		{
+		public void PropagateConstants_RemovesDecrement() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "a"));
 			ast.AddChild(new VariableAssignmentNode("a", new ShortValueNode(5)));
@@ -258,8 +238,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void PropagateConstants_Decrement_BeforeAndAfter()
-		{
+		public void PropagateConstants_Decrement_BeforeAndAfter() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "a"));
 			ast.AddChild(new VariableAssignmentNode("a", new ShortValueNode(5)));
@@ -280,8 +259,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void Transform_AdditionAssignmentToExpression()
-		{
+		public void Transform_AdditionAssignmentToExpression() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
 			ast.AddChild(new AdditionAssignmentNode("x", new ShortValueNode(5)));
@@ -289,33 +267,35 @@ namespace Sharp_LR35902_Compiler_Tests
 			var changed = TransformAdditionAssignmentToExpression(ast);
 
 			Assert.IsTrue(changed);
-			Assert.IsInstanceOfType(ast.GetChildren()[1], typeof(VariableAssignmentNode));
-			var assignment = ast.GetChildren()[1] as VariableAssignmentNode;
+			var children = ast.GetChildren();
+			Assert.AreEqual(2, children.Length);
+			Assert.IsInstanceOfType(children[1], typeof(VariableAssignmentNode));
+			var assignment = (VariableAssignmentNode)children[1];
 			Assert.IsInstanceOfType(assignment.Value, typeof(AdditionNode));
 			Assert.IsInstanceOfType(((AdditionNode)assignment.Value).Left, typeof(VariableValueNode));
 			Assert.IsInstanceOfType(((AdditionNode)assignment.Value).Right, typeof(ShortValueNode));
 		}
 
 		[TestMethod]
-		public void Transform_SubtractionAssignmentToExpression()
-		{
+		public void Transform_SubtractionAssignmentToExpression() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
 			ast.AddChild(new SubtractionAssignmentNode("x", new ShortValueNode(5)));
 
 			var changed = TransformSubtractionAssignmentToExpression(ast);
 
+			var children = ast.GetChildren();
 			Assert.IsTrue(changed);
-			Assert.IsInstanceOfType(ast.GetChildren()[1], typeof(VariableAssignmentNode));
-			var assignment = ast.GetChildren()[1] as VariableAssignmentNode;
+			Assert.AreEqual(2, children.Length);
+			Assert.IsInstanceOfType(children[1], typeof(VariableAssignmentNode));
+			var assignment = (VariableAssignmentNode)children[1];
 			Assert.IsInstanceOfType(assignment.Value, typeof(SubtractionNode));
 			Assert.IsInstanceOfType(((SubtractionNode)assignment.Value).Left, typeof(VariableValueNode));
 			Assert.IsInstanceOfType(((SubtractionNode)assignment.Value).Right, typeof(ShortValueNode));
 		}
 
 		[TestMethod]
-		public void FlattenExpression_Constant_NotAffected()
-		{
+		public void FlattenExpression_Constant_NotAffected() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
 			ast.AddChild(new SubtractionAssignmentNode("x", new ShortValueNode(5)));
@@ -326,8 +306,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void FlattenExpression_FlatExpression_NotAffected()
-		{
+		public void FlattenExpression_FlatExpression_NotAffected() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
 			ast.AddChild(new SubtractionAssignmentNode("x", new AdditionNode(new ShortValueNode(5), new ShortValueNode(1))));
@@ -338,8 +317,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void FlattenExpression_SubexpressionExtracted()
-		{
+		public void FlattenExpression_SubexpressionExtracted() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
 			ast.AddChild(new VariableAssignmentNode("x", new AdditionNode(
@@ -362,8 +340,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void FlattenExpression_SideSubexpressionExtracted()
-		{
+		public void FlattenExpression_SideSubexpressionExtracted() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
 			ast.AddChild(new VariableAssignmentNode("x", new SubtractionNode(
@@ -391,8 +368,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void FlattenExpressions_FlattensAll()
-		{
+		public void FlattenExpressions_FlattensAll() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
 			ast.AddChild(new VariableAssignmentNode("x", new SubtractionNode(
@@ -410,15 +386,14 @@ namespace Sharp_LR35902_Compiler_Tests
 				),
 				new ShortValueNode(3)
 			)));
-			
+
 			var changed = FlattenExpressions(ast);
 
 			Assert.IsTrue(changed);
 		}
 
 		[TestMethod]
-		public void CreateBasicBlocks_OneBlock()
-		{
+		public void CreateBasicBlocks_OneBlock() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
 			ast.AddChild(new VariableDeclarationNode("byte", "y"));
@@ -431,8 +406,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void CreateBasicBlocks_LabelSeperates()
-		{
+		public void CreateBasicBlocks_LabelSeperates() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
 			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5)));
@@ -449,8 +423,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void CreateBasicBlocks_JumpSeperates()
-		{
+		public void CreateBasicBlocks_JumpSeperates() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
 			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5)));
@@ -467,8 +440,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void CreateBasicBlocks_NoEmpty()
-		{
+		public void CreateBasicBlocks_NoEmpty() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
 			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5)));

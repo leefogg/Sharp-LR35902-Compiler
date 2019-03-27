@@ -1,7 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Common.Extensions;
 
 namespace Common_Tests
@@ -25,10 +22,10 @@ namespace Common_Tests
 		[TestMethod]
 		public void IsNumber()
 		{
-			Assert.IsTrue('0'.isNumber());
-			Assert.IsTrue('9'.isNumber());
-			Assert.IsFalse('/'.isNumber());
-			Assert.IsFalse(':'.isNumber());
+			Assert.IsTrue('0'.IsNumber());
+			Assert.IsTrue('9'.IsNumber());
+			Assert.IsFalse('/'.IsNumber());
+			Assert.IsFalse(':'.IsNumber());
 		}
 	}
 }

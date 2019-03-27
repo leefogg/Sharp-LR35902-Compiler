@@ -1,57 +1,47 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Sharp_LR35902_Assembler.Formatter;
 using static Test_Common.Utils;
 
-namespace Sharp_LR35902_Assembler_Tests
-{
+namespace Sharp_LR35902_Assembler_Tests {
 	[TestClass]
-    public class Formatter
-    {
+	public class Formatter {
 		[TestMethod]
-		public void RemoveWhitespace_TrimsWhitespace()
-		{
-			var instructions = new List<string>()
-			{
+		public void RemoveWhitespace_TrimsWhitespace() {
+			var instructions = new List<string> {
 				"	 EI		"
 			};
 
 			RemoveWhitespace(instructions);
 
-			ListEqual(new[] { "EI" }, instructions.ToArray());
+			ListEqual(new[] {"EI"}, instructions.ToArray());
 		}
 
 		[TestMethod]
-		public void RemoveWhitespace_SingleSpacesOnly()
-		{
-			var instructions = new List<string>()
-			{
+		public void RemoveWhitespace_SingleSpacesOnly() {
+			var instructions = new List<string> {
 				"LD   A,   01"
 			};
 
 			RemoveWhitespace(instructions);
 
-			ListEqual(new[] { "LD A, 01" }, instructions.ToArray());
+			ListEqual(new[] {"LD A, 01"}, instructions.ToArray());
 		}
 
 		[TestMethod]
-		public void RemoveComma_Removes()
-		{
-			var instructions = new List<string>()
-			{
+		public void RemoveComma_Removes() {
+			var instructions = new List<string> {
 				"LD A,01"
 			};
 
 			RemoveComma(instructions);
 
-			ListEqual(new[] { "LD A 01" }, instructions.ToArray());
+			ListEqual(new[] {"LD A 01"}, instructions.ToArray());
 		}
 
 		[TestMethod]
-		public void LineBreakLabels_Breaks()
-		{
-			var instructions = new List<string>()
-			{
+		public void LineBreakLabels_Breaks() {
+			var instructions = new List<string> {
 				"label1:	XOR A",
 				"label2:	XOR A"
 			};
@@ -59,8 +49,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			LineBreakLabels(instructions);
 
 			ListEqual(
-				new[]
-				{
+				new[] {
 					"label1:",
 					"	XOR A",
 					"label2:",
@@ -71,20 +60,17 @@ namespace Sharp_LR35902_Assembler_Tests
 		}
 
 		[TestMethod]
-		public void LineBreakLabels_IgnoresCorrectLabels()
-		{
-			var instructions = new List<string>()
-			{
+		public void LineBreakLabels_IgnoresCorrectLabels() {
+			var instructions = new List<string> {
 				"label1:	XOR A",
 				"label2:",
-				"XOR A",
+				"XOR A"
 			};
 
 			LineBreakLabels(instructions);
 
 			ListEqual(
-				new[]
-				{
+				new[] {
 					"label1:",
 					"	XOR A",
 					"label2:",
@@ -95,20 +81,17 @@ namespace Sharp_LR35902_Assembler_Tests
 		}
 
 		[TestMethod]
-		public void RemoveBlankLines_Removes()
-		{
-			var instructions = new List<string>()
-			{
+		public void RemoveBlankLines_Removes() {
+			var instructions = new List<string> {
 				"",
 				"XOR A",
-				"",
+				""
 			};
 
 			RemoveBlankLines(instructions);
 
 			ListEqual(
-				new[]
-				{
+				new[] {
 					"XOR A"
 				},
 				instructions.ToArray()
@@ -116,21 +99,18 @@ namespace Sharp_LR35902_Assembler_Tests
 		}
 
 		[TestMethod]
-		public void RemoveComments_Removes()
-		{
-			var instructions = new List<string>()
-			{
+		public void RemoveComments_Removes() {
+			var instructions = new List<string> {
 				"NOP",
 				"; This is a comment",
 				"EI; Same line comment",
-				"",
+				""
 			};
 
 			RemoveComments(instructions);
 
 			ListEqual(
-				new[]
-				{
+				new[] {
 					"NOP",
 					"",
 					"EI",
@@ -141,95 +121,81 @@ namespace Sharp_LR35902_Assembler_Tests
 		}
 
 		[TestMethod]
-		public void EnsureNOPAfterSTOPOrHALT_Halt()
-		{
-			var instructions = new List<string>()
-			{
+		public void EnsureNOPAfterSTOPOrHALT_Halt() {
+			var instructions = new List<string> {
 				"HALT",
-				"EI",
+				"EI"
 			};
 
 			EnsureNOPAfterSTOPOrHALT(instructions);
 
 			ListEqual(
-				new[]
-				{
+				new[] {
 					"HALT",
 					"NOP",
-					"EI",
+					"EI"
 				},
 				instructions.ToArray()
 			);
 		}
 
 		[TestMethod]
-		public void EnsureNOPAfterSTOPOrHALT_Stop()
-		{
-			var instructions = new List<string>()
-			{
+		public void EnsureNOPAfterSTOPOrHALT_Stop() {
+			var instructions = new List<string> {
 				"STOP",
-				"EI",
+				"EI"
 			};
 
 			EnsureNOPAfterSTOPOrHALT(instructions);
 
 			ListEqual(
-				new[]
-				{
+				new[] {
 					"STOP",
 					"NOP",
-					"EI",
+					"EI"
 				},
 				instructions.ToArray()
 			);
 		}
 
 		[TestMethod]
-		public void EnsureNOPAfterSTOPOrHALT_NotCaseSensitive()
-		{
-			var instructions = new List<string>()
-			{
+		public void EnsureNOPAfterSTOPOrHALT_NotCaseSensitive() {
+			var instructions = new List<string> {
 				"haLt",
-				"EI",
+				"EI"
 			};
 
 			EnsureNOPAfterSTOPOrHALT(instructions);
 
 			ListEqual(
-				new[]
-				{
+				new[] {
 					"haLt",
 					"NOP",
-					"EI",
+					"EI"
 				},
 				instructions.ToArray()
 			);
 		}
 
 		[TestMethod]
-		public void EnsureNOPAfterSTOPOrHALT_EOF()
-		{
-			var instructions = new List<string>()
-			{
-				"STOP",
+		public void EnsureNOPAfterSTOPOrHALT_EOF() {
+			var instructions = new List<string> {
+				"STOP"
 			};
 
 			EnsureNOPAfterSTOPOrHALT(instructions);
 
 			ListEqual(
-				new[]
-				{
-					"STOP",
+				new[] {
+					"STOP"
 				},
 				instructions.ToArray()
 			);
 		}
 
 		[TestMethod]
-		public void EnsureNOPAfterSTOPOrHALT_ExistingNOP()
-		{
-			var instructions = new List<string>()
-			{
+		public void EnsureNOPAfterSTOPOrHALT_ExistingNOP() {
+			var instructions = new List<string> {
 				"STOP",
 				"NOP"
 			};
@@ -237,8 +203,7 @@ namespace Sharp_LR35902_Assembler_Tests
 			EnsureNOPAfterSTOPOrHALT(instructions);
 
 			ListEqual(
-				new[]
-				{
+				new[] {
 					"STOP",
 					"NOP"
 				},

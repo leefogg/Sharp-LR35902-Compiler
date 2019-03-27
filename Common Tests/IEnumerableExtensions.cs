@@ -1,7 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using static Common.Extensions.IEnumerableExtensions;
 using Common.Extensions;
 
@@ -19,10 +16,7 @@ namespace Common_Tests
 	public class IEnumerableExtensions
 	{
 		[TestMethod]
-		public void ListOf_ToList()
-		{
-			var list = ListOf('a', 'b');
-		}
+		public void ListOf_ToList() { ListOf('a', 'b'); }
 
 		[TestMethod]
 		public void IndexOf()

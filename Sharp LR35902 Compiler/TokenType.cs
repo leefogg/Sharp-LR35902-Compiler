@@ -1,7 +1,5 @@
-﻿namespace Sharp_LR35902_Compiler
-{
-	public enum TokenType
-	{
+﻿namespace Sharp_LR35902_Compiler {
+	public enum TokenType {
 		DataType,
 		Immediate,
 		Variable,

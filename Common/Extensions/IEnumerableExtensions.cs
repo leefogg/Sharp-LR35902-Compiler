@@ -1,19 +1,12 @@
 ﻿using System.Collections.Generic;
 
-namespace Common.Extensions
-{
-	public static class IEnumerableExtensions
-	{
-		public static T[] ListOf<T>(params T[] args)
-		{
-			return args;
-		}
+namespace Common.Extensions {
+	public static class IEnumerableExtensions {
+		public static T[] ListOf<T>(params T[] args) => args;
 
-		public static int IndexOf<T>(this IEnumerable<T> self, T itemtofind) where T : class
-		{
+		public static int IndexOf<T>(this IEnumerable<T> self, T itemtofind) where T : class {
 			var index = 0;
-			foreach (T item in self)
-			{
+			foreach (var item in self) {
 				if (item == itemtofind)
 					return index;
 
@@ -23,11 +16,9 @@ namespace Common.Extensions
 			return -1;
 		}
 
-		public static int IndexOf(this IEnumerable<string> self, string itemtofind)
-		{
+		public static int IndexOf(this IEnumerable<string> self, string itemtofind) {
 			var index = 0;
-			foreach (string item in self)
-			{
+			foreach (var item in self) {
 				if (item == itemtofind)
 					return index;
 

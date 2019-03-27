@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Sharp_LR35902_Compiler_Tests
-{
-	class TestGenerator
-	{
+namespace Sharp_LR35902_Compiler_Tests {
+	internal class TestGenerator {
 		private static readonly string[] Instructions = {
 			"NOP",
 			"LD BC,nn",
@@ -263,7 +261,9 @@ namespace Sharp_LR35902_Compiler_Tests
 			"XX",
 			"XX",
 			"CP n",
-			"RST 38"};
+			"RST 38"
+		};
+
 		private static readonly string[] CBInstructions = {
 			"RLC B",
 			"RLC C",
@@ -523,27 +523,24 @@ namespace Sharp_LR35902_Compiler_Tests
 			"SET 7,A"
 		};
 
-		private static readonly string[] registers = new[] { "B", "C", "D", "E", "H", "L", "(HL)", "A" };
+		private static readonly string[] registers = {"B", "C", "D", "E", "H", "L", "(HL)", "A"};
 
-		public static void Main(string[] args)
-		{
-			string n = "225";
-			int nn = 62689;
+		public static void Main(string[] args) {
+			var n = "225";
+			var nn = 62689;
 			var nnstring = nn.ToString();
-			byte[] nnbytes = new byte[] { (byte)(nn & 0xFF), (byte)((nn >> 8) & 0xFF) };
-			var fileoutput = new List<string>()
-			{
+			var nnbytes = new[] {(byte)(nn & 0xFF), (byte)((nn >> 8) & 0xFF)};
+			var fileoutput = new List<string> {
 				"using Common.Exceptions;",
 				"using Microsoft.VisualStudio.TestTools.UnitTesting;",
 				"using static Sharp_LR35902_Assembler.Assembler;",
 				"using static Test_Common.Utils;",
 				"namespace Sharp_LR35902_Assembler_Tests {",
 				"[TestClass]",
-				"public class Instructions {",
+				"public class Instructions {"
 			};
 
-			void writeTestMethod(string instruction, byte opcode, bool isCB)
-			{
+			void writeTestMethod(string instruction, byte opcode, bool isCB) {
 				instruction = instruction.Replace(',', ' ');
 				// Write the method
 				var numexternalbytes = instruction.Count(c => c == 'n');
@@ -562,34 +559,28 @@ namespace Sharp_LR35902_Compiler_Tests
 					teststring += "0xCB, ";
 				teststring += Dec2Hex(opcode);
 				if (numexternalbytes == 2)
-				{
 					teststring += $", {nnbytes[0]}, {nnbytes[1]}";
-				}
 				else if (numexternalbytes == 1)
-				{
 					teststring += "," + n;
-				}
 				teststring += ");";
 				fileoutput.Add(teststring);
 				fileoutput.Add("}");
 			}
 
 			var instructionsopcodes = new List<string>(42);
-			void writeNegativeTests(string instruction, bool isCB)
-			{
+
+			void writeNegativeTests(string instruction, bool isCB) {
 				var numexternalbytes = instruction.Count(c => c == 'n');
 				var basemethodname = instruction.Replace(',', '_').Replace(' ', '_').Replace("(", "").Replace(")", "");
 				if (isCB)
 					basemethodname = "CB_" + basemethodname;
 				var instructionparts = instruction
 					.Replace(',', ' ')
-					.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+					.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
 				var instructionname = instructionparts[0].ToUpper();
 
 				if (instructionparts.Length > 1)
-				{
-					if (instructionsopcodes.IndexOf(instructionparts[0]) == -1)
-					{
+					if (instructionsopcodes.IndexOf(instructionparts[0]) == -1) {
 						fileoutput.Add("[TestMethod]");
 						fileoutput.Add("[ExpectedException(typeof(SyntaxException))]");
 						fileoutput.Add("public void " + instructionname + "_WrongNumberOfOprands() {");
@@ -600,7 +591,6 @@ namespace Sharp_LR35902_Compiler_Tests
 						instructionsopcodes.Add(instructionparts[0]);
 						Console.WriteLine(instructionparts[0]);
 					}
-				}
 
 				/* 
 				 // Commenting these out as they're not providing much are are really tricky to implement
@@ -634,9 +624,8 @@ namespace Sharp_LR35902_Compiler_Tests
 					fileoutput.Add("}");
 				}
 				*/
-				if (numexternalbytes == 1)
-				{
-					instruction.Replace("nn", nnstring); 
+				if (numexternalbytes == 1) {
+					instruction = instruction.Replace("nn", nnstring);
 					instruction = instruction.Replace("n", nnstring); // Purposely the wrong one
 
 					fileoutput.Add("[TestMethod]");
@@ -648,8 +637,7 @@ namespace Sharp_LR35902_Compiler_Tests
 				}
 			}
 
-			for (byte i = 0; i < 255; i++)
-			{
+			for (byte i = 0; i < 255; i++) {
 				var instruction = Instructions[i];
 				if (instruction == "XX")
 					continue;
@@ -659,8 +647,7 @@ namespace Sharp_LR35902_Compiler_Tests
 				fileoutput.Add(Environment.NewLine);
 			}
 
-			for (byte i = 0; i < 255; i++)
-			{
+			for (byte i = 0; i < 255; i++) {
 				var instruction = CBInstructions[i];
 				if (instruction == "XX")
 					continue;
@@ -674,18 +661,15 @@ namespace Sharp_LR35902_Compiler_Tests
 			fileoutput.Add("}");
 
 			var path = Path.Combine(Environment.CurrentDirectory, "../../../output/Instructions.cs");
-			File.WriteAllLines(path,  fileoutput.ToArray());
+			File.WriteAllLines(path, fileoutput.ToArray());
 		}
 
-		private static string Dec2Hex(byte toconvert)
-		{
+		private static string Dec2Hex(byte toconvert) {
 			var nibble1 = Nibble2Hex((byte)(toconvert >> 4));
-			var nibble2 = Nibble2Hex((byte)((toconvert & 0x0F)));
-			return "0x" + nibble1  + nibble2;
-		} 
-		private static char Nibble2Hex(byte nibble)
-		{
-			return (nibble < 10) ? (char)('0' + nibble) : (char)('A' + (nibble - 10)); 
+			var nibble2 = Nibble2Hex((byte)(toconvert & 0x0F));
+			return "0x" + nibble1 + nibble2;
 		}
+
+		private static char Nibble2Hex(byte nibble) => nibble < 10 ? (char)('0' + nibble) : (char)('A' + (nibble - 10));
 	}
 }

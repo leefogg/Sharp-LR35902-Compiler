@@ -1,15 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Linq;
 
-namespace Sharp_LR35902_Assembler
-{
-	public class Formatter
-	{
+namespace Sharp_LR35902_Assembler {
+	public class Formatter {
 		private static readonly Regex WhitespaceRegex = new Regex(@"\s+", RegexOptions.Compiled);
 
-		public static void Format(List<string> instructions)
-		{
+		public static void Format(List<string> instructions) {
 			RemoveComments(instructions);
 			LineBreakLabels(instructions);
 			RemoveComma(instructions);
@@ -17,16 +13,13 @@ namespace Sharp_LR35902_Assembler
 			RemoveBlankLines(instructions);
 		}
 
-		public static void RemoveComma(List<string> instructions)
-		{
+		public static void RemoveComma(List<string> instructions) {
 			for (var i = 0; i < instructions.Count; i++)
 				instructions[i] = instructions[i].Replace(',', ' ');
 		}
 
-		public static void RemoveComments(List<string> instructions)
-		{
-			for (var i = 0; i < instructions.Count; i++)
-			{
+		public static void RemoveComments(List<string> instructions) {
+			for (var i = 0; i < instructions.Count; i++) {
 				var instruction = instructions[i];
 				var indexofcomment = instruction.IndexOf(';');
 				if (indexofcomment == -1)
@@ -36,32 +29,24 @@ namespace Sharp_LR35902_Assembler
 			}
 		}
 
-		public static void RemoveBlankLines(List<string> instructions)
-		{
+		public static void RemoveBlankLines(List<string> instructions) {
 			for (var i = 0; i < instructions.Count; i++)
-			{
-				if (instructions[i].Length == 0)
-				{
+				if (instructions[i].Length == 0) {
 					instructions.RemoveAt(i);
 					i--;
 				}
-			}
 		}
 
-		public static void RemoveWhitespace(List<string> instructions)
-		{
-			for (var i = 0; i < instructions.Count; i++)
-			{
+		public static void RemoveWhitespace(List<string> instructions) {
+			for (var i = 0; i < instructions.Count; i++) {
 				var line = instructions[i];
 				line = WhitespaceRegex.Replace(line, " ").Trim();
 				instructions[i] = line;
 			}
 		}
 
-		public static void LineBreakLabels(List<string> instructions)
-		{
-			for (var i = 0; i < instructions.Count; i++)
-			{
+		public static void LineBreakLabels(List<string> instructions) {
+			for (var i = 0; i < instructions.Count; i++) {
 				var line = instructions[i];
 				var colonindex = line.IndexOf(':');
 				if (colonindex == -1) // Not a label
@@ -75,14 +60,11 @@ namespace Sharp_LR35902_Assembler
 			}
 		}
 
-		public static void EnsureNOPAfterSTOPOrHALT(List<string> instructions)
-		{
-			for (var i=0; i<instructions.Count; i++)
-			{
+		public static void EnsureNOPAfterSTOPOrHALT(List<string> instructions) {
+			for (var i = 0; i < instructions.Count; i++) {
 				var line = instructions[i].ToUpper();
 				if (!(line == "STOP" || line == "HALT"))
 					continue;
-
 				if (i + 1 == instructions.Count)
 					continue;
 

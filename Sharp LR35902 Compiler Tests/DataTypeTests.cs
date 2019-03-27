@@ -1,17 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sharp_LR35902_Compiler;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Sharp_LR35902_Compiler_Tests
-{
+namespace Sharp_LR35902_Compiler_Tests {
 	[TestClass]
-	public class PrimitiveDataTypeTests
-	{
+	public class PrimitiveDataTypeTests {
 		[TestMethod]
-		public void MaxValue()
-		{
+		public void MaxValue() {
 			var datatype = new PrimitiveDataType("byte", 8);
 
 			Assert.AreEqual(255, datatype.MaxValue);
@@ -19,9 +14,7 @@ namespace Sharp_LR35902_Compiler_Tests
 
 		[TestMethod]
 		[ExpectedException(typeof(ArgumentException))]
-		public void Constructor_NumBitsNotPowerOfTwoThrows()
-		{
-			new PrimitiveDataType("byte", 7);
-		}
+		// ReSharper disable once ObjectCreationAsStatement
+		public void Constructor_NumBitsNotPowerOfTwoThrows() => new PrimitiveDataType("byte", 7);
 	}
 }

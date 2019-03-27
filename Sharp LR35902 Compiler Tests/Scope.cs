@@ -1,16 +1,13 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sharp_LR35902_Compiler;
 
-namespace Sharp_LR35902_Compiler_Tests
-{
+namespace Sharp_LR35902_Compiler_Tests {
 	[TestClass]
-	public class Scope
-	{
-		private static VariableMember TestMember = new VariableMember(BuiltIn.DataTypes.Byte, "test");
+	public class Scope {
+		private static readonly VariableMember TestMember = new VariableMember(BuiltIn.DataTypes.Byte, "test");
 
 		[TestMethod]
-		public void FindsLocalMember()
-		{
+		public void FindsLocalMember() {
 			var scope = new Sharp_LR35902_Compiler.Scope();
 			scope.AddMember(TestMember);
 
@@ -18,8 +15,7 @@ namespace Sharp_LR35902_Compiler_Tests
 		}
 
 		[TestMethod]
-		public void FindsParentMember()
-		{
+		public void FindsParentMember() {
 			var parentscope = new Sharp_LR35902_Compiler.Scope();
 			parentscope.AddMember(TestMember);
 			var chiledscope = new Sharp_LR35902_Compiler.Scope(parentscope);

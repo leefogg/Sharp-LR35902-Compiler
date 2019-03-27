@@ -11,7 +11,7 @@ namespace Common_Tests
 		[TestMethod]
 		public void SplitAndKeep()
 		{
-			var output = "0x0".SplitAndKeep(new char[] { 'x' });
+			var output = "0x0".SplitAndKeep(new[] { 'x' });
 
 			ListEqual(
 				new[]

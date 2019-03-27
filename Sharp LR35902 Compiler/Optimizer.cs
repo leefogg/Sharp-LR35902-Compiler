@@ -1,78 +1,45 @@
-﻿using Sharp_LR35902_Compiler.Nodes;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Sharp_LR35902_Compiler.Nodes;
 
-namespace Sharp_LR35902_Compiler
-{
-	public static class Optimizer
-	{
-		public static void Optimize(BlockNode block)
-		{
-			bool changesmade;
-			do
-			{
-				changesmade = false;
-
-				if (PropagateConstants(block))
-					changesmade = true;
-
-				if (RemoveUnusedVariables(block))
-					changesmade = true;
-
-			} while (changesmade);
+namespace Sharp_LR35902_Compiler {
+	public static class Optimizer {
+		public static void Optimize(BlockNode block) {
+			while (PropagateConstants(block) || RemoveUnusedVariables(block)) { }
 		}
 
-		public static void Simplify(BlockNode block)
-		{
-			bool changesmade;
-			do
-			{
-				changesmade = false;
-
-				if (TransformAdditionAssignmentToExpression(block))
-					changesmade = true;
-				if (TransformSubtractionAssignmentToExpression(block))
-					changesmade = true;
-				if (FlattenExpressions(block))
-					changesmade = true;
-			} while (changesmade);
+		public static void Simplify(BlockNode block) {
+			while (TransformAdditionAssignmentToExpression(block) || TransformSubtractionAssignmentToExpression(block) || FlattenExpressions(block)) { }
 		}
 
-		public static bool PropagateConstants(BlockNode block)
-		{
+		public static bool PropagateConstants(BlockNode block) {
 			var changesmade = false;
 
 			var variablevalues = new Dictionary<string, ushort>();
 			var children = block.GetChildren().ToList();
 
-			for (var i=0; i<children.Count; i++)
-			{
+			for (var i = 0; i < children.Count; i++) {
 				var node = children[i];
 
-				if (node is VariableAssignmentNode assignment)
-				{
+				if (node is VariableAssignmentNode assignment) {
 					var newvalue = assignment.Value.Optimize(variablevalues);
 					if (!assignment.Value.Equals(newvalue))
 						changesmade = true;
+
 					assignment.Value = newvalue;
 
-					if (assignment.Value is ConstantNode value)
-					{
+					if (assignment.Value is ConstantNode value) {
 						if (variablevalues.ContainsKey(assignment.VariableName))
 							variablevalues[assignment.VariableName] = value.GetValue();
 						else
 							variablevalues.Add(assignment.VariableName, value.GetValue());
 					}
-				} 
-				else if (node is IncrementNode inc)
-				{
+				} else if (node is IncrementNode inc) {
 					variablevalues[inc.VariableName]++;
 					children.RemoveAt(i);
 					block.RemoveChild(i--);
 					changesmade = true;
-				}
-				else if (node is DecrementNode dec)
-				{
+				} else if (node is DecrementNode dec) {
 					variablevalues[dec.VariableName]--;
 					children.RemoveAt(i);
 					block.RemoveChild(i--);
@@ -83,16 +50,14 @@ namespace Sharp_LR35902_Compiler
 			return changesmade;
 		}
 
-		public static bool RemoveUnusedVariables(BlockNode block)
-		{
+		public static bool RemoveUnusedVariables(BlockNode block) {
 			// Dictionary should be safe as parser checks for redeclarations
 			var usedvariables = new Dictionary<string, bool>();
 
 			var children = block.GetChildren();
 
 			// Scan for variables and uses
-			foreach (var node in children)
-			{
+			foreach (var node in children) {
 				if (node is VariableDeclarationNode dec)
 					usedvariables.Add(dec.VariableName, false);
 
@@ -105,18 +70,14 @@ namespace Sharp_LR35902_Compiler
 			var changesmade = false;
 			var i = 0;
 			// Remove
-			foreach (var node in children)
-			{
-				if (node is VariableDeclarationNode dec) { 
-					if (usedvariables[dec.VariableName] == false)
-					{
+			foreach (var node in children) {
+				if (node is VariableDeclarationNode dec) {
+					if (usedvariables[dec.VariableName] == false) {
 						block.RemoveChild(i--);
 						changesmade = true;
 					}
-				} 
-				else if (node is VariableAssignmentNode assignment) {
-					if (usedvariables[assignment.VariableName] == false)
-					{
+				} else if (node is VariableAssignmentNode assignment) {
+					if (usedvariables[assignment.VariableName] == false) {
 						block.RemoveChild(i--);
 						changesmade = true;
 					}
@@ -128,59 +89,53 @@ namespace Sharp_LR35902_Compiler
 			return changesmade;
 		}
 
-		public static bool TransformAdditionAssignmentToExpression(BlockNode block)
-		{
+		public static bool TransformAdditionAssignmentToExpression(BlockNode block) {
 			var changesmade = false;
 			var children = block.GetChildren();
-			for (var i=0; i <children.Length; i++)
-			{
+			for (var i = 0; i < children.Length; i++) {
 				var node = children[i];
-				if (node is AdditionAssignmentNode assignment)
-				{
-					block.RemoveChild(i);
-					block.InsertAt(new VariableAssignmentNode(assignment.VariableName, new AdditionNode(new VariableValueNode(assignment.VariableName), assignment.Value)), i);
-					changesmade = true;
-				}
+				if (!(node is AdditionAssignmentNode assignment))
+					continue;
+
+				block.RemoveChild(i);
+				block.InsertAt(new VariableAssignmentNode(assignment.VariableName, new AdditionNode(new VariableValueNode(assignment.VariableName), assignment.Value)), i);
+				changesmade = true;
 			}
 
 			return changesmade;
 		}
 
-		public static bool TransformSubtractionAssignmentToExpression(BlockNode block)
-		{
+		public static bool TransformSubtractionAssignmentToExpression(BlockNode block) {
 			var changesmade = false;
 			var children = block.GetChildren();
-			for (var i = 0; i < children.Length; i++)
-			{
+			for (var i = 0; i < children.Length; i++) {
 				var node = children[i];
-				if (node is SubtractionAssignmentNode assignment)
-				{
-					block.RemoveChild(i);
-					block.InsertAt(new VariableAssignmentNode(assignment.VariableName, new SubtractionNode(new VariableValueNode(assignment.VariableName), assignment.Value)), i);
-					changesmade = true;
-				}
+				if (!(node is SubtractionAssignmentNode assignment))
+					continue;
+
+				block.RemoveChild(i);
+				block.InsertAt(new VariableAssignmentNode(assignment.VariableName, new SubtractionNode(new VariableValueNode(assignment.VariableName), assignment.Value)), i);
+				changesmade = true;
 			}
 
 			return changesmade;
 		}
 
-		public static bool FlattenExpressions(BlockNode block)
-		{
-			bool changesmade = false;
-			for(var i=0; i<block.GetChildren().Length; i++)
-			{
+		public static bool FlattenExpressions(BlockNode block) {
+			var changesmade = false;
+			for (var i = 0; i < block.GetChildren().Length; i++) {
 				var addedinstructions = FlattenExpression(block, i);
-				if (addedinstructions > 0)
-				{
-					changesmade = true;
-					i += addedinstructions;
-				}
+				if (addedinstructions <= 0)
+					continue;
+
+				changesmade = true;
+				i += addedinstructions;
 			}
 
 			return changesmade;
 		}
-		public static int FlattenExpression(BlockNode block, int index)
-		{
+
+		public static int FlattenExpression(BlockNode block, int index) {
 			if (!(block.GetChildren()[index] is VariableAssignmentNode assignmentnode))
 				return 0;
 
@@ -193,27 +148,26 @@ namespace Sharp_LR35902_Compiler
 
 			block.RemoveChild(index);
 			var count = 0;
-			FlattenExpression(block, index, value, ref count, 0);
+			FlattenExpression(block, value, ref count, 0);
 			count *= 2;
 			index += count;
 			block.InsertAt(assignmentnode, index);
 			return count;
 		}
 
-		private static string FlattenExpression(BlockNode block, int index, OperatorNode op, ref int count, int depth)
-		{
-			if (op.Left is OperatorNode left)
-			{
+		private static string FlattenExpression(BlockNode block, OperatorNode op, ref int count, int depth) {
+			if (op.Left is OperatorNode left) {
 				count++;
-				var extractedOperationName = FlattenExpression(block, index + count, left, ref count, depth+1);
+				var extractedOperationName = FlattenExpression(block, left, ref count, depth + 1);
 				op.Left = new VariableValueNode(extractedOperationName);
 			}
-			if (op.Right is OperatorNode right)
-			{
+
+			if (op.Right is OperatorNode right) {
 				count++;
-				var extractedOperationName = FlattenExpression(block, index + count, right, ref count, depth+1);
+				var extractedOperationName = FlattenExpression(block, right, ref count, depth + 1);
 				op.Right = new VariableValueNode(extractedOperationName);
 			}
+
 			if (depth == 0)
 				return string.Empty;
 
@@ -225,22 +179,18 @@ namespace Sharp_LR35902_Compiler
 			return intermediateVariableName;
 		}
 
-		public static IEnumerable<List<Node>> CreateBasicBlocks(BlockNode block)
-		{
+		public static IEnumerable<List<Node>> CreateBasicBlocks(BlockNode block) {
 			var children = block.GetChildren();
 			var currentblock = new List<Node>();
-			foreach (var child in children)
-			{
-				if (currentblock.Any() && child is LabelNode)
-				{
+			foreach (var child in children) {
+				if (currentblock.Any() && child is LabelNode) {
 					yield return currentblock;
 					currentblock = new List<Node>();
 				}
 
 				currentblock.Add(child);
 
-				if (currentblock.Any() && child is GotoNode)
-				{
+				if (currentblock.Any() && child is GotoNode) {
 					yield return currentblock;
 					currentblock = new List<Node>();
 				}

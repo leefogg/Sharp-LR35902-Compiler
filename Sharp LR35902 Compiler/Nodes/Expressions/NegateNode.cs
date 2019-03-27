@@ -1,15 +1,11 @@
 ﻿using System.Collections.Generic;
 
-namespace Sharp_LR35902_Compiler.Nodes
-{
-	public class NegateNode : ExpressionNode
-	{
+namespace Sharp_LR35902_Compiler.Nodes {
+	public class NegateNode : ExpressionNode {
 		public ExpressionNode Expression { get; set; }
 
-		public NegateNode(ExpressionNode expression)
-		{
-			Expression = expression;
-		}
+		public NegateNode(ExpressionNode expression) { Expression = expression; }
+
 		// Allow valueless construction
 		public NegateNode() { }
 
@@ -17,8 +13,7 @@ namespace Sharp_LR35902_Compiler.Nodes
 
 		public override Node[] GetChildren() => NoChildren;
 
-		public override ExpressionNode Optimize(IDictionary<string, ushort> knownvariables)
-		{
+		public override ExpressionNode Optimize(IDictionary<string, ushort> knownvariables) {
 			Expression = Expression.Optimize(knownvariables);
 			if (Expression is ConstantNode)
 				return new ShortValueNode(booleanToShort(!isTrue(Expression.GetValue())));
