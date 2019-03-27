@@ -39,7 +39,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			rootnode.AddChild(new VariableAssignmentNode("y", new VariableValueNode("x"))); // y = x
 			rootnode.AddChild(new VariableDeclarationNode("int", "z")); // int z
 
-			var lastusage = FindLastVariableUsage(rootnode, 0, "x");
+			var lastusage = FindLastVariableUsage(rootnode.GetChildren(), "x", 1);
 			Assert.AreEqual(3, lastusage);
 		}
 
@@ -52,7 +52,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			rootnode.AddChild(new VariableAssignmentNode("y", new VariableValueNode("x"))); // y = x
 			rootnode.AddChild(new VariableDeclarationNode("int", "z")); // int z
 
-			var lastusage = FindLastVariableUsage(rootnode, 10, "x");
+			var lastusage = FindLastVariableUsage(rootnode.GetChildren(), "x", 10);
 			Assert.AreEqual(10, lastusage);
 		}
 
@@ -64,18 +64,16 @@ namespace Sharp_LR35902_Compiler_Tests {
 			rootnode.AddChild(new VariableDeclarationNode("int", "y")); // int y
 			rootnode.AddChild(new VariableAssignmentNode("y", new VariableValueNode("x"))); // y = x
 			rootnode.AddChild(new VariableDeclarationNode("int", "z")); // int z
+			rootnode.AddChild(new VariableAssignmentNode("y", new ShortValueNode(10))); // y = 10
 
 			var lastuses = FindAllLastUsages(rootnode).ToArray();
-			Assert.AreEqual(3, lastuses.Length, "Not all variables found");
+			Assert.AreEqual(2, lastuses.Length, "Not all variables found");
 			Assert.AreEqual("x", lastuses[0].Name);
-			Assert.AreEqual(0, lastuses[0].Start);
+			Assert.AreEqual(1, lastuses[0].Start);
 			Assert.AreEqual(3, lastuses[0].End);
 			Assert.AreEqual("y", lastuses[1].Name);
-			Assert.AreEqual(2, lastuses[1].Start);
-			Assert.AreEqual(3, lastuses[1].End);
-			Assert.AreEqual("z", lastuses[2].Name);
-			Assert.AreEqual(4, lastuses[2].Start);
-			Assert.AreEqual(4, lastuses[2].End);
+			Assert.AreEqual(3, lastuses[1].Start);
+			Assert.AreEqual(5, lastuses[1].End);
 		}
 
 		[TestMethod]
@@ -130,7 +128,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var asmlines = new List<string>(EmitAssembly(rootnode));
 			Assert.AreEqual(2, asmlines.Count);
 			Assert.AreEqual("LD C, 5", asmlines[0]);
-			Assert.AreEqual("LD D, C", asmlines[1]);
+			Assert.AreEqual("LD C, C", asmlines[1]); // x's last use is to create y so C gets reused
 		}
 
 		[TestMethod]

@@ -143,20 +143,26 @@ namespace Sharp_LR35902_Compiler {
 
 		public static IEnumerable<VariableUseRange> FindAllLastUsages(Node rootnode) {
 			var index = 0;
-			foreach (var node in rootnode.GetChildren()) {
-				if (node is VariableDeclarationNode dec) {
-					var lastusage = FindLastVariableUsage(rootnode, index, dec.VariableName);
-					yield return new VariableUseRange(dec.VariableName, index, lastusage);
+			var children = rootnode.GetChildren();
+
+			var seenvariables = new List<string>();
+
+			foreach (var node in children) {
+				if (node is VariableAssignmentNode assignmentnode) {
+					if (seenvariables.Contains(assignmentnode.VariableName))
+						continue;
+					var lastusage = FindLastVariableUsage(children, assignmentnode.VariableName, index);
+					yield return new VariableUseRange(assignmentnode.VariableName, index, lastusage);
+					seenvariables.Add(assignmentnode.VariableName);
 				}
 
 				index++;
 			}
 		}
 
-		public static int FindLastVariableUsage(Node rootnote, int start, string variablename) {
+		public static int FindLastVariableUsage(Node[] children, string variablename, int start = 0) {
 			var lastusage = start;
 
-			var children = rootnote.GetChildren();
 			for (var i = start + 1; i < children.Length; i++) {
 				var node = children[i];
 
