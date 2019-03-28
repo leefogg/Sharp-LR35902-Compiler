@@ -278,14 +278,14 @@ namespace Sharp_LR35902_Assembler_Tests {
 		}
 
 		[TestMethod]
-		public void RemoveRedundantWrites_Simple() {
+		public void RemoveOverwrittenWrites_Simple() {
 			var instructions = new List<string> {
 				"LD A 10",
 				"LD A 5",
 				"LD A 1"
 			};
 
-			var changesmade = RemoveRedundantWrites(instructions);
+			var changesmade = RemoveOverwrittenWrites(instructions);
 
 			Assert.IsTrue(changesmade);
 			ListEqual(new[] {
@@ -294,7 +294,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 		}
 
 		[TestMethod]
-		public void RemoveRedundantWrites_Searches() {
+		public void RemoveOverwrittenWrites_Searches() {
 			var instructions = new List<string> {
 				"LD A 10",
 				"NOP",
@@ -302,7 +302,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 				"LD A 1"
 			};
 
-			var changesmade = RemoveRedundantWrites(instructions);
+			var changesmade = RemoveOverwrittenWrites(instructions);
 
 			Assert.IsTrue(changesmade);
 			ListEqual(new[] {
@@ -313,42 +313,79 @@ namespace Sharp_LR35902_Assembler_Tests {
 		}
 
 		[TestMethod]
-		public void RemoveRedundantWrites_JumpCancels_JP() {
+		public void RemoveOverwrittenWrites_JumpCancels_JP() {
 			var instructions = new List<string> {
 				"LD A 10",
 				"JP 100",
 				"LD A 1"
 			};
 
-			var changesmade = RemoveRedundantWrites(instructions);
+			var changesmade = RemoveOverwrittenWrites(instructions);
 
 			Assert.IsFalse(changesmade);
 		}
 
 		[TestMethod]
-		public void RemoveRedundantWrites_JumpCancels_JR() {
+		public void RemoveOverwrittenWrites_JumpCancels_JR() {
 			var instructions = new List<string> {
 				"LD A 10",
 				"JR 100",
 				"LD A 1"
 			};
 
-			var changesmade = RemoveRedundantWrites(instructions);
+			var changesmade = RemoveOverwrittenWrites(instructions);
 
 			Assert.IsFalse(changesmade);
 		}
 
 		[TestMethod]
-		public void RemoveRedundantWrites_ReadCancels() {
+		public void RemoveOverwrittenWrites_ReadCancels() {
 			var instructions = new List<string> {
 				"LD A 10",
 				"LD B A",
 				"LD A 1"
 			};
 
-			var changesmade = RemoveRedundantWrites(instructions);
+			var changesmade = RemoveOverwrittenWrites(instructions);
 
 			Assert.IsFalse(changesmade);
+		}
+
+		[TestMethod]
+		public void RemoveSelfWrites_MatchingRegisters_GetRemoved() {
+			var instructions = new List<string> {
+				"LD A A",
+				"LD B B",
+				"LD C C",
+				"LD D D",
+				"LD E E",
+				"LD H H",
+				"LD L L",
+				"LD BC BC",
+				"LD DE DE",
+				"LD HL HL",
+			};
+
+			var changesmade = RemoveSelfWrites(instructions);
+
+			Assert.IsTrue(changesmade);
+			Assert.AreEqual(0, instructions.Count);
+		}
+
+		[TestMethod]
+		public void RemoveSelfWrites_NotMatchingRegisters_Remain()
+		{
+			var instructions = new List<string> {
+				"LD A C",
+				"LD B L",
+				"LD C H",
+				"LD DE HL",
+			};
+
+			var changesmade = RemoveSelfWrites(instructions);
+
+			Assert.IsFalse(changesmade);
+			Assert.AreEqual(4, instructions.Count);
 		}
 	}
 }

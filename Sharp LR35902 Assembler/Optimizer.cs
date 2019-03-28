@@ -12,28 +12,51 @@ namespace Sharp_LR35902_Assembler {
 
 			// Prune
 			DeleteUnreachableCode(instructions);
+			IncludeNearIncDec(instructions);
+			while (RemoveRedundantWrites(instructions)) { }
+
 
 			// Convert
 			for (var i = 0; i < instructions.Count; i++)
 				instructions[i] = LD_A_0_TO_XOR_A(instructions[i]);
 			// TODO: JP to JR
-
-			IncludeNearIncDec(instructions);
-			while (RemoveRedundantWrites(instructions)) { }
 		}
 
-		public static bool RemoveRedundantWrites(IList<string> instructions) {
+		private static bool RemoveRedundantWrites(IList<string> instructions) => RemoveSelfWrites(instructions) || RemoveOverwrittenWrites(instructions);
+
+		public static bool RemoveSelfWrites(IList<string> instructions) {
+			var changesmade = false;
+
+			for (var i = 0; i < instructions.Count; i++) {
+				var instruction = instructions[i];
+				if (!instruction.StartsWith("LD "))
+					continue;
+
+				var parts = instruction.Split(' ');
+				if (parts[1] == parts[2]) { // All loads have 2 oprands so this is safe
+					instructions.RemoveAt(i);
+					i--;
+					changesmade = true;
+				}
+			}
+
+			return changesmade;
+		}
+
+		// Removes writes to a register if the data is unconditionally overwritten
+		// TODO: Use new basic blocks function to remove the need to check for jumps
+		public static bool RemoveOverwrittenWrites(IList<string> instructions) {
 			var changesmade = false;
 			for (var i = 0; i < instructions.Count; i++)
 				if (instructions[i].StartsWith("LD ")) {
 					var parts = instructions[i].Split(' ');
 					var destinationregister = parts.Get(1);
-					if (!isRegister(destinationregister))
+					if (!IsRegister(destinationregister))
 						continue;
 
 					for (var j = i + 1; j < instructions.Count; j++) {
 						var otherinstructionparts = instructions[j].Split(' ');
-						if (isJump(instructions[j]))
+						if (IsJump(instructions[j]))
 							break;
 						if (otherinstructionparts[0].StartsWith("LD") && otherinstructionparts.Get(1) == destinationregister) {
 							instructions.RemoveAt(i--);
@@ -49,9 +72,9 @@ namespace Sharp_LR35902_Assembler {
 			return changesmade;
 		}
 
-		private static bool isJump(string instruction) => instruction.StartsWith("JP") || instruction.StartsWith("JR");
+		private static bool IsJump(string instruction) => instruction.StartsWith("JP") || instruction.StartsWith("JR");
 
-		private static bool isRegister(string possibleregister) => AllRegisters.Contains(possibleregister);
+		private static bool IsRegister(string possibleregister) => AllRegisters.Contains(possibleregister);
 
 		/*
 		Utilizes LDD and LDI optimization instructions by 
@@ -99,7 +122,7 @@ namespace Sharp_LR35902_Assembler {
 						break;
 					}
 
-					if (isJump(incdecinstruction)) {
+					if (IsJump(incdecinstruction)) {
 						// Start again from the next line
 						i = j;
 						break;
@@ -110,7 +133,7 @@ namespace Sharp_LR35902_Assembler {
 			return modifiedlines;
 		}
 
-		private static IEnumerable<string> getUsedRegisters(string instruction) {
+		private static IEnumerable<string> GetUsedRegisters(string instruction) {
 			instruction = instruction.Replace("(", string.Empty).Replace(")", string.Empty).Replace(",", string.Empty);
 			var parts = instruction.Split(" ");
 			return parts.Skip(1).Intersect(AllRegisters);
