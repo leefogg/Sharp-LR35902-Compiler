@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Test_Common.Utils;
 using static Sharp_LR35902_Assembler.Optimizer;
@@ -386,6 +387,105 @@ namespace Sharp_LR35902_Assembler_Tests {
 
 			Assert.IsFalse(changesmade);
 			Assert.AreEqual(4, instructions.Count);
+		}
+
+		[TestMethod]
+		public void CreateBasicBlocks_OneBlock() {
+			var instructions = new[] {
+				"NOP",
+				"LD A 5",
+				"LD B 10",
+			};
+
+			var blocks = CreateBasicBlocks(instructions).ToList();
+
+			Assert.AreEqual(1, blocks.Count);
+			Assert.AreEqual(3, blocks[0].Count);
+		}
+
+		[TestMethod]
+		public void CreateBasicBlocks_Label_Seperates()
+		{
+			var instructions = new[] {
+				"NOP",
+				"Label:",
+				"LD B 10",
+			};
+
+			var blocks = CreateBasicBlocks(instructions).ToList();
+
+			Assert.AreEqual(2, blocks.Count);
+			Assert.AreEqual(1, blocks[0].Count);
+			Assert.AreEqual(2, blocks[1].Count);
+		}
+
+		[TestMethod]
+		public void CreateBasicBlocks_JP_Seperates()
+		{
+			var instructions = new[] {
+				"NOP",
+				"JP 10",
+				"LD B 10",
+			};
+
+			var blocks = CreateBasicBlocks(instructions).ToList();
+
+			Assert.AreEqual(2, blocks.Count);
+			Assert.AreEqual(2, blocks[0].Count);
+			Assert.AreEqual(1, blocks[1].Count);
+			Assert.AreEqual(blocks[1][0], "LD B 10");
+		}
+
+		[TestMethod]
+		public void CreateBasicBlocks_JR_Seperates()
+		{
+			var instructions = new[] {
+				"NOP",
+				"JR 10",
+				"LD B 10",
+			};
+
+			var blocks = CreateBasicBlocks(instructions).ToList();
+
+			Assert.AreEqual(2, blocks.Count);
+			Assert.AreEqual(2, blocks[0].Count);
+			Assert.AreEqual(1, blocks[1].Count);
+			Assert.AreEqual(blocks[1][0], "LD B 10");
+		}
+
+		[TestMethod]
+		public void CreateBasicBlocks_RET_Seperates()
+		{
+			var instructions = new[] {
+				"NOP",
+				"RET",
+				"LD B 10",
+			};
+
+			var blocks = CreateBasicBlocks(instructions).ToList();
+
+			Assert.AreEqual(2, blocks.Count);
+			Assert.AreEqual(2, blocks[0].Count);
+			Assert.AreEqual(1, blocks[1].Count);
+			Assert.AreEqual(blocks[1][0], "LD B 10");
+		}
+
+		[TestMethod]
+		public void CreateBasicBlocks_NoEmpty()
+		{
+			var instructions = new[] {
+				"NOP",
+				"RET",
+				"Label:",
+				"LD B 10",
+			};
+
+			var blocks = CreateBasicBlocks(instructions).ToList();
+
+			Assert.AreEqual(2, blocks.Count);
+			Assert.AreEqual(2, blocks[0].Count);
+			Assert.AreEqual(2, blocks[1].Count);
+			Assert.AreEqual(blocks[1][0], "Label:");
 		}
 	}
 }

@@ -167,6 +167,27 @@ namespace Sharp_LR35902_Assembler {
 			return deletedlines;
 		}
 
+		public static IEnumerable<List<string>> CreateBasicBlocks(IList<string> instructions) {
+			var currentblock = new List<string>();
+			foreach (var instruction in instructions) {
+				if (currentblock.Any() && instruction.EndsWith(':')) {
+					yield return currentblock;
+					currentblock = new List<string>();
+				}
+
+				currentblock.Add(instruction);
+
+				if (currentblock.Any() && (instruction.StartsWith("JP") || instruction.StartsWith("JR") || instruction.StartsWith("RET")))
+				{
+					yield return currentblock;
+					currentblock = new List<string>();
+				}
+			}
+
+			if (currentblock.Any())
+				yield return currentblock;
+		}
+
 		public static string LD_A_0_TO_XOR_A(string instruction) => instruction == "LD A, 0" ? "XOR A" : instruction;
 	}
 }
