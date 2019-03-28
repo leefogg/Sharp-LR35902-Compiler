@@ -13,16 +13,17 @@ namespace Sharp_LR35902_Assembler {
 			// Prune
 			DeleteUnreachableCode(instructions);
 			IncludeNearIncDec(instructions);
-			while (RemoveRedundantWrites(instructions)) { }
+			RemoveSelfWrites(instructions);
+			var basicblocks = CreateBasicBlocks(instructions).ToList();
+			while (RemoveOverwrittenWrites(basicblocks)) { }
 
+			instructions = basicblocks.SelectMany(list => list).ToList();
 
 			// Convert
 			for (var i = 0; i < instructions.Count; i++)
 				instructions[i] = LD_A_0_TO_XOR_A(instructions[i]);
 			// TODO: JP to JR
 		}
-
-		private static bool RemoveRedundantWrites(IList<string> instructions) => RemoveSelfWrites(instructions) || RemoveOverwrittenWrites(instructions);
 
 		public static bool RemoveSelfWrites(IList<string> instructions) {
 			var changesmade = false;
@@ -44,30 +45,30 @@ namespace Sharp_LR35902_Assembler {
 		}
 
 		// Removes writes to a register if the data is unconditionally overwritten
-		// TODO: Use new basic blocks function to remove the need to check for jumps
-		public static bool RemoveOverwrittenWrites(IList<string> instructions) {
+		public static bool RemoveOverwrittenWrites(IEnumerable<List<string>> blocks) {
 			var changesmade = false;
-			for (var i = 0; i < instructions.Count; i++)
-				if (instructions[i].StartsWith("LD ")) {
-					var parts = instructions[i].Split(' ');
-					var destinationregister = parts.Get(1);
-					if (!IsRegister(destinationregister))
-						continue;
+			foreach (var instructions in blocks) { 
+				for (var i=0; i<instructions.Count; i++) {
+					if (instructions[i].StartsWith("LD ")) {
+						var parts = instructions[i].Split(' ');
+						var destinationregister = parts.Get(1);
+						if (!IsRegister(destinationregister))
+							continue;
 
-					for (var j = i + 1; j < instructions.Count; j++) {
-						var otherinstructionparts = instructions[j].Split(' ');
-						if (IsJump(instructions[j]))
-							break;
-						if (otherinstructionparts[0].StartsWith("LD") && otherinstructionparts.Get(1) == destinationregister) {
-							instructions.RemoveAt(i--);
-							changesmade = true;
-							break;
+						for (var j = i + 1; j < instructions.Count; j++) {
+							var otherinstructionparts = instructions[j].Split(' ');
+							if (otherinstructionparts[0].StartsWith("LD") && otherinstructionparts.Get(1) == destinationregister) {
+								instructions.RemoveAt(i--);
+								changesmade = true;
+								break;
+							}
+
+							if (otherinstructionparts.Get(1) == destinationregister || otherinstructionparts.Get(2) == destinationregister)
+								break;
 						}
-
-						if (otherinstructionparts.Get(1) == destinationregister || otherinstructionparts.Get(2) == destinationregister)
-							break;
 					}
 				}
+			}
 
 			return changesmade;
 		}

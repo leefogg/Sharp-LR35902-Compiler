@@ -286,7 +286,9 @@ namespace Sharp_LR35902_Assembler_Tests {
 				"LD A 1"
 			};
 
-			var changesmade = RemoveOverwrittenWrites(instructions);
+			var blocks = CreateBasicBlocks(instructions).ToList();
+			var changesmade = RemoveOverwrittenWrites(blocks);
+			instructions = blocks.SelectMany(list => list).ToList();
 
 			Assert.IsTrue(changesmade);
 			ListEqual(new[] {
@@ -303,7 +305,9 @@ namespace Sharp_LR35902_Assembler_Tests {
 				"LD A 1"
 			};
 
-			var changesmade = RemoveOverwrittenWrites(instructions);
+			var blocks = CreateBasicBlocks(instructions).ToList();
+			var changesmade = RemoveOverwrittenWrites(blocks);
+			instructions = blocks.SelectMany(list => list).ToList();
 
 			Assert.IsTrue(changesmade);
 			ListEqual(new[] {
@@ -321,7 +325,8 @@ namespace Sharp_LR35902_Assembler_Tests {
 				"LD A 1"
 			};
 
-			var changesmade = RemoveOverwrittenWrites(instructions);
+			var blocks = CreateBasicBlocks(instructions).ToList();
+			var changesmade = RemoveOverwrittenWrites(blocks);
 
 			Assert.IsFalse(changesmade);
 		}
@@ -334,7 +339,8 @@ namespace Sharp_LR35902_Assembler_Tests {
 				"LD A 1"
 			};
 
-			var changesmade = RemoveOverwrittenWrites(instructions);
+			var blocks = CreateBasicBlocks(instructions).ToList();
+			var changesmade = RemoveOverwrittenWrites(blocks);
 
 			Assert.IsFalse(changesmade);
 		}
@@ -347,7 +353,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 				"LD A 1"
 			};
 
-			var changesmade = RemoveOverwrittenWrites(instructions);
+			var changesmade = RemoveOverwrittenWrites(CreateBasicBlocks(instructions));
 
 			Assert.IsFalse(changesmade);
 		}
