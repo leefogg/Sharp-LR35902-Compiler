@@ -6,7 +6,7 @@
 	<RuntimeFrameworkVersion>2.1.1</RuntimeFrameworkVersion>
 	<PlatformTarget>AnyCPU</PlatformTarget>
 	<RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <StartupObject></StartupObject>
+    <StartupObject>Sharp_LR35902_Assembler.Assembler</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
