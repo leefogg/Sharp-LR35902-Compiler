@@ -29,12 +29,11 @@ namespace Sharp_LR35902_Compiler {
 
 			char GetVariableRegister(string name) => registernames[variablealloc[name]];
 
-			string WriteToRegister(ExpressionNode value, string outputreg) {
-				if (value is VariableValueNode vval)
-					return $"LD {outputreg} {GetVariableRegister(vval.VariableName)}";
-
-				if (value is ShortValueNode cval)
-					return $"LD {outputreg} {cval.Value}";
+			string getValue(Node node) { // TODO: Make this ValueNode
+				if (node is VariableValueNode assignment)
+					return GetVariableRegister(assignment.VariableName).ToString();
+				if (node is ShortValueNode shortValue)
+					return shortValue.Value.ToString();
 
 				throw new NotSupportedException("This operator is not yet supported inside the assembler. Please implement.");
 			}
@@ -67,9 +66,8 @@ namespace Sharp_LR35902_Compiler {
 					case VariableAssignmentNode var: {
 						if (var.Value is OperatorNode oprator) {
 							if (var.Value is ComparisonNode comparison) {
-								yield return WriteToRegister(comparison.Left, "A");
-								yield return WriteToRegister(comparison.Right, "B");
-								yield return "CP B";
+								yield return $"LD A {getValue(comparison.Left)}";
+								yield return $"CP {getValue(comparison.Right)}";
 								var skiplabelname = "generatedLabel" + i++;
 								if (var.Value is LessThanComparisonNode) {
 									yield return "JP NC " + skiplabelname;
@@ -80,16 +78,16 @@ namespace Sharp_LR35902_Compiler {
 
 								yield return $"LD {GetVariableRegister(var.VariableName)} 1";
 								yield return skiplabelname + ':';
-							} else {
-								yield return WriteToRegister(oprator.Left, "B");
-								yield return WriteToRegister(oprator.Right, "A");
+							} else { // Only other operators should be addition and subtraction
+								yield return $"LD B {getValue(oprator.Left)}";
+								yield return $"LD A {getValue(oprator.Right)}";
 								if (var.Value is AdditionNode)
 									yield return "ADD A B";
 								else if (var.Value is SubtractionNode)
 									yield return "SUB A B";
 
 								yield return $"LD {GetVariableRegister(var.VariableName)} A";
-							}
+							} // TODO: Support negate operator
 						}
 
 						break;
