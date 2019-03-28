@@ -139,7 +139,7 @@ namespace Sharp_LR35902_Compiler {
 			if (!(block.GetChildren()[index] is VariableAssignmentNode assignmentnode))
 				return 0;
 
-			if (!(assignmentnode.Value is OperatorNode value)) // Flat enough
+			if (!(assignmentnode.Value is BinaryOperatorNode value)) // Flat enough
 				return 0;
 
 			// Single operations per assignment is what we want. This is good, stop.
@@ -155,14 +155,14 @@ namespace Sharp_LR35902_Compiler {
 			return count;
 		}
 
-		private static string FlattenExpression(BlockNode block, OperatorNode op, ref int count, int depth) {
-			if (op.Left is OperatorNode left) {
+		private static string FlattenExpression(BlockNode block, BinaryOperatorNode op, ref int count, int depth) {
+			if (op.Left is BinaryOperatorNode left) {
 				count++;
 				var extractedOperationName = FlattenExpression(block, left, ref count, depth + 1);
 				op.Left = new VariableValueNode(extractedOperationName);
 			}
 
-			if (op.Right is OperatorNode right) {
+			if (op.Right is BinaryOperatorNode right) {
 				count++;
 				var extractedOperationName = FlattenExpression(block, right, ref count, depth + 1);
 				op.Right = new VariableValueNode(extractedOperationName);

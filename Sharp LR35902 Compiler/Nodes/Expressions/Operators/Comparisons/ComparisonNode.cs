@@ -1,9 +1,9 @@
 ﻿namespace Sharp_LR35902_Compiler.Nodes {
-	public abstract class ComparisonNode : OperatorNode {
-		public ComparisonNode(ExpressionNode left, ExpressionNode right) : base(left, right) { }
+	public abstract class ComparisonNode : BinaryOperatorNode {
+		protected ComparisonNode(ExpressionNode left, ExpressionNode right) : base(left, right) { }
 
 		// Allow valueless construction
-		public ComparisonNode() { }
+		protected ComparisonNode() { }
 
 		public override ushort GetValue() => booleanToShort(isTrue());
 

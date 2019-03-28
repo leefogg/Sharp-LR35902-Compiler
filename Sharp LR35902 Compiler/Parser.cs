@@ -201,7 +201,7 @@ namespace Sharp_LR35902_Compiler {
 			if (nodes.Count == 1) {
 				if (nodes[0] is ValueNode)
 					return nodes[0];
-				if (nodes[0] is OperatorNode op && (op.Left == null || op.Right == null))
+				if (nodes[0] is BinaryOperatorNode op && (op.Left == null || op.Right == null))
 					throw new SyntaxException("Left or right hand side of expression is missing.");
 			}
 
@@ -219,7 +219,7 @@ namespace Sharp_LR35902_Compiler {
 			return nodes[0];
 		}
 
-		private static void ConvergeOperators<T>(IList<ExpressionNode> nodes) where T : OperatorNode {
+		private static void ConvergeOperators<T>(IList<ExpressionNode> nodes) where T : BinaryOperatorNode {
 			for (var i = 1; i < nodes.Count - 1; i++) {
 				if (!(nodes[i] is T op))
 					continue;
