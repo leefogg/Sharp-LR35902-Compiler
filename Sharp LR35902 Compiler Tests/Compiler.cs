@@ -325,5 +325,20 @@ namespace Sharp_LR35902_Compiler_Tests {
 				"generatedLabel1:"
 			}, asm);
 		}
+
+		[TestMethod]
+		public void EmitAssembly_Expression_Negate()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new NegateNode(new ShortValueNode(1))));
+
+			var asm = EmitAssembly(ast).ToArray();
+
+			ListEqual(new[] {
+				"XOR 1",
+				"LD C A"
+			}, asm);
+		}
 	}
 }

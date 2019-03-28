@@ -64,7 +64,7 @@ namespace Sharp_LR35902_Compiler {
 						yield return $"LD {GetVariableRegister(var.VariableName)}, {imval.Value}";
 						break;
 					case VariableAssignmentNode var: {
-						if (var.Value is OperatorNode oprator) {
+						if (var.Value is BinaryOperatorNode oprator) {
 							if (var.Value is ComparisonNode comparison) {
 								yield return $"LD A {getValue(comparison.Left)}";
 								yield return $"CP {getValue(comparison.Right)}";
@@ -88,6 +88,11 @@ namespace Sharp_LR35902_Compiler {
 
 								yield return $"LD {GetVariableRegister(var.VariableName)} A";
 							} // TODO: Support negate operator
+						} else if (var.Value is UnaryOperatorNode operatorNode) {
+							if (var.Value is NegateNode negatenode) {
+								yield return $"XOR {getValue(negatenode.Expression)}";
+								yield return $"LD {GetVariableRegister(var.VariableName)} A";
+							}
 						}
 
 						break;
