@@ -16,6 +16,7 @@ namespace Sharp_LR35902_Assembler {
 			RemoveSelfWrites(instructions);
 			var basicblocks = CreateBasicBlocks(instructions).ToList();
 			while (RemoveOverwrittenWrites(basicblocks)) { }
+			while (RemoveRedundantCompares(basicblocks)) { }
 
 			instructions = basicblocks.SelectMany(list => list).ToList();
 
@@ -23,6 +24,37 @@ namespace Sharp_LR35902_Assembler {
 			for (var i = 0; i < instructions.Count; i++)
 				instructions[i] = LD_A_0_TO_XOR_A(instructions[i]);
 			// TODO: JP to JR
+		}
+
+		public static bool RemoveRedundantCompares(IEnumerable<List<string>> basicblocks) {
+			var changesmade = false;
+
+			foreach (var block in basicblocks) {
+				for (var i = 1; i < block.Count; i++) {
+					var instruction = block[i];
+					if (!instruction.StartsWith("CP "))
+						continue;
+
+					var register = instruction.Split(' ')[1];
+					if (!AllRegisters.Contains(register))
+						continue;
+
+					var aboveinstruction = block[i - 1];
+					// For now I know LD sets the same registers as a compare, would be nice to have a 
+					// function test that though to have wider range of supported instructions
+					if (!aboveinstruction.StartsWith("LD "))
+						continue;
+
+					var splitaboveinstruction = aboveinstruction.Split(' ');
+					if (splitaboveinstruction[1] == register) {
+						block.RemoveAt(i);
+						i--;
+						changesmade = true;
+					}
+				}
+			}
+
+			return changesmade;
 		}
 
 		public static bool RemoveSelfWrites(IList<string> instructions) {
