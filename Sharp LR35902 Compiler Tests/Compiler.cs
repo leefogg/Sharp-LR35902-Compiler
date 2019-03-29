@@ -114,7 +114,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			var asmlines = new List<string>(EmitAssembly(rootnode));
 			Assert.AreEqual(1, asmlines.Count);
-			Assert.AreEqual("LD C, 5", asmlines[0]);
+			Assert.AreEqual("LD C 5", asmlines[0]);
 		}
 
 		[TestMethod]
@@ -127,8 +127,8 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			var asmlines = new List<string>(EmitAssembly(rootnode));
 			Assert.AreEqual(2, asmlines.Count);
-			Assert.AreEqual("LD C, 5", asmlines[0]);
-			Assert.AreEqual("LD C, C", asmlines[1]); // x's last use is to create y so C gets reused
+			Assert.AreEqual("LD C 5", asmlines[0]);
+			Assert.AreEqual("LD C C", asmlines[1]); // x's last use is to create y so C gets reused
 		}
 
 		[TestMethod]
@@ -140,7 +140,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			var asmlines = new List<string>(EmitAssembly(rootnode));
 			Assert.AreEqual(2, asmlines.Count);
-			Assert.AreEqual("LD C, 5", asmlines[0]);
+			Assert.AreEqual("LD C 5", asmlines[0]);
 			Assert.AreEqual("INC C", asmlines[1]);
 		}
 
@@ -153,7 +153,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			var asmlines = new List<string>(EmitAssembly(rootnode));
 			Assert.AreEqual(2, asmlines.Count);
-			Assert.AreEqual("LD C, 5", asmlines[0]);
+			Assert.AreEqual("LD C 5", asmlines[0]);
 			Assert.AreEqual("DEC C", asmlines[1]);
 		}
 
@@ -208,11 +208,11 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			var asmlines = new List<string>(EmitAssembly(rootnode));
 			Assert.AreEqual(10, asmlines.Count);
-			Assert.AreEqual("LD C, 5", asmlines[0]);
-			Assert.AreEqual("LD D, 5", asmlines[1]);
-			Assert.AreEqual("LD E, 5", asmlines[2]);
-			Assert.AreEqual("LD H, 5", asmlines[3]);
-			Assert.AreEqual("LD L, 5", asmlines[4]);
+			Assert.AreEqual("LD C 5", asmlines[0]);
+			Assert.AreEqual("LD D 5", asmlines[1]);
+			Assert.AreEqual("LD E 5", asmlines[2]);
+			Assert.AreEqual("LD H 5", asmlines[3]);
+			Assert.AreEqual("LD L 5", asmlines[4]);
 		}
 
 		[TestMethod]
@@ -354,10 +354,10 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var asm = EmitAssembly(ast).ToArray();
 
 			ListEqual(new[] {
-				"LD C, 1",
+				"LD C 1",
 				"CP C",
 				"JP NZ generatedLabel1",
-				"LD C, 1",
+				"LD C 1",
 				"generatedLabel1:"
 			}, asm);
 		}

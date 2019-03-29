@@ -58,10 +58,10 @@ namespace Sharp_LR35902_Compiler {
 						yield return "JP " + gotonode.LabelName;
 						break;
 					case VariableAssignmentNode var when var.Value is VariableValueNode varval:
-						yield return $"LD {GetVariableRegister(var.VariableName)}, {GetVariableRegister(varval.VariableName)}";
+						yield return $"LD {GetVariableRegister(var.VariableName)} {GetVariableRegister(varval.VariableName)}";
 						break;
 					case VariableAssignmentNode var when var.Value is ShortValueNode imval:
-						yield return $"LD {GetVariableRegister(var.VariableName)}, {imval.Value}";
+						yield return $"LD {GetVariableRegister(var.VariableName)} {imval.Value}";
 						break;
 					case VariableAssignmentNode var: {
 						if (var.Value is BinaryOperatorNode oprator) {
