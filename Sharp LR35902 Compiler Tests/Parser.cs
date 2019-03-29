@@ -606,7 +606,8 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
-		public void CreateAST_IfStatement_NewScope_RedeclaredVariableDoesntThrow()
+		[ExpectedException(typeof(SyntaxException))]
+		public void CreateAST_IfStatement_NewScope_RedeclaredVariableThrows()
 		{
 			var tokens = new[] {
 				new Token(TokenType.DataType, "byte"),
