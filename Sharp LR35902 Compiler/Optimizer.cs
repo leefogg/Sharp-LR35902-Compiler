@@ -174,9 +174,8 @@ namespace Sharp_LR35902_Compiler {
 
 				block.RemoveChild(index);
 				var count = 0;
-				FlattenExpression(block, value, ref count, 0);
+				FlattenExpression(block, value, ref count, ref index, 0);
 				count *= 2;
-				index += count;
 				block.InsertAt(assignmentnode, index);
 				return count;
 			}
@@ -200,16 +199,16 @@ namespace Sharp_LR35902_Compiler {
 			return name;
 		}
 
-		private static string FlattenExpression(BlockNode block, BinaryOperatorNode op, ref int count, int depth) {
+		private static string FlattenExpression(BlockNode block, BinaryOperatorNode op, ref int count, ref int index, int depth) {
 			if (op.Left is BinaryOperatorNode left) {
 				count++;
-				var extractedOperationName = FlattenExpression(block, left, ref count, depth + 1);
+				var extractedOperationName = FlattenExpression(block, left, ref count, ref index, depth + 1);
 				op.Left = new VariableValueNode(extractedOperationName);
 			}
 
 			if (op.Right is BinaryOperatorNode right) {
 				count++;
-				var extractedOperationName = FlattenExpression(block, right, ref count, depth + 1);
+				var extractedOperationName = FlattenExpression(block, right, ref count, ref index, depth + 1);
 				op.Right = new VariableValueNode(extractedOperationName);
 			}
 
@@ -218,8 +217,8 @@ namespace Sharp_LR35902_Compiler {
 
 			// Left and Right side are known to be constants or variables now
 			var intermediateVariableName = $"intermediate{count}";
-			block.AddChild(new VariableDeclarationNode("byte", intermediateVariableName));
-			block.AddChild(new VariableAssignmentNode(intermediateVariableName, op));
+			block.InsertAt(new VariableDeclarationNode("byte", intermediateVariableName), index++);
+			block.InsertAt(new VariableAssignmentNode(intermediateVariableName, op), index++);
 
 			return intermediateVariableName;
 		}
