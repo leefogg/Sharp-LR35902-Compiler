@@ -13,7 +13,7 @@ namespace Sharp_LR35902_Compiler.Nodes {
 			var left = Left.Optimize(knownvariables);
 			var right = Right.Optimize(knownvariables);
 			if (left is ConstantNode && right is ConstantNode)
-				return new ShortValueNode(booleanToShort(isTrue(left.GetValue()) == isTrue(right.GetValue())));
+				return new ShortValueNode(BooleanToShort(IsTrue(left.GetValue()) == IsTrue(right.GetValue())));
 
 			return new EqualsComparisonNode(left, right);
 		}

@@ -3,8 +3,8 @@ using System.Linq;
 
 namespace Sharp_LR35902_Compiler.Nodes {
 	public class IfNode : Node {
-		public ExpressionNode Condition { get; }
-		public BlockNode IfTrue { get; }
+		public ExpressionNode Condition { get; set; }
+		public BlockNode IfTrue { get; set; }
 
 		public IfNode(ExpressionNode condition, BlockNode iftrue) {
 			Condition = condition;

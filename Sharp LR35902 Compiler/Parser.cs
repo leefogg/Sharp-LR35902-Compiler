@@ -21,13 +21,15 @@ namespace Sharp_LR35902_Compiler {
 
 
 		public static BlockNode CreateAST(IList<Token> tokens) {
-			var rootnode = new ASTNode();
-
+			var i = 0;
+			return CreateAST(tokens, new ASTNode(), ref i, null);
+		}
+		public static BlockNode CreateAST(IList<Token> tokens, BlockNode rootnode, ref int i, Scope previousScope) {
 			var currentnode = rootnode;
 
-			var currentscope = new Scope();
+			var currentscope = new Scope(previousScope);
 
-			for (var i = 0; i < tokens.Count; i++) {
+			for (; i < tokens.Count; i++) {
 				var token = tokens[i];
 
 				if (token.Type == Variable) {
@@ -139,7 +141,19 @@ namespace Sharp_LR35902_Compiler {
 						case "return": break;
 						case "continue": break;
 						case "else": break;
-						case "if": break;
+						case "if":
+							if (tokens[i+1].Value != "(")
+								throw new SyntaxException("Expected expression after IF statement.");
+
+							i += 2;
+							var expression = CreateExpression(tokens, currentscope, ref i);
+
+							if (tokens[i].Value != "{")
+								throw new SyntaxException("Expected open block after IF statement.");
+
+							i++;
+							currentnode.AddChild(new IfNode(expression, CreateAST(tokens, new BlockNode(), ref i, currentscope)));
+							break;
 						case "goto":
 							var nextnode = tokens[++i];
 							if (nextnode.Type != Variable)
@@ -151,6 +165,9 @@ namespace Sharp_LR35902_Compiler {
 							currentnode.AddChild(new LabelNode(token.Value.Substring(0, colonindex)));
 							break;
 					}
+				} else if (token.Value == "}") {
+					i++;
+					return rootnode;
 				}
 			}
 

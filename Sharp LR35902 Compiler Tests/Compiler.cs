@@ -340,5 +340,26 @@ namespace Sharp_LR35902_Compiler_Tests {
 				"LD C A"
 			}, asm);
 		}
+
+		[TestMethod]
+		public void EmitAssembly_If_CreatesBlock()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(1)));
+			var block = new BlockNode();
+			block.AddChild(new VariableAssignmentNode("x", new ShortValueNode(1)));
+			ast.AddChild(new IfNode(new VariableValueNode("x"), block));
+
+			var asm = EmitAssembly(ast).ToArray();
+
+			ListEqual(new[] {
+				"LD C, 1",
+				"CP C",
+				"JP NZ generatedLabel1",
+				"LD C, 1",
+				"generatedLabel1:"
+			}, asm);
+		}
 	}
 }

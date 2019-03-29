@@ -17,10 +17,10 @@ namespace Sharp_LR35902_Compiler {
 			}
 		}
 
-		public static IEnumerable<string> EmitAssembly(Node astroot) {
+		public static IEnumerable<string> EmitAssembly(BlockNode rootnode, int startindex = 0) {
 			char[] registernames = {'C', 'D', 'E', 'H', 'L'};
 
-			var variablealloc = AllocateRegisters(astroot);
+			var variablealloc = AllocateRegisters(rootnode);
 
 			// Check variable count is under the register limit
 			if (variablealloc.Count > 0) // .Max throws if collection is empty :/
@@ -39,8 +39,8 @@ namespace Sharp_LR35902_Compiler {
 			}
 
 			// Cases must be in order of any inheritence because of the way `is` works
-			var i = 1;
-			foreach (var node in astroot.GetChildren())
+			var r = 1;
+			foreach (var node in rootnode.GetChildren()) {
 				switch (node) {
 					case VariableDeclarationNode _:
 						// Do nothing
@@ -68,7 +68,7 @@ namespace Sharp_LR35902_Compiler {
 							if (var.Value is ComparisonNode comparison) {
 								yield return $"LD A {getValue(comparison.Left)}";
 								yield return $"CP {getValue(comparison.Right)}";
-								var skiplabelname = "generatedLabel" + i++;
+								var skiplabelname = "generatedLabel" + r++;
 								if (var.Value is LessThanComparisonNode) {
 									yield return "JP NC " + skiplabelname;
 								} else if (var.Value is MoreThanComparisonNode) {
@@ -78,7 +78,8 @@ namespace Sharp_LR35902_Compiler {
 
 								yield return $"LD {GetVariableRegister(var.VariableName)} 1";
 								yield return skiplabelname + ':';
-							} else { // Only other operators should be addition and subtraction
+							} else {
+								// Only other operators should be addition and subtraction
 								yield return $"LD B {getValue(oprator.Left)}";
 								yield return $"LD A {getValue(oprator.Right)}";
 								if (var.Value is AdditionNode)
@@ -87,7 +88,7 @@ namespace Sharp_LR35902_Compiler {
 									yield return "SUB A B";
 
 								yield return $"LD {GetVariableRegister(var.VariableName)} A";
-							} // TODO: Support negate operator
+							}
 						} else if (var.Value is UnaryOperatorNode operatorNode) {
 							if (var.Value is NegateNode negatenode) {
 								yield return $"XOR {getValue(negatenode.Expression)}";
@@ -97,7 +98,16 @@ namespace Sharp_LR35902_Compiler {
 
 						break;
 					}
+					case IfNode ifNode:
+						yield return $"CP {GetVariableRegister(((VariableValueNode)ifNode.Condition).VariableName)}"; // Formatter should extract condition before it gets here
+						var afterlabelname = "generatedLabel" + r++;
+						yield return $"JP NZ {afterlabelname}";
+						foreach (var asm in EmitAssembly(ifNode.IfTrue))
+							yield return asm;
+						yield return afterlabelname + ':';
+						break;
 				}
+			}
 		}
 
 		public static IDictionary<string, int> AllocateRegisters(Node astroot) {

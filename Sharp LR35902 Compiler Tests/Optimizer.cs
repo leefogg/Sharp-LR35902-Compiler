@@ -259,6 +259,68 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
+		public void PropagteConstants_If_ExtractsBodyIfTrue()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(1)));
+			var block = new BlockNode();
+			block.AddChild(new VariableDeclarationNode("byte", "a"));
+			block.AddChild(new VariableAssignmentNode("a", new ShortValueNode(1)));
+			ast.AddChild(new IfNode(new VariableValueNode("x"), block));
+
+			var changesmade = PropagateConstants(ast);
+
+			Assert.IsTrue(changesmade);
+			var children = ast.GetChildren();
+			Assert.AreEqual(4, children.Length);
+			Assert.IsInstanceOfType(children[2], typeof(VariableDeclarationNode));
+			Assert.IsInstanceOfType(children[3], typeof(VariableAssignmentNode));
+		}
+
+		[TestMethod]
+		public void PropagteConstants_If_DeletesBodyIfFalse()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(0)));
+			var block = new BlockNode();
+			block.AddChild(new VariableDeclarationNode("byte", "a"));
+			block.AddChild(new VariableAssignmentNode("a", new ShortValueNode(1)));
+			ast.AddChild(new IfNode(new VariableValueNode("x"), block));
+
+			var changesmade = PropagateConstants(ast);
+
+			Assert.IsTrue(changesmade);
+			var children = ast.GetChildren();
+			Assert.AreEqual(2, children.Length);
+			Assert.IsInstanceOfType(children[0], typeof(VariableDeclarationNode));
+			Assert.IsInstanceOfType(children[1], typeof(VariableAssignmentNode));
+		}
+
+		[TestMethod]
+		public void PropagteConstants_If_ExtractsBody_Recursive()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(1)));
+			var subblock = new BlockNode();
+			subblock.AddChild(new VariableDeclarationNode("byte", "a"));
+			subblock.AddChild(new VariableAssignmentNode("a", new ShortValueNode(1)));
+			var block = new BlockNode();
+			block.AddChild(new IfNode(new VariableValueNode("x"), subblock));
+			ast.AddChild(new IfNode(new VariableValueNode("x"), block));
+
+			var changesmade = PropagateConstants(ast);
+
+			Assert.IsTrue(changesmade);
+			var children = ast.GetChildren();
+			Assert.AreEqual(4, children.Length);
+			Assert.IsInstanceOfType(children[2], typeof(VariableDeclarationNode));
+			Assert.IsInstanceOfType(children[3], typeof(VariableAssignmentNode));
+		}
+
+		[TestMethod]
 		public void Transform_AdditionAssignmentToExpression() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
@@ -295,7 +357,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
-		public void FlattenExpression_Constant_NotAffected() {
+		public void FlattenExpression_Assignment_Constant_NotAffected() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
 			ast.AddChild(new SubtractionAssignmentNode("x", new ShortValueNode(5)));
@@ -306,7 +368,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
-		public void FlattenExpression_FlatExpression_NotAffected() {
+		public void FlattenExpression_Assignment_FlatExpression_NotAffected() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
 			ast.AddChild(new SubtractionAssignmentNode("x", new AdditionNode(new ShortValueNode(5), new ShortValueNode(1))));
@@ -317,7 +379,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
-		public void FlattenExpression_SubexpressionExtracted() {
+		public void FlattenExpression_Assignment_SubexpressionExtracted() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
 			ast.AddChild(new VariableAssignmentNode("x", new AdditionNode(
@@ -340,7 +402,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
-		public void FlattenExpression_SideSubexpressionExtracted() {
+		public void FlattenExpression_Assignment_SideSubexpressionExtracted() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
 			ast.AddChild(new VariableAssignmentNode("x", new SubtractionNode(
@@ -354,9 +416,9 @@ namespace Sharp_LR35902_Compiler_Tests {
 				)
 			)));
 
-			var changedes = FlattenExpression(ast, 1);
+			var changes = FlattenExpression(ast, 1);
 
-			Assert.IsTrue(changedes > 0);
+			Assert.IsTrue(changes > 0);
 			var children = ast.GetChildren();
 			Assert.AreEqual(6, children.Length);
 			Assert.IsInstanceOfType(children[0], typeof(VariableDeclarationNode));
@@ -368,7 +430,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
-		public void FlattenExpressions_FlattensAll() {
+		public void FlattenExpressions_Assignment_FlattensAll() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
 			ast.AddChild(new VariableAssignmentNode("x", new SubtractionNode(
@@ -390,6 +452,27 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var changed = FlattenExpressions(ast);
 
 			Assert.IsTrue(changed);
+		}
+
+		[TestMethod]
+		public void FlattenExpresison_Assignment_If_ConditionExtracts()
+		{
+			var ast = new ASTNode();
+			var ifnode = new IfNode(
+				new AdditionNode(
+					new ShortValueNode(0),
+					new ShortValueNode(1)
+				), new BlockNode()
+			);
+			ast.AddChild(ifnode);
+
+			var changes = FlattenExpression(ast, 0);
+
+			Assert.IsTrue(changes > 0);
+			var children = ast.GetChildren();
+			Assert.AreEqual(3, children.Length);
+			Assert.IsInstanceOfType(children[0], typeof(VariableDeclarationNode));
+			Assert.IsInstanceOfType(ifnode.Condition, typeof(VariableValueNode));
 		}
 
 		[TestMethod]

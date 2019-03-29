@@ -7,13 +7,13 @@ namespace Sharp_LR35902_Compiler.Nodes {
 		// Allow valueless construction
 		public AndComparisonNode() { }
 
-		protected override bool isTrue() => isTrue(Left.GetValue()) && isTrue(Right.GetValue());
+		protected override bool isTrue() => IsTrue(Left.GetValue()) && IsTrue(Right.GetValue());
 
 		public override ExpressionNode Optimize(IDictionary<string, ushort> knownvariables) {
 			var left = Left.Optimize(knownvariables);
 			var right = Right.Optimize(knownvariables);
 			if (left is ConstantNode && right is ConstantNode)
-				return new ShortValueNode(booleanToShort(isTrue(left.GetValue()) && isTrue(right.GetValue())));
+				return new ShortValueNode(BooleanToShort(IsTrue(left.GetValue()) && IsTrue(right.GetValue())));
 
 			return new AndComparisonNode(left, right);
 		}

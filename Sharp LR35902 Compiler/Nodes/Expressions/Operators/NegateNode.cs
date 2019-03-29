@@ -13,7 +13,7 @@ namespace Sharp_LR35902_Compiler.Nodes {
 		public override ExpressionNode Optimize(IDictionary<string, ushort> knownvariables) {
 			Expression = Expression.Optimize(knownvariables);
 			if (Expression is ConstantNode)
-				return new ShortValueNode(booleanToShort(!isTrue(Expression.GetValue())));
+				return new ShortValueNode(BooleanToShort(!IsTrue(Expression.GetValue())));
 
 			return this;
 		}

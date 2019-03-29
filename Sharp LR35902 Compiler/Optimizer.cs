@@ -1,15 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Remotion.Linq.Parsing.Structure.IntermediateModel;
 using Sharp_LR35902_Compiler.Nodes;
+using static Sharp_LR35902_Compiler.Nodes.ExpressionNode;
 
 namespace Sharp_LR35902_Compiler {
 	public static class Optimizer {
 		public static void Optimize(BlockNode block) {
 			while (PropagateConstants(block) || RemoveUnusedVariables(block)) { }
+
+			foreach (var child in block.GetChildren())
+				if (child is IfNode ifnode)
+					Simplify(ifnode.IfTrue);
 		}
 
 		public static void Simplify(BlockNode block) {
 			while (TransformAdditionAssignmentToExpression(block) || TransformSubtractionAssignmentToExpression(block) || FlattenExpressions(block)) { }
+
+			foreach (var child in block.GetChildren())
+				if (child is IfNode ifnode)
+					Simplify(ifnode.IfTrue);
 		}
 
 		public static bool PropagateConstants(BlockNode block) {
@@ -44,6 +54,24 @@ namespace Sharp_LR35902_Compiler {
 					children.RemoveAt(i);
 					block.RemoveChild(i--);
 					changesmade = true;
+				} else if (node is IfNode ifnode) {
+					if (!(ifnode.Condition is ExpressionNode condition))
+						continue;
+					ifnode.Condition = condition.Optimize(variablevalues);
+					if (!(ifnode.Condition is ConstantNode c))
+						continue;
+
+					children.RemoveAt(i);
+					block.RemoveChild(i);
+					changesmade = true;
+
+					if (IsTrue(c)) {
+						children.InsertRange(i, ifnode.IfTrue.GetChildren());
+						var ifchildren = ifnode.IfTrue.GetChildren();
+						for (var j = 0; j < ifchildren.Length; j++)
+							block.InsertAt(ifchildren[j], i + j);
+					}
+					i--;
 				}
 			}
 
@@ -69,7 +97,6 @@ namespace Sharp_LR35902_Compiler {
 
 			var changesmade = false;
 			var i = 0;
-			// Remove
 			foreach (var node in children) {
 				if (node is VariableDeclarationNode dec) {
 					if (usedvariables[dec.VariableName] == false) {
@@ -136,23 +163,41 @@ namespace Sharp_LR35902_Compiler {
 		}
 
 		public static int FlattenExpression(BlockNode block, int index) {
-			if (!(block.GetChildren()[index] is VariableAssignmentNode assignmentnode))
-				return 0;
+			var currentblock = block.GetChildren()[index];
+			if (currentblock is VariableAssignmentNode assignmentnode) {
+				if (!(assignmentnode.Value is BinaryOperatorNode value)) // Flat enough
+					return 0;
 
-			if (!(assignmentnode.Value is BinaryOperatorNode value)) // Flat enough
-				return 0;
+				// Single operations per assignment is what we want. This is good, stop.
+				if (value.Left is ConstantNode && value.Right is ConstantNode)
+					return 0;
 
-			// Single operations per assignment is what we want. This is good, stop.
-			if (value.Left is ConstantNode && value.Right is ConstantNode)
-				return 0;
+				block.RemoveChild(index);
+				var count = 0;
+				FlattenExpression(block, value, ref count, 0);
+				count *= 2;
+				index += count;
+				block.InsertAt(assignmentnode, index);
+				return count;
+			}
+			if (currentblock is IfNode ifNode) {
+				if (!(ifNode.Condition is BinaryOperatorNode value)) // Flat enough
+					return 0;
 
-			block.RemoveChild(index);
-			var count = 0;
-			FlattenExpression(block, value, ref count, 0);
-			count *= 2;
-			index += count;
-			block.InsertAt(assignmentnode, index);
-			return count;
+				var tempvarname = ExtractVariable(block, ifNode.Condition, ref index);
+				ifNode.Condition = new VariableValueNode(tempvarname);
+
+				return 2;
+			}
+
+			return 0;
+		}
+
+		private static string ExtractVariable(BlockNode block, ExpressionNode expression, ref int index, string name = "intermediate") {
+			block.InsertAt(new VariableDeclarationNode("byte", name), index++);
+			block.InsertAt(new VariableAssignmentNode(name, expression), index);
+
+			return name;
 		}
 
 		private static string FlattenExpression(BlockNode block, BinaryOperatorNode op, ref int count, int depth) {
@@ -178,6 +223,7 @@ namespace Sharp_LR35902_Compiler {
 
 			return intermediateVariableName;
 		}
+
 
 		public static IEnumerable<List<Node>> CreateBasicBlocks(BlockNode block) {
 			var children = block.GetChildren();

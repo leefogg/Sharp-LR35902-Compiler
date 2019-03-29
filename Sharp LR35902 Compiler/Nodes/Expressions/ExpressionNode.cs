@@ -9,8 +9,8 @@ namespace Sharp_LR35902_Compiler.Nodes {
 
 		public static implicit operator ushort(ExpressionNode node) => node.GetValue();
 
-		protected static bool isTrue(ushort value) => value > 0;
+		public static bool IsTrue(ushort value) => value > 0;
 
-		protected static ushort booleanToShort(bool value) => value ? (ushort)1 : (ushort)0;
+		public static ushort BooleanToShort(bool value) => value ? (ushort)1 : (ushort)0;
 	}
 }

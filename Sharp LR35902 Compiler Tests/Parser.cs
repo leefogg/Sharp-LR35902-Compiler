@@ -559,6 +559,85 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
+		public void CreateAST_IfStatement_CreatesBody()
+		{
+			var tokens = new[] {
+				new Token(TokenType.ControlFlow, "if"), 
+				new Token(TokenType.Grammar, "("), 
+				new Token(TokenType.Immediate, "1"), 
+				new Token(TokenType.Grammar, ")"), 
+				new Token(TokenType.Grammar, "{"), 
+				new Token(TokenType.Grammar, "}"), 
+			};
+
+			var ast = CreateAST(tokens);
+
+			var expectedast = new ASTNode();
+			expectedast.AddChild(new IfNode(new ShortValueNode(1), new BlockNode()));
+
+			compareNode(expectedast, ast);
+		}
+
+		[TestMethod]
+		public void CreateAST_IfStatement_CapturesBody()
+		{
+			var tokens = new[] {
+				new Token(TokenType.ControlFlow, "if"),
+				new Token(TokenType.Grammar, "("),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Grammar, ")"),
+				new Token(TokenType.Grammar, "{"),
+				new Token(TokenType.DataType, "byte"),  
+				new Token(TokenType.Variable, "x"),
+				new Token(TokenType.Grammar, "="),
+				new Token(TokenType.Immediate, "10"),
+				new Token(TokenType.Grammar, "}"),
+			};
+
+			var ast = CreateAST(tokens);
+
+			var expectedast = new ASTNode();
+			var block = new BlockNode();
+			block.AddChild(new VariableDeclarationNode("byte", "x"));
+			block.AddChild(new VariableAssignmentNode("x", new ShortValueNode(10)));
+			expectedast.AddChild(new IfNode(new ShortValueNode(1), block));
+
+			compareNode(expectedast, ast);
+		}
+
+		[TestMethod]
+		public void CreateAST_IfStatement_NewScope_RedeclaredVariableDoesntThrow()
+		{
+			var tokens = new[] {
+				new Token(TokenType.DataType, "byte"),
+				new Token(TokenType.Variable, "x"),
+				new Token(TokenType.Grammar, ";"),
+				new Token(TokenType.ControlFlow, "if"),
+				new Token(TokenType.Grammar, "("),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Grammar, ")"),
+				new Token(TokenType.Grammar, "{"),
+				new Token(TokenType.DataType, "byte"),
+				new Token(TokenType.Variable, "x"),
+				new Token(TokenType.Grammar, "="),
+				new Token(TokenType.Immediate, "10"),
+				new Token(TokenType.Grammar, "}"),
+			};
+
+			// Dont really need to compare but I had the code anyway
+			var ast = CreateAST(tokens);
+
+			var expectedast = new ASTNode();
+			expectedast.AddChild(new VariableDeclarationNode("byte", "x"));
+			var block = new BlockNode();
+			block.AddChild(new VariableDeclarationNode("byte", "x"));
+			block.AddChild(new VariableAssignmentNode("x", new ShortValueNode(10)));
+			expectedast.AddChild(new IfNode(new ShortValueNode(1), block));
+
+			compareNode(expectedast, ast);
+		}
+
+		[TestMethod]
 		public void CreateExpression_SingleShort() {
 			var tokens = new[] {
 				new Token(TokenType.Immediate, "1")
@@ -1116,11 +1195,11 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var expectedchilren = expected.GetChildren();
 
 			if (actualchildren.Length != expectedchilren.Length)
-				Assert.Fail();
+				Assert.Fail("Nodes do not have the same number of child nodes.");
 
 			for (var i = 0; i < expectedchilren.Length; i++)
 				if (!actualchildren[i].Equals(expectedchilren[i]))
-					Assert.Fail();
+					Assert.Fail("A child no is different than the expected.");
 
 			for (var i = 0; i < actualchildren.Length; i++)
 				compareNode(expectedchilren[i], actualchildren[i]);
