@@ -336,6 +336,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var asm = EmitAssembly(ast).ToArray();
 
 			ListEqual(new[] {
+				"LD A 1",
 				"XOR 1",
 				"LD C A"
 			}, asm);

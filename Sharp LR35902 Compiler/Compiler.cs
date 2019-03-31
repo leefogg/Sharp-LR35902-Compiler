@@ -91,6 +91,7 @@ namespace Sharp_LR35902_Compiler {
 							}
 						} else if (var.Value is UnaryOperatorNode operatorNode) {
 							if (var.Value is NegateNode negatenode) {
+								yield return $"LD A 1";
 								yield return $"XOR {getValue(negatenode.Expression)}";
 								yield return $"LD {GetVariableRegister(var.VariableName)} A";
 							}
