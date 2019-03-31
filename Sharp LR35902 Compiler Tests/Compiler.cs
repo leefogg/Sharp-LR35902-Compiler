@@ -299,7 +299,10 @@ namespace Sharp_LR35902_Compiler_Tests {
 				"CP 2",
 				"JP NC generatedLabel1",
 				"LD C 1",
-				"generatedLabel1:"
+				"JP generatedLabel2",
+				"generatedLabel1:",
+				"LD C 0",
+				"generatedLabel2:"
 			}, asm);
 		}
 
@@ -322,7 +325,10 @@ namespace Sharp_LR35902_Compiler_Tests {
 				"JP C generatedLabel1",
 				"JP NZ generatedLabel1",
 				"LD C 1",
-				"generatedLabel1:"
+				"JP generatedLabel2",
+				"generatedLabel1:",
+				"LD C 0",
+				"generatedLabel2:"
 			}, asm);
 		}
 

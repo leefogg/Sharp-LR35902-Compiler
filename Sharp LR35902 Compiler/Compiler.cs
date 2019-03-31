@@ -38,8 +38,10 @@ namespace Sharp_LR35902_Compiler {
 				throw new NotSupportedException("This operator is not yet supported inside the assembler. Please implement.");
 			}
 
-			// Cases must be in order of any inheritence because of the way `is` works
 			var r = 1;
+			string getRandomLabelName() => "generatedLabel" + r++;
+
+			// Cases must be in order of any inheritence because of the way `is` works
 			foreach (var node in rootnode.GetChildren()) {
 				switch (node) {
 					case VariableDeclarationNode _:
@@ -68,16 +70,20 @@ namespace Sharp_LR35902_Compiler {
 							if (var.Value is ComparisonNode comparison) {
 								yield return $"LD A {getValue(comparison.Left)}";
 								yield return $"CP {getValue(comparison.Right)}";
-								var skiplabelname = "generatedLabel" + r++;
+									var iffalselabelname = getRandomLabelName();
 								if (var.Value is LessThanComparisonNode) {
-									yield return "JP NC " + skiplabelname;
+									yield return "JP NC " + iffalselabelname;
 								} else if (var.Value is MoreThanComparisonNode) {
-									yield return "JP C " + skiplabelname;
-									yield return "JP NZ " + skiplabelname;
+									yield return "JP C " + iffalselabelname;
+									yield return "JP NZ " + iffalselabelname;
 								}
 
 								yield return $"LD {GetVariableRegister(var.VariableName)} 1";
-								yield return skiplabelname + ':';
+								var iftruelabelname = getRandomLabelName();
+								yield return "JP " + iftruelabelname;
+								yield return iffalselabelname + ':';
+								yield return $"LD {GetVariableRegister(var.VariableName)} 0";
+								yield return iftruelabelname + ':';
 							} else {
 								// Only other operators should be addition and subtraction
 								yield return $"LD B {getValue(oprator.Left)}";
@@ -101,7 +107,7 @@ namespace Sharp_LR35902_Compiler {
 					}
 					case IfNode ifNode:
 						yield return $"CP {GetVariableRegister(((VariableValueNode)ifNode.Condition).VariableName)}"; // Formatter should extract condition before it gets here
-						var afterlabelname = "generatedLabel" + r++;
+						var afterlabelname = getRandomLabelName();
 						yield return $"JP NZ {afterlabelname}";
 						foreach (var asm in EmitAssembly(ifNode.IfTrue))
 							yield return asm;
