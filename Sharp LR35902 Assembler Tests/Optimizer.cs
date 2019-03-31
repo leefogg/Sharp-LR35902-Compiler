@@ -493,36 +493,5 @@ namespace Sharp_LR35902_Assembler_Tests {
 			Assert.AreEqual(2, blocks[1].Count);
 			Assert.AreEqual(blocks[1][0], "Label:");
 		}
-
-		[TestMethod]
-		public void RemoveRedundantCompares_Basic() {
-			var instructions = new List<string> {
-				"LD A 1",
-				"CP A"
-			};
-
-			var blocks = CreateBasicBlocks(instructions).ToList();
-			RemoveRedundantCompares(blocks);
-			instructions = blocks.SelectMany(list => list).ToList();
-
-			ListEqual(new[] {
-				"LD A 1"
-			}, instructions);
-		}
-
-		[TestMethod]
-		public void RemoveRedundantCompares_NotDirectlyAbove()
-		{
-			var instructions = new List<string> {
-				"LD A 1",
-				"NOP",
-				"CP A"
-			};
-
-			var blocks = CreateBasicBlocks(instructions).ToList();
-			var changesmade = RemoveRedundantCompares(blocks);
-
-			Assert.IsFalse(changesmade);
-		}
 	}
 }
