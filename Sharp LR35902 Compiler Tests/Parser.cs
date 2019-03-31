@@ -65,16 +65,17 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 		[TestMethod]
 		[ExpectedException(typeof(SyntaxException))]
-		public void CreateAST_VariableAssignment_WithImmediate_CannotConvertToType() {
+		public void CreateAST_VariableAssignment_MissingValueThrows()
+		{
 			var variablename = "x";
-			var variablevalue = 500;
+			var datatype = "byte";
 			var tokens = new List<Token> {
-				new Token(TokenType.DataType, "byte"),
+				new Token(TokenType.DataType, datatype),
 				new Token(TokenType.Variable, variablename),
 				new Token(TokenType.Grammar, ";"),
 				new Token(TokenType.Variable, variablename),
 				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
-				new Token(TokenType.Immediate, variablevalue.ToString())
+				new Token(TokenType.Grammar, ";")
 			};
 
 			CreateAST(tokens);
@@ -1074,6 +1075,31 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
+		public void CreateExpression_Negate_Variable()
+		{
+			var tokens = new[] {
+				new Token(TokenType.DataType, "byte"),
+				new Token(TokenType.Variable, "X"),
+				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Grammar, ";"),
+				new Token(TokenType.Variable, "X"),
+				new Token(TokenType.Operator, "="),
+				new Token(TokenType.Operator, BuiltIn.Operators.Not),
+				new Token(TokenType.Variable, "X")
+			};
+
+			var ast = CreateAST(tokens);
+
+			var expectedast = new ASTNode();
+			expectedast.AddChild(new VariableDeclarationNode("byte", "X"));
+			expectedast.AddChild(new VariableAssignmentNode("X", new ShortValueNode(1)));
+			expectedast.AddChild(new VariableAssignmentNode("X", new NegateNode(new VariableValueNode("X"))));
+
+			compareNode(expectedast, ast);
+		}
+
+		[TestMethod]
 		public void CreateExpression_And() {
 			var tokens = new[] {
 				new Token(TokenType.Immediate, "1"),
@@ -1200,7 +1226,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			for (var i = 0; i < expectedchilren.Length; i++)
 				if (!actualchildren[i].Equals(expectedchilren[i]))
-					Assert.Fail("A child no is different than the expected.");
+					Assert.Fail("A child is different than the expected.");
 
 			for (var i = 0; i < actualchildren.Length; i++)
 				compareNode(expectedchilren[i], actualchildren[i]);

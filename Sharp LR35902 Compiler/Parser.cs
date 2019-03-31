@@ -50,17 +50,18 @@ namespace Sharp_LR35902_Compiler {
 								var valuevariable = getVariable(valuenode.Value, currentscope);
 								checkCanConvertTypes(valuevariable.DataType, assignedvariable.DataType);
 								currentnode.AddChild(new VariableAssignmentNode(token.Value, new VariableValueNode(valuenode.Value)));
-							} else if (valuenode.Type == Immediate) {
-								var existingvariable = currentscope.GetMember(token.Value);
-
-								var expression = CreateExpression(tokens, currentscope, ref i);
-								i--;
-								var immediatedatatype = GetImmedateDataType(expression);
-								checkCanConvertTypes(immediatedatatype, existingvariable.DataType);
-								currentnode.AddChild(new VariableAssignmentNode(token.Value, new ShortValueNode(expression)));
-							} else {
-								throw new SyntaxException($"Unexpected token '{valuenode.Value} after ='");
+								break;
 							}
+
+							var expression = CreateExpression(tokens, currentscope, ref i);
+							if (expression == null)
+								throw new SyntaxException($"Unexpected token expression after =");
+							var existingvariable = currentscope.GetMember(token.Value);
+
+							i--;
+							//var immediatedatatype = GetImmedateDataType(expression);
+							//checkCanConvertTypes(immediatedatatype, existingvariable.DataType);
+							currentnode.AddChild(new VariableAssignmentNode(token.Value, expression));
 
 							break;
 						case "++":
@@ -77,9 +78,9 @@ namespace Sharp_LR35902_Compiler {
 								var valuevariable = getVariable(valuenode.Value, currentscope);
 								currentnode.AddChild(new AdditionAssignmentNode(assignedvariable.Name, new VariableValueNode(valuevariable.Name)));
 							} else if (valuenode.Type == Immediate) {
-								var expression = CreateExpression(tokens, currentscope, ref i);
+								var expr = CreateExpression(tokens, currentscope, ref i);
 								i--;
-								currentnode.AddChild(new AdditionAssignmentNode(assignedvariable.Name, new ShortValueNode(expression)));
+								currentnode.AddChild(new AdditionAssignmentNode(assignedvariable.Name, new ShortValueNode(expr)));
 							}
 
 							break;
@@ -91,9 +92,9 @@ namespace Sharp_LR35902_Compiler {
 								var valuevariable = getVariable(valuenode.Value, currentscope);
 								currentnode.AddChild(new SubtractionAssignmentNode(assignedvariable.Name, new VariableValueNode(valuevariable.Name)));
 							} else if (valuenode.Type == Immediate) {
-								var expression = CreateExpression(tokens, currentscope, ref i);
+								var exp = CreateExpression(tokens, currentscope, ref i);
 								i--;
-								currentnode.AddChild(new SubtractionAssignmentNode(assignedvariable.Name, new ShortValueNode(expression)));
+								currentnode.AddChild(new SubtractionAssignmentNode(assignedvariable.Name, new ShortValueNode(exp)));
 							}
 
 							break;

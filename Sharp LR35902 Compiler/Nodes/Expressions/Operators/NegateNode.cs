@@ -17,5 +17,13 @@ namespace Sharp_LR35902_Compiler.Nodes {
 
 			return this;
 		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj is NegateNode other)
+				return other.Expression.Equals(Expression);
+
+			return false;
+		}
 	}
 }
