@@ -167,7 +167,6 @@ namespace Sharp_LR35902_Compiler {
 							break;
 					}
 				} else if (token.Value == "}") {
-					i++;
 					return rootnode;
 				}
 			}
