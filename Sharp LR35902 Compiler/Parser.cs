@@ -43,22 +43,12 @@ namespace Sharp_LR35902_Compiler {
 					VariableMember assignedvariable;
 					switch (nexttoken.Value) {
 						case "=":
-							// TODO: Remove byte cast when added support for ushorts
-							assignedvariable = getVariable(token.Value, currentscope);
-
-							valuenode = tokens[++i];
-							if (valuenode.Type == Variable) {
-								var valuevariable = getVariable(valuenode.Value, currentscope);
-								checkCanConvertTypes(valuevariable.DataType, assignedvariable.DataType);
-								currentnode.AddChild(new VariableAssignmentNode(token.Value, new VariableValueNode(valuenode.Value)));
-								break;
-							}
-
+							i++;
 							var expression = CreateExpression(tokens, currentscope, ref i);
 							if (expression == null)
 								throw new SyntaxException($"Unexpected token expression after =");
 
-							i--;
+							getVariable(token.Value, currentscope); // Check it exists
 							//var existingvariable = currentscope.GetMember(token.Value);
 							//var immediatedatatype = GetImmedateDataType(expression);
 							//checkCanConvertTypes(immediatedatatype, existingvariable.DataType);
