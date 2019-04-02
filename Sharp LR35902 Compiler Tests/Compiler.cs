@@ -77,14 +77,14 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
-		public void ReallocatesRegisters_Simple() {
+		public void OptimizeAllocation_LinearScan_Simple() {
 			var timelines = new[] {
 				new VariableUseRange("x", 0, 1), // int x = 1
 				new VariableUseRange("y", 2, 3), // int y = 1
 				new VariableUseRange("z", 4, 5) // int z = 1
 			};
 
-			var newallocations = OptimizeAllocation(timelines);
+			var newallocations = OptimizeAllocation_LinearScan(timelines);
 			Assert.AreEqual(3, newallocations.Keys.Count);
 			Assert.AreEqual(0, newallocations["x"]);
 			Assert.AreEqual(0, newallocations["y"]);
@@ -92,14 +92,46 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
-		public void ReallocatesRegisters_Overlap() {
+		public void OptimizeAllocation_LinearScan_Overlap() {
 			var timelines = new[] {
 				new VariableUseRange("x", 0, 5),
 				new VariableUseRange("y", 2, 3),
 				new VariableUseRange("z", 4, 5)
 			};
 
-			var newallocations = OptimizeAllocation(timelines);
+			var newallocations = OptimizeAllocation_LinearScan(timelines);
+			Assert.AreEqual(3, newallocations.Keys.Count);
+			Assert.AreEqual(0, newallocations["x"]);
+			Assert.AreEqual(1, newallocations["y"]);
+			Assert.AreEqual(1, newallocations["z"]);
+		}
+
+		[TestMethod]
+		public void OptimizeAllocation_InterferenceGraph_Simple()
+		{
+			var timelines = new[] {
+				new VariableUseRange("x", 0, 1), // int x = 1
+				new VariableUseRange("y", 2, 3), // int y = 1
+				new VariableUseRange("z", 4, 5) // int z = 1
+			};
+
+			var newallocations = OptimizeAllocation_InterferenceGraph(timelines);
+			Assert.AreEqual(3, newallocations.Keys.Count);
+			Assert.AreEqual(0, newallocations["x"]);
+			Assert.AreEqual(0, newallocations["y"]);
+			Assert.AreEqual(0, newallocations["z"]);
+		}
+
+		[TestMethod]
+		public void OptimizeAllocation_InterferenceGraph_Overlap()
+		{
+			var timelines = new[] {
+				new VariableUseRange("x", 0, 5),
+				new VariableUseRange("y", 2, 3),
+				new VariableUseRange("z", 4, 5)
+			};
+
+			var newallocations = OptimizeAllocation_InterferenceGraph(timelines);
 			Assert.AreEqual(3, newallocations.Keys.Count);
 			Assert.AreEqual(0, newallocations["x"]);
 			Assert.AreEqual(1, newallocations["y"]);
@@ -367,6 +399,85 @@ namespace Sharp_LR35902_Compiler_Tests {
 				"LD C 1",
 				"generatedLabel1:"
 			}, asm);
+		}
+
+		[TestMethod]
+		public void VariableUseRange_Intersects_After()
+		{
+			var range1 = new VariableUseRange("a", 0, 10);
+			var range2 = new VariableUseRange("b", 11, 15);
+
+			Assert.IsFalse(range1.IntersectsWith(range2));
+		}
+		[TestMethod]
+		public void VariableUseRange_Intersects_AfterOverlap()
+		{
+			var range1 = new VariableUseRange("a", 0, 10);
+			var range2 = new VariableUseRange("b", 10, 15);
+
+			Assert.IsFalse(range1.IntersectsWith(range2));
+		}
+
+		[TestMethod]
+		public void VariableUseRange_Intersects_Before()
+		{
+			var range1 = new VariableUseRange("a", 10, 15);
+			var range2 = new VariableUseRange("b", 5, 9);
+
+			Assert.IsFalse(range1.IntersectsWith(range2));
+		}
+
+		[TestMethod]
+		public void VariableUseRange_Intersects_BeforeOverlap()
+		{
+			var range1 = new VariableUseRange("a", 10, 15);
+			var range2 = new VariableUseRange("b", 5, 10);
+
+			Assert.IsFalse(range1.IntersectsWith(range2));
+		}
+
+		[TestMethod]
+		public void VariableUseRange_Intersects_Inside()
+		{
+			var range1 = new VariableUseRange("a", 10, 20);
+			var range2 = new VariableUseRange("b", 12, 15);
+
+			Assert.IsTrue(range1.IntersectsWith(range2));
+		}
+
+		[TestMethod]
+		public void CreateInterferenceGraph_SimpleOverlap() {
+			var variableranges = new List<VariableUseRange> {
+				new VariableUseRange("a", 0, 10),
+				new VariableUseRange("b", 1, 5)
+			};
+
+			var nodes = CreateInterferenceGraph(variableranges);
+
+			Assert.AreEqual(2, nodes.Count);
+			Assert.AreEqual(1, nodes[0].Connections.Count);
+			Assert.AreEqual(1, nodes[1].Connections.Count);
+			Assert.AreNotEqual(nodes[0].Connections[0].Name, nodes[1].Connections[0].Name);
+			Assert.AreNotEqual(nodes[1].Connections[0].Name, nodes[0].Connections[0].Name);
+			Assert.AreEqual(0, nodes[0].Index.Value);
+			Assert.AreEqual(1, nodes[1].Index.Value);
+		}
+
+		[TestMethod]
+		public void CreateInterferenceGraph_SimpleNoOverlap()
+		{
+			var variableranges = new List<VariableUseRange> {
+				new VariableUseRange("a", 0, 5),
+				new VariableUseRange("b", 10, 15)
+			};
+
+			var nodes = CreateInterferenceGraph(variableranges);
+
+			Assert.AreEqual(2, nodes.Count);
+			Assert.AreEqual(0, nodes[0].Connections.Count);
+			Assert.AreEqual(0, nodes[1].Connections.Count);
+			Assert.AreEqual(0, nodes[0].Index.Value);
+			Assert.AreEqual(0, nodes[1].Index.Value);
 		}
 	}
 }

@@ -2,18 +2,42 @@
 using System.Collections.Generic;
 using System.Linq;
 using Common.Exceptions;
+using Common.Extensions;
 using Sharp_LR35902_Compiler.Nodes;
 
 namespace Sharp_LR35902_Compiler {
 	public class Compiler {
-		public struct VariableUseRange {
-			public string Name;
-			public int Start, End;
+		public class VariableUseRange {
+			public readonly string Name;
+			public readonly int Start, End;
 
 			public VariableUseRange(string name, int start, int end) {
 				Name = name;
 				Start = start;
 				End = end;
+			}
+
+			public bool IntersectsWith(VariableUseRange other) => !(End <= other.Start || Start >= other.End);
+		}
+
+		public class InterferenceGraphNode {
+			public readonly List<InterferenceGraphNode> Connections = new List<InterferenceGraphNode>();
+
+			public readonly string Name;
+
+			public int? Index;
+
+			public InterferenceGraphNode(string name) { Name = name; }
+
+			public void AssignIndex() {
+				var usedindexes = from c in Connections where c.Index.HasValue select c.Index.Value;
+				for (var i = 0; i < int.MaxValue; i++) {
+					if (usedindexes.Any(usedindex => usedindex == i))
+						continue;
+
+					Index = i;
+					return;
+				}
 			}
 		}
 
@@ -120,7 +144,7 @@ namespace Sharp_LR35902_Compiler {
 		public static IDictionary<string, int> AllocateRegisters(Node astroot) {
 			var lifetimes = FindAllLastUsages(astroot);
 
-			return OptimizeAllocation(lifetimes);
+			return OptimizeAllocation_InterferenceGraph(lifetimes);
 		}
 
 		public static IDictionary<string, int> NaiveAllocate(Node astroot) {
@@ -134,7 +158,7 @@ namespace Sharp_LR35902_Compiler {
 			return variabletoregister;
 		}
 
-		public static IDictionary<string, int> OptimizeAllocation(IEnumerable<VariableUseRange> variablelifetimes) {
+		public static IDictionary<string, int> OptimizeAllocation_LinearScan(IEnumerable<VariableUseRange> variablelifetimes) {
 			var allocations = new Dictionary<string, int>();
 			var unallocatedvariables = variablelifetimes.ToList();
 
@@ -159,6 +183,36 @@ namespace Sharp_LR35902_Compiler {
 			}
 
 			return allocations;
+		}
+
+		public static IDictionary<string, int> OptimizeAllocation_InterferenceGraph(IEnumerable<VariableUseRange> variablelifetimes) {
+			var graphnodes = CreateInterferenceGraph(variablelifetimes.ToList());
+			return new Dictionary<string, int>(graphnodes.Select(n => new KeyValuePair<string, int>(n.Name, n.Index.Value)));
+		}
+
+		public static List<InterferenceGraphNode> CreateInterferenceGraph(ICollection<VariableUseRange> variablelifetimes) {
+			var nodes = new List<InterferenceGraphNode>(variablelifetimes.Count);
+			nodes.AddRange(variablelifetimes.Select(variablelifetime => new InterferenceGraphNode(variablelifetime.Name)));
+
+			foreach (var lifetime in variablelifetimes) {
+				foreach (var otherlifetime in variablelifetimes) {
+					if (lifetime == otherlifetime)
+						continue;
+
+					if (!lifetime.IntersectsWith(otherlifetime))
+						continue;
+
+					var node = nodes.First(n => n.Name == lifetime.Name);
+					var othernode = nodes.First(n => n.Name == otherlifetime.Name);
+
+					node.Connections.Add(othernode);
+				}
+			}
+
+			foreach (var node in nodes)
+				node.AssignIndex();
+
+			return nodes;
 		}
 
 		public static IEnumerable<VariableUseRange> FindAllLastUsages(Node rootnode) {
