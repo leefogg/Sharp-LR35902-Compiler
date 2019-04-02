@@ -109,8 +109,10 @@ namespace Sharp_LR35902_Compiler {
 						currentnode.AddChild(new VariableDeclarationNode(token.Value, variabletoken.Value));
 						currentscope.AddMember(new VariableMember(variabledatatype, variabletoken.Value));
 
-						if (operatornode.Value == ";") // Just a decleration
+						if (operatornode.Value == ";") { // Just a decleration
+							currentnode.AddChild(new VariableAssignmentNode(variabletoken.Value, new ShortValueNode(0)));
 							continue;
+						}
 					}
 
 					if (operatornode.Value != "=")
