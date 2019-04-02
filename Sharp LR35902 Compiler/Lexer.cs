@@ -43,6 +43,7 @@ namespace Sharp_LR35902_Compiler {
 			new TokenDescriptor(@"\)",			TokenType.Grammar),
 			new TokenDescriptor(@"\{",			TokenType.Grammar),
 			new TokenDescriptor(@"\}",			TokenType.Grammar),
+			new TokenDescriptor(@"\*",			TokenType.Grammar),
 			new TokenDescriptor(@"\;",			TokenType.Grammar),
 			new TokenDescriptor("true",			TokenType.Immediate),
 			new TokenDescriptor("false",			TokenType.Immediate),

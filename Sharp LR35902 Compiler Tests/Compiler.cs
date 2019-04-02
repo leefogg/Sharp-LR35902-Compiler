@@ -3,6 +3,7 @@ using System.Linq;
 using Common.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sharp_LR35902_Compiler.Nodes;
+using Sharp_LR35902_Compiler.Nodes.Assignment;
 using static Test_Common.Utils;
 using static Sharp_LR35902_Compiler.Compiler;
 
@@ -398,6 +399,40 @@ namespace Sharp_LR35902_Compiler_Tests {
 				"JP NZ generatedLabel1",
 				"LD C 1",
 				"generatedLabel1:"
+			}, asm);
+		}
+
+		[TestMethod]
+		public void EmitAssembly_MemoryWrite_WithImmediate()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new MemoryAssignmentNode(100, new ShortValueNode(20)));
+
+			var asm = EmitAssembly(ast).ToArray();
+
+			ListEqual(new[] {
+				"PUSH HL",
+				"LD HL 100",
+				"LD (HL) 20",
+				"POP HL"
+			}, asm);
+		}
+
+		[TestMethod]
+		public void EmitAssembly_AssignVariable_WithMemory()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new MemoryValueNode(31)));
+
+			var asm = EmitAssembly(ast).ToList();
+
+			ListEqual(new[] {
+				"PUSH HL",
+				"LD HL 31",
+				"LD A (HL)",
+				"LD C A",
+				"POP HL"
 			}, asm);
 		}
 

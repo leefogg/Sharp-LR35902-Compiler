@@ -2,6 +2,7 @@
 using System.Linq;
 using Remotion.Linq.Parsing.Structure.IntermediateModel;
 using Sharp_LR35902_Compiler.Nodes;
+using Sharp_LR35902_Compiler.Nodes.Assignment;
 using static Sharp_LR35902_Compiler.Nodes.ExpressionNode;
 
 namespace Sharp_LR35902_Compiler {
@@ -31,18 +32,20 @@ namespace Sharp_LR35902_Compiler {
 			for (var i = 0; i < children.Count; i++) {
 				var node = children[i];
 
-				if (node is VariableAssignmentNode assignment) {
+				if (node is AssignmentNode assignment) {
 					var newvalue = assignment.Value.Optimize(variablevalues);
 					if (!assignment.Value.Equals(newvalue))
 						changesmade = true;
 
 					assignment.Value = newvalue;
+				}
 
-					if (assignment.Value is ConstantNode value) {
-						if (variablevalues.ContainsKey(assignment.VariableName))
-							variablevalues[assignment.VariableName] = value.GetValue();
+				if (node is VariableAssignmentNode varassignment) {
+					if (varassignment.Value is ConstantNode value) {
+						if (variablevalues.ContainsKey(varassignment.VariableName))
+							variablevalues[varassignment.VariableName] = value.GetValue();
 						else
-							variablevalues.Add(assignment.VariableName, value.GetValue());
+							variablevalues.Add(varassignment.VariableName, value.GetValue());
 					}
 				} else if (node is IncrementNode inc) {
 					variablevalues[inc.VariableName]++;

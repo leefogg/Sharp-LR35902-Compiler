@@ -4,6 +4,7 @@ using System.Linq;
 using Common.Exceptions;
 using Common.Extensions;
 using Sharp_LR35902_Compiler.Nodes;
+using Sharp_LR35902_Compiler.Nodes.Assignment;
 
 namespace Sharp_LR35902_Compiler {
 	public class Compiler {
@@ -89,12 +90,29 @@ namespace Sharp_LR35902_Compiler {
 					case VariableAssignmentNode var when var.Value is ShortValueNode imval:
 						yield return $"LD {GetVariableRegister(var.VariableName)} {imval.Value}";
 						break;
+					case VariableAssignmentNode var when var.Value is MemoryValueNode memval:
+						yield return "PUSH HL";
+						yield return $"LD HL {memval.Address}";
+						yield return "LD A (HL)";
+						yield return $"LD {GetVariableRegister(var.VariableName)} A";
+						yield return "POP HL";
+						break;
+					case MemoryAssignmentNode var:
+						yield return "PUSH HL";
+						yield return $"LD HL {var.Address}";
+						if (var.Value is VariableValueNode vval) {
+							yield return $"LD (HL) {GetVariableRegister(vval.VariableName)}";
+						} else if (var.Value is ShortValueNode shortval) {
+							yield return $"LD (HL) {shortval.Value}";
+						}
+						yield return "POP HL";
+						break;
 					case VariableAssignmentNode var: {
 						if (var.Value is BinaryOperatorNode oprator) {
 							if (var.Value is ComparisonNode comparison) {
 								yield return $"LD A {getValue(comparison.Left)}";
 								yield return $"CP {getValue(comparison.Right)}";
-									var iffalselabelname = getRandomLabelName();
+								var iffalselabelname = getRandomLabelName();
 								if (var.Value is LessThanComparisonNode) {
 									yield return "JP NC " + iffalselabelname;
 								} else if (var.Value is MoreThanComparisonNode) {

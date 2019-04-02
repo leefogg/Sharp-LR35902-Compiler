@@ -83,6 +83,9 @@ namespace Sharp_LR35902_Compiler_Tests {
 		public void GetTokenType_Value() { Assert.AreEqual(TokenType.Immediate, GetTokenType("42")); }
 
 		[TestMethod]
+		public void GetTokenType_Pointer() { Assert.AreEqual(TokenType.Grammar, GetTokenType("*"));}
+
+		[TestMethod]
 		public void GetTokenType_Booleans() {
 			Assert.AreEqual(TokenType.Immediate, GetTokenType("true"));
 			Assert.AreEqual(TokenType.Immediate, GetTokenType("false"));

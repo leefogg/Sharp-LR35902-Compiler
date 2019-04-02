@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Common.Exceptions;
 using Sharp_LR35902_Compiler.Nodes;
+using Sharp_LR35902_Compiler.Nodes.Assignment;
 using static Sharp_LR35902_Compiler.TokenType;
 using static Common.Parser;
 
@@ -56,9 +57,9 @@ namespace Sharp_LR35902_Compiler {
 							var expression = CreateExpression(tokens, currentscope, ref i);
 							if (expression == null)
 								throw new SyntaxException($"Unexpected token expression after =");
-							var existingvariable = currentscope.GetMember(token.Value);
 
 							i--;
+							//var existingvariable = currentscope.GetMember(token.Value);
 							//var immediatedatatype = GetImmedateDataType(expression);
 							//checkCanConvertTypes(immediatedatatype, existingvariable.DataType);
 							currentnode.AddChild(new VariableAssignmentNode(token.Value, expression));
@@ -126,10 +127,9 @@ namespace Sharp_LR35902_Compiler {
 						throw new SyntaxException("Expected token '='");
 
 					var valuenode = tokens[++i];
-					if (valuenode.Type != Immediate && valuenode.Type != Variable)
-						throw new SyntaxException($"Unexpected symbol on variable assignment '{valuenode.Value}'");
-
 					var expression = CreateExpression(tokens, currentscope, ref i);
+					if (expression == null)
+						throw new SyntaxException($"Unexpected symbol on variable assignment '{valuenode.Value}'");
 					i--;
 					//var immediatedatatype = GetImmedateDataType(expression);
 					//checkCanConvertTypes(immediatedatatype, variabledatatype);
@@ -143,7 +143,7 @@ namespace Sharp_LR35902_Compiler {
 						case "continue": break;
 						case "else": break;
 						case "if":
-							if (tokens[i+1].Value != "(")
+							if (tokens[i + 1].Value != "(")
 								throw new SyntaxException("Expected expression after IF statement.");
 
 							i += 2;
@@ -166,6 +166,19 @@ namespace Sharp_LR35902_Compiler {
 							currentnode.AddChild(new LabelNode(token.Value.Substring(0, colonindex)));
 							break;
 					}
+				} else if (token.Value == "*") {
+					var addresstoken = tokens[++i];
+					if (addresstoken.Type != Immediate)
+						throw new SyntaxException("Expected address after pointer.");
+					var address = ParseImmediate(addresstoken.Value);
+
+					var equals = tokens[++i];
+					if (equals.Value != "=")
+						throw new SyntaxException("Expected assignment after memory address.");
+
+					i++;
+					var value = CreateExpression(tokens, currentscope, ref i);
+					currentnode.AddChild(new MemoryAssignmentNode(address, value));
 				} else if (token.Value == "}") {
 					return rootnode;
 				}
@@ -200,9 +213,17 @@ namespace Sharp_LR35902_Compiler {
 						nodes.Add(new VariableValueNode(var.Name));
 						break;
 					default:
-						if (currenttoken.Value == "(")
+						if (currenttoken.Value == "*") {
+							var addresstoken = tokens[index++];
+							if (addresstoken.Type != Immediate)
+								throw new SyntaxException("Expected address after pointer.");
+							var address = ParseImmediate(addresstoken.Value);
+							nodes.Add(new MemoryValueNode(address));
+						} else if (currenttoken.Value == "(") {
 							nodes.Add(CreateExpression(tokens, scope, ref index));
+						}
 
+						//TODO: Throw as token was unexpected at this point
 						break;
 				}
 			} while (index < tokens.Count && currenttoken.Value != ")" && currenttoken.Value != ";");

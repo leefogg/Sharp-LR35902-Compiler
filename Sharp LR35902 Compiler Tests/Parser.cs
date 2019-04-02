@@ -3,6 +3,7 @@ using Common.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sharp_LR35902_Compiler;
 using Sharp_LR35902_Compiler.Nodes;
+using Sharp_LR35902_Compiler.Nodes.Assignment;
 using static Sharp_LR35902_Compiler.Parser;
 
 namespace Sharp_LR35902_Compiler_Tests {
@@ -640,6 +641,44 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
+		public void CreateAST_MemoryAssignment_WithImmedate()
+		{
+			var tokens = Sharp_LR35902_Compiler.Lexer.GetTokenList("*31 = 10;");
+
+			var ast = CreateAST(tokens);
+
+			var expectedast = new ASTNode();
+			expectedast.AddChild(new MemoryAssignmentNode(31, new ShortValueNode(10)));
+		}
+
+		[TestMethod]
+		public void CreateAST_MemoryAssignment_WithVariable()
+		{
+			var tokens = Sharp_LR35902_Compiler.Lexer.GetTokenList(new [] {
+				"byte x = 10;",
+				"*31 = x;"
+			});
+
+			var ast = CreateAST(tokens);
+
+			var expectedast = new ASTNode();
+			expectedast.AddChild(new VariableDeclarationNode("byte", "x"));
+			expectedast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(10)));
+			expectedast.AddChild(new MemoryAssignmentNode(31, new VariableValueNode("x")));
+		}
+
+		[TestMethod]
+		public void CreateAST_VariableAssignment_MemoryValue() {
+			var tokens = Sharp_LR35902_Compiler.Lexer.GetTokenList("byte x = *100");
+
+			var ast = CreateAST(tokens);
+
+			var expectedast = new ASTNode();
+			expectedast.AddChild(new VariableDeclarationNode("byte", "x"));
+			expectedast.AddChild(new VariableAssignmentNode("x", new MemoryValueNode(100)));
+		}
+
+		[TestMethod]
 		public void CreateExpression_SingleShort() {
 			var tokens = new[] {
 				new Token(TokenType.Immediate, "1")
@@ -1198,6 +1237,20 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var expression = CreateExpression(tokens);
 
 			Assert.AreEqual(4, expression.GetValue());
+		}
+
+		[TestMethod]
+		public void CreateExpression_MemoryValue() {
+			var tokens = new[] {
+				new Token(TokenType.Grammar, "*"), 
+				new Token(TokenType.Immediate, "100"), 
+			};
+
+			var expression = CreateExpression(tokens);
+
+			var expectedexpression = new MemoryValueNode(100);
+
+			compareNode(expectedexpression, expression);
 		}
 
 		[TestMethod]

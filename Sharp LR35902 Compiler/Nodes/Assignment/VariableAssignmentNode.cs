@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 
 namespace Sharp_LR35902_Compiler.Nodes {
-	public class VariableAssignmentNode : Node {
+	public class VariableAssignmentNode : AssignmentNode {
 		public string VariableName { get; set; }
-		public ExpressionNode Value { get; set; }
+		
 
-		public VariableAssignmentNode(string variablename, ExpressionNode value) {
+		public VariableAssignmentNode(string variablename, ExpressionNode value) : base(value) {
 			VariableName = variablename;
-			Value = value;
 		}
 
 		public override IEnumerable<string> GetUsedRegisterNames() {
