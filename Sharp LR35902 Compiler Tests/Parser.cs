@@ -63,7 +63,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			expectedAST.AddChild(new VariableAssignmentNode(variablename, new ShortValueNode(0)));
 			expectedAST.AddChild(new VariableAssignmentNode(variablename, new ShortValueNode(variablevalue)));
 
-			compareNode(expectedAST, ast);
+			CompareNode(expectedAST, ast);
 		}
 
 		[TestMethod]
@@ -124,7 +124,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			expectedAST.AddChild(new VariableAssignmentNode(othervariablename, new ShortValueNode(0)));
 			expectedAST.AddChild(new VariableAssignmentNode(variablename, new VariableValueNode(othervariablename)));
 
-			compareNode(expectedAST, ast);
+			CompareNode(expectedAST, ast);
 		}
 
 		[TestMethod]
@@ -201,7 +201,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			expectedAST.AddChild(new VariableDeclarationNode(datatype, variablename));
 			expectedAST.AddChild(new VariableAssignmentNode(variablename, new ShortValueNode(0)));
 
-			compareNode(expectedAST, ast);
+			CompareNode(expectedAST, ast);
 		}
 
 		[TestMethod]
@@ -287,7 +287,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			expectedAST.AddChild(new VariableDeclarationNode(datatype, variablename));
 			expectedAST.AddChild(new VariableAssignmentNode(variablename, new ShortValueNode(variablevalue)));
 
-			compareNode(expectedAST, ast);
+			CompareNode(expectedAST, ast);
 		}
 
 		[TestMethod]
@@ -316,7 +316,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			expectedAST.AddChild(new VariableDeclarationNode(datatype, "y"));
 			expectedAST.AddChild(new VariableAssignmentNode("y", new ShortValueNode(5)));
 
-			compareNode(expectedAST, ast);
+			CompareNode(expectedAST, ast);
 		}
 
 		[TestMethod]
@@ -345,7 +345,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			expectedAST.AddChild(new VariableAssignmentNode("y", new ShortValueNode(5)));
 			expectedAST.AddChild(new AdditionAssignmentNode("x", new VariableValueNode("y")));
 
-			compareNode(expectedAST, ast);
+			CompareNode(expectedAST, ast);
 		}
 
 		[TestMethod]
@@ -367,7 +367,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			expectedAST.AddChild(new VariableAssignmentNode("x", new ShortValueNode(0)));
 			expectedAST.AddChild(new AdditionAssignmentNode("x", new ShortValueNode(10)));
 
-			compareNode(expectedAST, ast);
+			CompareNode(expectedAST, ast);
 		}
 
 		[TestMethod]
@@ -396,7 +396,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			expectedAST.AddChild(new VariableAssignmentNode("y", new ShortValueNode(5)));
 			expectedAST.AddChild(new SubtractionAssignmentNode("x", new VariableValueNode("y")));
 
-			compareNode(expectedAST, ast);
+			CompareNode(expectedAST, ast);
 		}
 
 		[TestMethod]
@@ -418,7 +418,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			expectedAST.AddChild(new VariableAssignmentNode("x", new ShortValueNode(0)));
 			expectedAST.AddChild(new SubtractionAssignmentNode("x", new ShortValueNode(10)));
 
-			compareNode(expectedAST, ast);
+			CompareNode(expectedAST, ast);
 		}
 
 
@@ -445,7 +445,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			expectedAST.AddChild(new VariableDeclarationNode(datatype, variablename));
 			expectedAST.AddChild(new VariableAssignmentNode(variablename, new VariableValueNode(othervariablename)));
 
-			compareNode(expectedAST, ast);
+			CompareNode(expectedAST, ast);
 		}
 
 		[TestMethod]
@@ -513,7 +513,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			expectedAST.AddChild(new VariableDeclarationNode(datatype, variablename));
 			expectedAST.AddChild(new VariableAssignmentNode(variablename, new AdditionNode(new VariableValueNode(variablename1), new VariableValueNode(variablename2))));
 
-			compareNode(expectedAST, ast);
+			CompareNode(expectedAST, ast);
 		}
 
 		[TestMethod]
@@ -604,7 +604,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var expectedast = new ASTNode();
 			expectedast.AddChild(new GotoNode(labelname));
 
-			compareNode(expectedast, ast);
+			CompareNode(expectedast, ast);
 		}
 
 		[TestMethod]
@@ -624,7 +624,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var expectedast = new ASTNode();
 			expectedast.AddChild(new IfNode(new ShortValueNode(1), new BlockNode()));
 
-			compareNode(expectedast, ast);
+			CompareNode(expectedast, ast);
 		}
 
 		[TestMethod]
@@ -651,7 +651,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			block.AddChild(new VariableAssignmentNode("x", new ShortValueNode(10)));
 			expectedast.AddChild(new IfNode(new ShortValueNode(1), block));
 
-			compareNode(expectedast, ast);
+			CompareNode(expectedast, ast);
 		}
 
 		[TestMethod]
@@ -690,7 +690,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			iffalse.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5)));
 			expectedast.AddChild(new IfNode(new ShortValueNode(1), iftrue, iffalse));
 
-			compareNode(expectedast, ast);
+			CompareNode(expectedast, ast);
 		}
 
 		[TestMethod]
@@ -723,7 +723,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			block.AddChild(new VariableAssignmentNode("x", new ShortValueNode(10)));
 			expectedast.AddChild(new IfNode(new ShortValueNode(1), block));
 
-			compareNode(expectedast, ast);
+			CompareNode(expectedast, ast);
 		}
 
 		[TestMethod]
@@ -774,7 +774,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			var expectedexpression = new ShortValueNode(1);
 
-			compareNode(expectedexpression, expression);
+			CompareNode(expectedexpression, expression);
 		}
 
 		[TestMethod]
@@ -789,7 +789,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			var expectedexpression = new AdditionNode(new ShortValueNode(1), new ShortValueNode(1));
 
-			compareNode(expectedexpression, expression);
+			CompareNode(expectedexpression, expression);
 		}
 
 		[TestMethod]
@@ -825,7 +825,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 				new ShortValueNode(1)
 			);
 
-			compareNode(expectedexpression, expression);
+			CompareNode(expectedexpression, expression);
 		}
 
 		[TestMethod]
@@ -840,7 +840,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			var expectedexpression = new SubtractionNode(new ShortValueNode(1), new ShortValueNode(1));
 
-			compareNode(expectedexpression, expression);
+			CompareNode(expectedexpression, expression);
 		}
 
 		[TestMethod]
@@ -876,7 +876,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 				new ShortValueNode(1)
 			);
 
-			compareNode(expectedexpression, expression);
+			CompareNode(expectedexpression, expression);
 		}
 
 		[TestMethod]
@@ -899,7 +899,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 				new ShortValueNode(1)
 			);
 
-			compareNode(expectedexpression, expression);
+			CompareNode(expectedexpression, expression);
 		}
 
 		[TestMethod]
@@ -931,7 +931,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			var expectedexpression = new AdditionNode(new ShortValueNode(1), new ShortValueNode(1));
 
-			compareNode(expectedexpression, expression);
+			CompareNode(expectedexpression, expression);
 		}
 
 		[TestMethod]
@@ -965,7 +965,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 				)
 			);
 
-			compareNode(expected, expression);
+			CompareNode(expected, expression);
 		}
 
 		[TestMethod]
@@ -1028,7 +1028,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 				new ShortValueNode(1)
 			);
 
-			compareNode(expected, expression);
+			CompareNode(expected, expression);
 		}
 
 		[TestMethod]
@@ -1072,7 +1072,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 				new ShortValueNode(2)
 			);
 
-			compareNode(expected, expression);
+			CompareNode(expected, expression);
 		}
 
 		[TestMethod]
@@ -1116,7 +1116,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 				new ShortValueNode(1)
 			);
 
-			compareNode(expected, expression);
+			CompareNode(expected, expression);
 		}
 
 		[TestMethod]
@@ -1170,7 +1170,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 				)
 			);
 
-			compareNode(expected, expression);
+			CompareNode(expected, expression);
 		}
 
 		[TestMethod]
@@ -1184,7 +1184,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			var expected = new NegateNode(new ShortValueNode(0));
 
-			compareNode(expected, expression);
+			CompareNode(expected, expression);
 		}
 
 		[TestMethod]
@@ -1221,7 +1221,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			expectedast.AddChild(new VariableAssignmentNode("X", new ShortValueNode(1)));
 			expectedast.AddChild(new VariableAssignmentNode("X", new NegateNode(new VariableValueNode("X"))));
 
-			compareNode(expectedast, ast);
+			CompareNode(expectedast, ast);
 		}
 
 		[TestMethod]
@@ -1239,7 +1239,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 				new ShortValueNode(1)
 			);
 
-			compareNode(expected, expression);
+			CompareNode(expected, expression);
 		}
 
 		[TestMethod]
@@ -1282,7 +1282,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 				new ShortValueNode(0)
 			);
 
-			compareNode(expected, expression);
+			CompareNode(expected, expression);
 		}
 
 		[TestMethod]
@@ -1336,7 +1336,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			var expectedexpression = new MemoryValueNode(100);
 
-			compareNode(expectedexpression, expression);
+			CompareNode(expectedexpression, expression);
 		}
 
 		[TestMethod]
@@ -1356,7 +1356,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 
-		private void compareNode(Node expected, Node actual) {
+		private static void CompareNode(Node expected, Node actual) {
 			var actualchildren = actual.GetChildren().ToList();
 			var expectedchilren = expected.GetChildren().ToList();
 
@@ -1368,7 +1368,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 					Assert.Fail("A child is different than the expected.");
 
 			for (var i = 0; i < actualchildren.Count; i++)
-				compareNode(expectedchilren[i], actualchildren[i]);
+				CompareNode(expectedchilren[i], actualchildren[i]);
 		}
 	}
 }
