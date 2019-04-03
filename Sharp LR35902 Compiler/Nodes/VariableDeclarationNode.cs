@@ -10,7 +10,9 @@ namespace Sharp_LR35902_Compiler.Nodes {
 			VariableName = name;
 		}
 
-		public override IEnumerable<string> GetUsedRegisterNames() { yield return VariableName; }
+		public override IEnumerable<string> GetWrittenVaraibles() => NoVariables;
+		public override IEnumerable<string> GetReadVariables() => NoVariables;
+		
 
 		public override bool Matches(Node obj) {
 			if (obj is VariableDeclarationNode other)

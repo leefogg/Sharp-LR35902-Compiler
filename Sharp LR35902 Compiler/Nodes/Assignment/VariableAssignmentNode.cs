@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Sharp_LR35902_Compiler.Nodes {
 	public class VariableAssignmentNode : AssignmentNode {
@@ -9,12 +10,8 @@ namespace Sharp_LR35902_Compiler.Nodes {
 			VariableName = variablename;
 		}
 
-		public override IEnumerable<string> GetUsedRegisterNames() {
-			yield return VariableName;
-
-			foreach (var usedvariable in Value.GetUsedRegisterNames())
-				yield return usedvariable;
-		}
+		public override IEnumerable<string> GetWrittenVaraibles() { yield return VariableName; }
+		public override IEnumerable<string> GetReadVariables() => Value.GetReadVariables();
 
 		public override bool Matches(Node obj) {
 			if (obj is VariableAssignmentNode other)

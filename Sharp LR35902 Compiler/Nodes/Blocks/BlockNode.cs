@@ -7,30 +7,37 @@ namespace Sharp_LR35902_Compiler.Nodes {
 
 		public void InsertAt(Node node, int index) => Children.Insert(index, node);
 
+		public override IEnumerable<string> GetWrittenVaraibles() {
+			var writtenvariables = new List<string>();
+			foreach (var child in Children)
+				writtenvariables.AddRange(child.GetWrittenVaraibles());
+
+			return writtenvariables;
+		}
+		public override IEnumerable<string> GetReadVariables() {
+			var readvariables = new List<string>();
+			foreach (var child in Children)
+				readvariables.AddRange(child.GetReadVariables());
+
+			return readvariables;
+		}
 		public override IEnumerable<Node> GetChildren() => Children;
 
 		public void RemoveChild(int index) => Children.RemoveAt(index);
 
-		public override IEnumerable<string> GetUsedRegisterNames()
-		{
-			foreach (var child in Children)
-				foreach (var variablename in child.GetUsedRegisterNames())
-					yield return variablename;
-		}
-
 		public override bool Matches(Node obj) {
-			if (obj is BlockNode otherblock) {
-				var otherchildren = otherblock.Children;
-				if (otherchildren.Count != Children.Count)
+			if (!(obj is BlockNode otherblock))
+				return false;
+
+			var otherchildren = otherblock.Children;
+			if (otherchildren.Count != Children.Count)
+				return false;
+			for (var i = 0; i < Children.Count; i++)
+				if (!Children[i].Matches(otherchildren[i]))
 					return false;
-				for (var i = 0; i < Children.Count; i++)
-					if (!Children[i].Matches(otherchildren[i]))
-						return false;
 
-				return true;
-			}
+			return true;
 
-			return false;
 		}
 	}
 }

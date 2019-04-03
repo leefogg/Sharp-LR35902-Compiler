@@ -7,5 +7,7 @@ namespace Sharp_LR35902_Compiler.Nodes
 		public ExpressionNode Expression { get; set; }
 
 		public override IEnumerable<Node> GetChildren() => NoChildren;
+
+		public override IEnumerable<string> GetReadVariables() => Expression.GetReadVariables();
 	}
 }

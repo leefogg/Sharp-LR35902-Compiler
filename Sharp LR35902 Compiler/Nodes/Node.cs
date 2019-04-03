@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Sharp_LR35902_Compiler.Nodes {
 	public abstract class Node {
 		protected readonly Node[] NoChildren = new Node[0];
-		protected readonly string[] NoRegisters = new string[0];
+		protected readonly string[] NoVariables = new string[0];
 
-		public abstract IEnumerable<string> GetUsedRegisterNames();
+		public IEnumerable<string> GetUsedVariables() => GetReadVariables().Concat(GetWrittenVaraibles());
+		public abstract IEnumerable<string> GetWrittenVaraibles();
+		public abstract IEnumerable<string> GetReadVariables();
 
 		public abstract IEnumerable<Node> GetChildren();
 

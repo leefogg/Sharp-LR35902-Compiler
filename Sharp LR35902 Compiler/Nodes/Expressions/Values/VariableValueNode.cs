@@ -7,8 +7,6 @@ namespace Sharp_LR35902_Compiler.Nodes {
 
 		public VariableValueNode(string name) { VariableName = name; }
 
-		public override IEnumerable<string> GetUsedRegisterNames() { yield return VariableName; }
-
 		public override bool Matches(Node obj) {
 			if (obj is VariableValueNode other)
 				return other.VariableName == VariableName;
@@ -16,6 +14,7 @@ namespace Sharp_LR35902_Compiler.Nodes {
 			return false;
 		}
 
+		public override IEnumerable<string> GetReadVariables() { yield return VariableName; }
 		public override IEnumerable<Node> GetChildren() => NoChildren;
 
 		public override ushort GetValue() { throw new NotSupportedException("This is a runtime feature only."); }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Sharp_LR35902_Compiler.Nodes
 {
@@ -15,13 +16,7 @@ namespace Sharp_LR35902_Compiler.Nodes
 
 		protected BinaryOperatorNode() { }
 
-		public override IEnumerable<string> GetUsedRegisterNames()
-		{
-			foreach (var variablename in Left.GetUsedRegisterNames())
-				yield return variablename;
-			foreach (var variablename in Right.GetUsedRegisterNames())
-				yield return variablename;
-		}
+		public override IEnumerable<string> GetReadVariables() => Left.GetReadVariables().Concat(Right.GetReadVariables());
 
 		public override IEnumerable<Node> GetChildren() {
 			yield return Left;

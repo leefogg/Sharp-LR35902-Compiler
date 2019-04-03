@@ -14,15 +14,6 @@ namespace Sharp_LR35902_Compiler.Nodes {
 			IfFalse = iffalse ?? new BlockNode();
 		}
 
-		public override IEnumerable<string> GetUsedRegisterNames() {
-			foreach (var variablename in Condition.GetUsedRegisterNames())
-				yield return variablename;
-			foreach (var variablename in IfTrue.GetUsedRegisterNames())
-				yield return variablename;
-			foreach (var variablename in IfFalse.GetUsedRegisterNames())
-				yield return variablename;
-		}
-
 		public override bool Matches(Node obj) {
 			if (obj is IfNode other)
 				return other.Condition.Matches(Condition) && other.IfTrue.Matches(IfTrue) && other.IfFalse.Matches(IfFalse);
@@ -30,6 +21,9 @@ namespace Sharp_LR35902_Compiler.Nodes {
 			return false;
 		}
 
+		public override IEnumerable<string> GetWrittenVaraibles() => IfTrue.GetWrittenVaraibles().Concat(IfFalse.GetWrittenVaraibles());
+
+		public override IEnumerable<string> GetReadVariables() => IfTrue.GetReadVariables().Concat(IfFalse.GetReadVariables());
 		public override IEnumerable<Node> GetChildren() => Condition.GetChildren().Concat(IfTrue.GetChildren()).Concat(IfFalse.GetChildren());
 	}
 }

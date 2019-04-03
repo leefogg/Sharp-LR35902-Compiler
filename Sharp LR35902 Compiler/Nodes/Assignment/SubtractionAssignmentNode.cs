@@ -1,4 +1,7 @@
-﻿namespace Sharp_LR35902_Compiler.Nodes {
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace Sharp_LR35902_Compiler.Nodes {
 	public class SubtractionAssignmentNode : VariableAssignmentNode {
 		public SubtractionAssignmentNode(string variableName, ExpressionNode value) : base(variableName, value) { }
 
@@ -8,5 +11,7 @@
 
 			return false;
 		}
+
+		public override IEnumerable<string> GetReadVariables() => Value.GetReadVariables().Concat(new[] { VariableName });
 	}
 }

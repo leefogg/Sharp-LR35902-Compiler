@@ -5,7 +5,7 @@ namespace Sharp_LR35902_Compiler.Nodes {
 		public abstract ushort GetValue();
 		public abstract ExpressionNode Optimize(IDictionary<string, ushort> knownvariables);
 
-		public override IEnumerable<string> GetUsedRegisterNames() => NoRegisters;
+		public override IEnumerable<string> GetWrittenVaraibles() => NoVariables;
 
 		public static implicit operator ushort(ExpressionNode node) => node.GetValue();
 

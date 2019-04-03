@@ -272,7 +272,7 @@ namespace Sharp_LR35902_Compiler {
 				if (node is VariableDeclarationNode)
 					continue;
 
-				var usedvariables = node.GetUsedRegisterNames().Distinct();
+				var usedvariables = node.GetUsedVariables().Distinct();
 				foreach (var usedvar in usedvariables)
 					if (usedvar == variablename)
 						lastusage = i;

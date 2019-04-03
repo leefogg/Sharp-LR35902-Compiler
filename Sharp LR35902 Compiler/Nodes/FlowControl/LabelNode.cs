@@ -6,7 +6,8 @@ namespace Sharp_LR35902_Compiler.Nodes {
 
 		public LabelNode(string name) { Name = name; }
 
-		public override IEnumerable<string> GetUsedRegisterNames() => NoRegisters;
+		public override IEnumerable<string> GetWrittenVaraibles() => NoVariables;
+		public override IEnumerable<string> GetReadVariables() => NoVariables;
 
 		public override bool Matches(Node obj) {
 			if (obj is LabelNode other)

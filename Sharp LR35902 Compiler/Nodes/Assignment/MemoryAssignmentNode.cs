@@ -8,7 +8,8 @@ namespace Sharp_LR35902_Compiler.Nodes.Assignment {
 			Address = address;
 		}
 
-		public override IEnumerable<string> GetUsedRegisterNames() => Value.GetUsedRegisterNames();
+		public override IEnumerable<string> GetWrittenVaraibles() => NoVariables;
+		public override IEnumerable<string> GetReadVariables() => Value.GetReadVariables();
 
 		public override bool Matches(Node obj) {
 			if (obj is MemoryAssignmentNode other)

@@ -133,36 +133,18 @@ namespace Sharp_LR35902_Compiler {
 		}
 
 		public static bool RemoveUnusedVariables(BlockNode block) {
-			// Dictionary should be safe as parser checks for redeclarations
-			var usedvariables = new Dictionary<string, bool>();
-
-			var children = block.GetChildren().ToList();
-
-			// Scan for variables and uses
-			foreach (var node in children) {
-				if (node is VariableDeclarationNode decl)
-					usedvariables.Add(decl.VariableName, false);
-
-				// Check for reads, writes aren't a "use"
-				if (node is AssignmentNode assignment)
-					foreach (var usedvar in assignment.Value.GetUsedRegisterNames())
-						usedvariables[usedvar] = true; // Should be safe as parser checks for variable existence before assignment
-				if (node is IncrementNode inc)
-					usedvariables[inc.VariableName] = true;
-				else if (node is DecrementNode dec)
-					usedvariables[dec.VariableName] = true;
-			}
+			var usedvariables = block.GetReadVariables().ToArray();
 
 			var changesmade = false;
 			var i = 0;
-			foreach (var node in children) {
+			foreach (var node in block.GetChildren().ToList()) {
 				if (node is VariableDeclarationNode dec) {
-					if (usedvariables[dec.VariableName] == false) {
+					if (!usedvariables.Contains(dec.VariableName)) {
 						block.RemoveChild(i--);
 						changesmade = true;
 					}
 				} else if (node is VariableAssignmentNode assignment) {
-					if (usedvariables[assignment.VariableName] == false) {
+					if (!usedvariables.Contains(assignment.VariableName)) {
 						block.RemoveChild(i--);
 						changesmade = true;
 					}
