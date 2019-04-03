@@ -126,20 +126,20 @@ namespace Sharp_LR35902_Compiler {
 								yield return iffalselabelname + ':';
 								yield return $"LD {GetVariableRegister(var.VariableName)} 0";
 								yield return iftruelabelname + ':';
-							} else {
-								// Only other operators should be addition and subtraction
-								yield return $"LD B {getValue(oprator.Left)}";
-								yield return $"LD A {getValue(oprator.Right)}";
+							} else { // Only other operators should be addition and subtraction
+								yield return $"LD A {getValue(oprator.Left)}";
+
+								var rightoprand = getValue(oprator.Right);
 								if (var.Value is AdditionNode)
-									yield return "ADD A B";
+									yield return $"ADD A {rightoprand}";
 								else if (var.Value is SubtractionNode)
-									yield return "SUB A B";
+									yield return $"SUB A {rightoprand}";
 
 								yield return $"LD {GetVariableRegister(var.VariableName)} A";
 							}
 						} else if (var.Value is UnaryOperatorNode operatorNode) {
 							if (var.Value is NegateNode negatenode) {
-								yield return $"LD A 1";
+								yield return "LD A 1";
 								yield return $"XOR {getValue(negatenode.Expression)}";
 								yield return $"LD {GetVariableRegister(var.VariableName)} A";
 							}

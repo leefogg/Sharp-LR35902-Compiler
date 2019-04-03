@@ -287,9 +287,8 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var actualASM = new List<string>(EmitAssembly(rootnode));
 
 			var expectedASM = new[] {
-				"LD B 5",
-				"LD A 6",
-				"ADD A B",
+				"LD A 5",
+				"ADD A 6",
 				"LD C A"
 			};
 
@@ -305,9 +304,8 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var actualASM = new List<string>(EmitAssembly(rootnode));
 
 			var expectedASM = new[] {
-				"LD B 5",
-				"LD A 6",
-				"SUB A B",
+				"LD A 5",
+				"SUB A 6",
 				"LD C A"
 			};
 
