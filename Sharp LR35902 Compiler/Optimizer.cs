@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Remotion.Linq.Parsing.Structure.IntermediateModel;
 using Sharp_LR35902_Compiler.Nodes;
-using Sharp_LR35902_Compiler.Nodes.Assignment;
+using System.Linq;
 using static Sharp_LR35902_Compiler.Nodes.ExpressionNode;
 
 namespace Sharp_LR35902_Compiler {
@@ -91,15 +90,19 @@ namespace Sharp_LR35902_Compiler {
 							variablevalues.Add(varassignment.VariableName, value.GetValue());
 					}
 				} else if (node is IncrementNode inc) {
-					variablevalues[inc.VariableName]++;
-					children.RemoveAt(i);
-					block.RemoveChild(i--);
-					changesmade = true;
+					if (variablevalues.ContainsKey(inc.VariableName)) {
+						variablevalues[inc.VariableName]++;
+						children.RemoveAt(i);
+						block.RemoveChild(i--);
+						changesmade = true;
+					}
 				} else if (node is DecrementNode dec) {
-					variablevalues[dec.VariableName]--;
-					children.RemoveAt(i);
-					block.RemoveChild(i--);
-					changesmade = true;
+					if (variablevalues.ContainsKey(dec.VariableName)) {
+						variablevalues[dec.VariableName]--;
+						children.RemoveAt(i);
+						block.RemoveChild(i--);
+						changesmade = true;
+					}
 				} else if (node is IfNode ifnode) {
 					if (!(ifnode.Condition is ExpressionNode condition))
 						continue;
@@ -137,13 +140,17 @@ namespace Sharp_LR35902_Compiler {
 
 			// Scan for variables and uses
 			foreach (var node in children) {
-				if (node is VariableDeclarationNode dec)
-					usedvariables.Add(dec.VariableName, false);
+				if (node is VariableDeclarationNode decl)
+					usedvariables.Add(decl.VariableName, false);
 
 				// Check for reads, writes aren't a "use"
-				if (node is VariableAssignmentNode assignment)
+				if (node is AssignmentNode assignment)
 					foreach (var usedvar in assignment.Value.GetUsedRegisterNames())
 						usedvariables[usedvar] = true; // Should be safe as parser checks for variable existence before assignment
+				if (node is IncrementNode inc)
+					usedvariables[inc.VariableName] = true;
+				else if (node is DecrementNode dec)
+					usedvariables[dec.VariableName] = true;
 			}
 
 			var changesmade = false;
