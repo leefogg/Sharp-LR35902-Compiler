@@ -16,7 +16,7 @@ namespace Sharp_LR35902_Compiler.Nodes {
 			return false;
 		}
 
-		public override Node[] GetChildren() => NoChildren;
+		public override IEnumerable<Node> GetChildren() => NoChildren;
 
 		public override ushort GetValue() { throw new NotSupportedException("This is a runtime feature only."); }
 

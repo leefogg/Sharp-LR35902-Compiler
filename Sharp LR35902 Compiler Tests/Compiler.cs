@@ -40,7 +40,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			rootnode.AddChild(new VariableAssignmentNode("y", new VariableValueNode("x"))); // y = x
 			rootnode.AddChild(new VariableDeclarationNode("int", "z")); // int z
 
-			var lastusage = FindLastVariableUsage(rootnode.GetChildren(), "x", 1);
+			var lastusage = FindLastVariableUsage(rootnode.GetChildren().ToList(), "x", 1);
 			Assert.AreEqual(3, lastusage);
 		}
 
@@ -53,7 +53,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 			rootnode.AddChild(new VariableAssignmentNode("y", new VariableValueNode("x"))); // y = x
 			rootnode.AddChild(new VariableDeclarationNode("int", "z")); // int z
 
-			var lastusage = FindLastVariableUsage(rootnode.GetChildren(), "x", 10);
+			var lastusage = FindLastVariableUsage(rootnode.GetChildren().ToList(), "x", 10);
 			Assert.AreEqual(10, lastusage);
 		}
 

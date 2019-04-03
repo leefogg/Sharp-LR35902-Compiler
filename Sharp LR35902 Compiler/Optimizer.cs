@@ -116,13 +116,13 @@ namespace Sharp_LR35902_Compiler {
 
 					if (IsTrue(c)) {
 						children.InsertRange(i, ifnode.IfTrue.GetChildren());
-						var ifchildren = ifnode.IfTrue.GetChildren();
-						for (var j = 0; j < ifchildren.Length; j++)
+						var ifchildren = ifnode.IfTrue.GetChildren().ToList();
+						for (var j = 0; j < ifchildren.Count; j++)
 							block.InsertAt(ifchildren[j], i + j);
 					} else {
 						children.InsertRange(i, ifnode.IfFalse.GetChildren());
-						var ifchildren = ifnode.IfFalse.GetChildren();
-						for (var j = 0; j < ifchildren.Length; j++)
+						var ifchildren = ifnode.IfFalse.GetChildren().ToList();
+						for (var j = 0; j < ifchildren.Count; j++)
 							block.InsertAt(ifchildren[j], i + j);
 					}
 					i--;
@@ -136,7 +136,7 @@ namespace Sharp_LR35902_Compiler {
 			// Dictionary should be safe as parser checks for redeclarations
 			var usedvariables = new Dictionary<string, bool>();
 
-			var children = block.GetChildren();
+			var children = block.GetChildren().ToList();
 
 			// Scan for variables and uses
 			foreach (var node in children) {
@@ -176,8 +176,8 @@ namespace Sharp_LR35902_Compiler {
 
 		public static bool TransformAdditionAssignmentToExpression(BlockNode block) {
 			var changesmade = false;
-			var children = block.GetChildren();
-			for (var i = 0; i < children.Length; i++) {
+			var children = block.GetChildren().ToList();
+			for (var i = 0; i < children.Count; i++) {
 				var node = children[i];
 				if (!(node is AdditionAssignmentNode assignment))
 					continue;
@@ -192,8 +192,8 @@ namespace Sharp_LR35902_Compiler {
 
 		public static bool TransformSubtractionAssignmentToExpression(BlockNode block) {
 			var changesmade = false;
-			var children = block.GetChildren();
-			for (var i = 0; i < children.Length; i++) {
+			var children = block.GetChildren().ToList();
+			for (var i = 0; i < children.Count; i++) {
 				var node = children[i];
 				if (!(node is SubtractionAssignmentNode assignment))
 					continue;
@@ -208,7 +208,7 @@ namespace Sharp_LR35902_Compiler {
 
 		public static bool FlattenExpressions(BlockNode block) {
 			var changesmade = false;
-			for (var i = 0; i < block.GetChildren().Length; i++) {
+			for (var i = 0; i < block.GetChildren().Count(); i++) {
 				var addedinstructions = FlattenExpression(block, i);
 				if (addedinstructions <= 0)
 					continue;
@@ -221,7 +221,7 @@ namespace Sharp_LR35902_Compiler {
 		}
 
 		public static int FlattenExpression(BlockNode block, int index) {
-			var currentblock = block.GetChildren()[index];
+			var currentblock = block.GetChildren().ToList()[index];
 			if (currentblock is VariableAssignmentNode assignmentnode) {
 				if (!(assignmentnode.Value is BinaryOperatorNode value)) // Flat enough
 					return 0;

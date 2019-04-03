@@ -7,7 +7,7 @@ namespace Sharp_LR35902_Compiler.Nodes {
 
 		public void InsertAt(Node node, int index) => Children.Insert(index, node);
 
-		public override Node[] GetChildren() => Children.ToArray();
+		public override IEnumerable<Node> GetChildren() => Children;
 
 		public void RemoveChild(int index) => Children.RemoveAt(index);
 

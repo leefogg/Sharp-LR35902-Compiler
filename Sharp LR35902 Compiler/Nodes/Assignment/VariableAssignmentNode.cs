@@ -23,6 +23,6 @@ namespace Sharp_LR35902_Compiler.Nodes {
 			return false;
 		}
 
-		public override Node[] GetChildren() => new Node[] {Value};
+		public override IEnumerable<Node> GetChildren() { yield return Value; }
 	}
 }

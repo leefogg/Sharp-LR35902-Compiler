@@ -13,7 +13,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			RemoveUnusedVariables(ast);
 
-			Assert.AreEqual(0, ast.GetChildren().Length);
+			Assert.AreEqual(0, ast.GetChildren().Count());
 		}
 
 		[TestMethod]
@@ -24,7 +24,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			RemoveUnusedVariables(ast);
 
-			Assert.AreEqual(0, ast.GetChildren().Length);
+			Assert.AreEqual(0, ast.GetChildren().Count());
 		}
 
 		[TestMethod]
@@ -37,7 +37,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			RemoveUnusedVariables(ast);
 
-			Assert.AreEqual(2, ast.GetChildren().Length);
+			Assert.AreEqual(2, ast.GetChildren().Count());
 		}
 
 		[TestMethod]
@@ -55,7 +55,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 				iterations++;
 
 			Assert.AreEqual(3, iterations);
-			Assert.AreEqual(0, ast.GetChildren().Length);
+			Assert.AreEqual(0, ast.GetChildren().Count());
 		}
 
 		[TestMethod]
@@ -166,7 +166,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			Assert.IsInstanceOfType(assignment.Value, typeof(ShortValueNode));
 			Assert.AreEqual(6, ((ShortValueNode)assignment.Value).GetValue());
-			Assert.AreEqual(4, ast.GetChildren().Length);
+			Assert.AreEqual(4, ast.GetChildren().Count());
 		}
 
 		[TestMethod]
@@ -181,7 +181,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			PropagateConstants(ast);
 
-			Assert.AreEqual(2, ast.GetChildren().Length);
+			Assert.AreEqual(2, ast.GetChildren().Count());
 		}
 
 		[TestMethod]
@@ -196,7 +196,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			PropagateConstants(ast);
 
-			Assert.AreEqual(2, ast.GetChildren().Length);
+			Assert.AreEqual(2, ast.GetChildren().Count());
 		}
 
 		[TestMethod]
@@ -234,7 +234,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			Assert.IsInstanceOfType(assignment.Value, typeof(ShortValueNode));
 			Assert.AreEqual(4, ((ShortValueNode)assignment.Value).GetValue());
-			Assert.AreEqual(4, ast.GetChildren().Length);
+			Assert.AreEqual(4, ast.GetChildren().Count());
 		}
 
 		[TestMethod]
@@ -272,8 +272,8 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var changesmade = PropagateConstants(ast);
 
 			Assert.IsTrue(changesmade);
-			var children = ast.GetChildren();
-			Assert.AreEqual(4, children.Length);
+			var children = ast.GetChildren().ToList();
+			Assert.AreEqual(4, children.Count);
 			Assert.IsInstanceOfType(children[2], typeof(VariableDeclarationNode));
 			Assert.IsInstanceOfType(children[3], typeof(VariableAssignmentNode));
 		}
@@ -293,8 +293,8 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var changesmade = PropagateConstants(ast);
 
 			Assert.IsTrue(changesmade);
-			var children = ast.GetChildren();
-			Assert.AreEqual(3, children.Length);
+			var children = ast.GetChildren().ToList();
+			Assert.AreEqual(3, children.Count);
 			Assert.IsInstanceOfType(children[2], typeof(AdditionAssignmentNode));
 		}
 
@@ -314,8 +314,8 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var changesmade = PropagateConstants(ast);
 
 			Assert.IsTrue(changesmade);
-			var children = ast.GetChildren();
-			Assert.AreEqual(4, children.Length);
+			var children = ast.GetChildren().ToList();
+			Assert.AreEqual(4, children.Count);
 			Assert.IsInstanceOfType(children[2], typeof(VariableDeclarationNode));
 			Assert.IsInstanceOfType(children[3], typeof(VariableAssignmentNode));
 		}
@@ -329,8 +329,8 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var changed = TransformAdditionAssignmentToExpression(ast);
 
 			Assert.IsTrue(changed);
-			var children = ast.GetChildren();
-			Assert.AreEqual(2, children.Length);
+			var children = ast.GetChildren().ToList();
+			Assert.AreEqual(2, children.Count);
 			Assert.IsInstanceOfType(children[1], typeof(VariableAssignmentNode));
 			var assignment = (VariableAssignmentNode)children[1];
 			Assert.IsInstanceOfType(assignment.Value, typeof(AdditionNode));
@@ -346,9 +346,9 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			var changed = TransformSubtractionAssignmentToExpression(ast);
 
-			var children = ast.GetChildren();
+			var children = ast.GetChildren().ToList();
 			Assert.IsTrue(changed);
-			Assert.AreEqual(2, children.Length);
+			Assert.AreEqual(2, children.Count);
 			Assert.IsInstanceOfType(children[1], typeof(VariableAssignmentNode));
 			var assignment = (VariableAssignmentNode)children[1];
 			Assert.IsInstanceOfType(assignment.Value, typeof(SubtractionNode));
@@ -393,8 +393,8 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var changes = FlattenExpression(ast, 1);
 
 			Assert.IsTrue(changes > 0);
-			var children = ast.GetChildren();
-			Assert.AreEqual(4, children.Length);
+			var children = ast.GetChildren().ToList();
+			Assert.AreEqual(4, children.Count);
 			Assert.IsInstanceOfType(children[0], typeof(VariableDeclarationNode));
 			Assert.IsInstanceOfType(children[1], typeof(VariableDeclarationNode));
 			Assert.IsInstanceOfType(children[2], typeof(VariableAssignmentNode));
@@ -419,8 +419,8 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var changes = FlattenExpression(ast, 1);
 
 			Assert.IsTrue(changes > 0);
-			var children = ast.GetChildren();
-			Assert.AreEqual(6, children.Length);
+			var children = ast.GetChildren().ToList();
+			Assert.AreEqual(6, children.Count);
 			Assert.IsInstanceOfType(children[0], typeof(VariableDeclarationNode));
 			Assert.IsInstanceOfType(children[1], typeof(VariableDeclarationNode));
 			Assert.IsInstanceOfType(children[2], typeof(VariableAssignmentNode));
@@ -468,8 +468,8 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var changes = FlattenExpression(ast, 0);
 
 			Assert.IsTrue(changes > 0);
-			var children = ast.GetChildren();
-			Assert.AreEqual(3, children.Length);
+			var children = ast.GetChildren().ToList();
+			Assert.AreEqual(3, children.Count);
 			Assert.IsInstanceOfType(children[0], typeof(VariableDeclarationNode));
 			Assert.IsInstanceOfType(ifnode.Condition, typeof(VariableValueNode));
 		}
@@ -484,8 +484,8 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var changesmade = TransformToIncDec(ast);
 
 			Assert.IsTrue(changesmade);
-			var children = ast.GetChildren();
-			Assert.AreEqual(3, children.Length);
+			var children = ast.GetChildren().ToList();
+			Assert.AreEqual(3, children.Count);
 			Assert.IsInstanceOfType(children[2], typeof(IncrementNode));
 		}
 
@@ -500,8 +500,8 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var changesmade = TransformToIncDec(ast);
 
 			Assert.IsTrue(changesmade);
-			var children = ast.GetChildren();
-			Assert.AreEqual(3, children.Length);
+			var children = ast.GetChildren().ToList();
+			Assert.AreEqual(3, children.Count);
 			Assert.IsInstanceOfType(children[2], typeof(IncrementNode));
 		}
 
@@ -516,8 +516,8 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var changesmade = TransformToIncDec(ast);
 
 			Assert.IsTrue(changesmade);
-			var children = ast.GetChildren();
-			Assert.AreEqual(3, children.Length);
+			var children = ast.GetChildren().ToList();
+			Assert.AreEqual(3, children.Count);
 			Assert.IsInstanceOfType(children[2], typeof(DecrementNode));
 		}
 
@@ -532,8 +532,8 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var changesmade = TransformToIncDec(ast);
 
 			Assert.IsTrue(changesmade);
-			var children = ast.GetChildren();
-			Assert.AreEqual(3, children.Length);
+			var children = ast.GetChildren().ToList();
+			Assert.AreEqual(3, children.Count);
 			Assert.IsInstanceOfType(children[2], typeof(DecrementNode));
 		}
 

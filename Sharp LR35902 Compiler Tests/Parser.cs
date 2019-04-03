@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Common.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sharp_LR35902_Compiler;
@@ -18,9 +19,9 @@ namespace Sharp_LR35902_Compiler_Tests {
 			};
 
 			var ast = CreateAST(tokens);
-			var children = ast.GetChildren();
+			var children = ast.GetChildren().ToList();
 
-			Assert.AreEqual(1, children.Length);
+			Assert.AreEqual(1, children.Count);
 			Assert.IsInstanceOfType(children[0], typeof(IncrementNode));
 			Assert.AreEqual(variablename, ((IncrementNode)children[0]).VariableName);
 		}
@@ -34,9 +35,9 @@ namespace Sharp_LR35902_Compiler_Tests {
 			};
 
 			var ast = CreateAST(tokens);
-			var children = ast.GetChildren();
+			var children = ast.GetChildren().ToList();
 
-			Assert.AreEqual(1, children.Length);
+			Assert.AreEqual(1, children.Count);
 			Assert.IsInstanceOfType(children[0], typeof(DecrementNode));
 			Assert.AreEqual(variablename, ((DecrementNode)children[0]).VariableName);
 		}
@@ -247,7 +248,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			var nodes = CreateAST(tokens).GetChildren();
 
-			Assert.AreEqual(4, nodes.Length);
+			Assert.AreEqual(4, nodes.Count());
 		}
 
 		[TestMethod]
@@ -265,7 +266,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			var nodes = CreateAST(tokens).GetChildren();
 
-			Assert.AreEqual(4, nodes.Length);
+			Assert.AreEqual(4, nodes.Count());
 		}
 
 		[TestMethod]
@@ -571,9 +572,9 @@ namespace Sharp_LR35902_Compiler_Tests {
 			};
 
 			var ast = CreateAST(tokens);
-			var children = ast.GetChildren();
+			var children = ast.GetChildren().ToList();
 
-			Assert.AreEqual(1, children.Length);
+			Assert.AreEqual(1, children.Count);
 			Assert.IsInstanceOfType(children[0], typeof(LabelNode));
 		}
 
@@ -584,8 +585,9 @@ namespace Sharp_LR35902_Compiler_Tests {
 			};
 
 			var ast = CreateAST(tokens);
-			var children = ast.GetChildren();
+			var children = ast.GetChildren().ToList();
 
+			Assert.AreEqual(1, children.Count);
 			Assert.AreEqual("label", (children[0] as LabelNode).Name);
 		}
 
@@ -1355,17 +1357,17 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 
 		private void compareNode(Node expected, Node actual) {
-			var actualchildren = actual.GetChildren();
-			var expectedchilren = expected.GetChildren();
+			var actualchildren = actual.GetChildren().ToList();
+			var expectedchilren = expected.GetChildren().ToList();
 
-			if (actualchildren.Length != expectedchilren.Length)
+			if (actualchildren.Count != expectedchilren.Count)
 				Assert.Fail("Nodes do not have the same number of child nodes.");
 
-			for (var i = 0; i < expectedchilren.Length; i++)
+			for (var i = 0; i < expectedchilren.Count; i++)
 				if (!actualchildren[i].Equals(expectedchilren[i]))
 					Assert.Fail("A child is different than the expected.");
 
-			for (var i = 0; i < actualchildren.Length; i++)
+			for (var i = 0; i < actualchildren.Count; i++)
 				compareNode(expectedchilren[i], actualchildren[i]);
 		}
 	}

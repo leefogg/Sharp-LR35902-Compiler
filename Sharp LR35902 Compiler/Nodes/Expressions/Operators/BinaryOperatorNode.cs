@@ -23,6 +23,9 @@ namespace Sharp_LR35902_Compiler.Nodes
 				yield return variablename;
 		}
 
-		public override Node[] GetChildren() => new Node[] { Left, Right };
+		public override IEnumerable<Node> GetChildren() {
+			yield return Left;
+			yield return Right;
+		}
 	}
 }
