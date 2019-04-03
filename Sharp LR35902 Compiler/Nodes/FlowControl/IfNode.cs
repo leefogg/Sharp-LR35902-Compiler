@@ -23,9 +23,9 @@ namespace Sharp_LR35902_Compiler.Nodes {
 				yield return variablename;
 		}
 
-		public override bool Equals(object obj) {
+		public override bool Matches(Node obj) {
 			if (obj is IfNode other)
-				return other.Condition.Equals(Condition) && other.IfTrue.Equals(IfTrue) && other.IfFalse.Equals(IfFalse);
+				return other.Condition.Matches(Condition) && other.IfTrue.Matches(IfTrue) && other.IfFalse.Matches(IfFalse);
 
 			return false;
 		}

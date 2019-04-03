@@ -1364,7 +1364,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 				Assert.Fail("Nodes do not have the same number of child nodes.");
 
 			for (var i = 0; i < expectedchilren.Count; i++)
-				if (!actualchildren[i].Equals(expectedchilren[i]))
+				if (!actualchildren[i].Matches(expectedchilren[i]))
 					Assert.Fail("A child is different than the expected.");
 
 			for (var i = 0; i < actualchildren.Count; i++)

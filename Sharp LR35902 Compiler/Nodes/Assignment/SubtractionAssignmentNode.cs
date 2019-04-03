@@ -2,9 +2,9 @@
 	public class SubtractionAssignmentNode : VariableAssignmentNode {
 		public SubtractionAssignmentNode(string variableName, ExpressionNode value) : base(variableName, value) { }
 
-		public override bool Equals(object obj) {
+		public override bool Matches(Node obj) {
 			if (obj is SubtractionAssignmentNode other)
-				return other.VariableName == VariableName && other.Value.Equals(Value);
+				return other.VariableName == VariableName && other.Value.Matches(Value);
 
 			return false;
 		}

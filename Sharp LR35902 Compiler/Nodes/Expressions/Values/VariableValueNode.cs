@@ -9,7 +9,7 @@ namespace Sharp_LR35902_Compiler.Nodes {
 
 		public override IEnumerable<string> GetUsedRegisterNames() { yield return VariableName; }
 
-		public override bool Equals(object obj) {
+		public override bool Matches(Node obj) {
 			if (obj is VariableValueNode other)
 				return other.VariableName == VariableName;
 

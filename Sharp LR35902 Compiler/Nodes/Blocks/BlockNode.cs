@@ -18,13 +18,13 @@ namespace Sharp_LR35902_Compiler.Nodes {
 					yield return variablename;
 		}
 
-		public override bool Equals(object obj) {
+		public override bool Matches(Node obj) {
 			if (obj is BlockNode otherblock) {
 				var otherchildren = otherblock.Children;
 				if (otherchildren.Count != Children.Count)
 					return false;
 				for (var i = 0; i < Children.Count; i++)
-					if (!Children[i].Equals(otherchildren[i]))
+					if (!Children[i].Matches(otherchildren[i]))
 						return false;
 
 				return true;

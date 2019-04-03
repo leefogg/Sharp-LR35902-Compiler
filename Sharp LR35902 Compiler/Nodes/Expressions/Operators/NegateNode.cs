@@ -18,10 +18,10 @@ namespace Sharp_LR35902_Compiler.Nodes {
 			return this;
 		}
 
-		public override bool Equals(object obj)
+		public override bool Matches(Node obj)
 		{
 			if (obj is NegateNode other)
-				return other.Expression.Equals(Expression);
+				return other.Expression.Matches(Expression);
 
 			return false;
 		}

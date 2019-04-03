@@ -8,7 +8,7 @@ namespace Sharp_LR35902_Compiler.Nodes {
 
 		public override IEnumerable<string> GetUsedRegisterNames() => NoRegisters;
 
-		public override bool Equals(object obj) {
+		public override bool Matches(Node obj) {
 			if (obj is ShortValueNode other)
 				return other.Value == Value;
 

@@ -76,7 +76,7 @@ namespace Sharp_LR35902_Compiler {
 
 				if (node is AssignmentNode assignment) {
 					var newvalue = assignment.Value.Optimize(variablevalues);
-					if (!assignment.Value.Equals(newvalue))
+					if (!assignment.Value.Matches(newvalue))
 						changesmade = true;
 
 					assignment.Value = newvalue;

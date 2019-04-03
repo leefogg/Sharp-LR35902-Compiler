@@ -8,5 +8,7 @@ namespace Sharp_LR35902_Compiler.Nodes {
 		public abstract IEnumerable<string> GetUsedRegisterNames();
 
 		public abstract IEnumerable<Node> GetChildren();
+
+		public abstract bool Matches(Node other);
 	}
 }

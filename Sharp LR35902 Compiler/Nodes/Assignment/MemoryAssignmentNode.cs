@@ -10,9 +10,9 @@ namespace Sharp_LR35902_Compiler.Nodes.Assignment {
 
 		public override IEnumerable<string> GetUsedRegisterNames() => Value.GetUsedRegisterNames();
 
-		public override bool Equals(object obj) {
+		public override bool Matches(Node obj) {
 			if (obj is MemoryAssignmentNode other)
-				return Address == other.Address && other.Value.Equals(Value);
+				return Address == other.Address && other.Value.Matches(Value);
 
 			return false;
 		}

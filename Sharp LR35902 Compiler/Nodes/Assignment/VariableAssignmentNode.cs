@@ -16,9 +16,9 @@ namespace Sharp_LR35902_Compiler.Nodes {
 				yield return usedvariable;
 		}
 
-		public override bool Equals(object obj) {
+		public override bool Matches(Node obj) {
 			if (obj is VariableAssignmentNode other)
-				return other.VariableName == VariableName && other.Value.Equals(Value);
+				return other.VariableName == VariableName && other.Value.Matches(Value);
 
 			return false;
 		}

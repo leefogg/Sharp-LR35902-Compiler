@@ -18,9 +18,9 @@ namespace Sharp_LR35902_Compiler.Nodes {
 			return new AdditionNode(left, right);
 		}
 
-		public override bool Equals(object obj) {
+		public override bool Matches(Node obj) {
 			if (obj is AdditionNode other)
-				return Left.Equals(other.Left) && Right.Equals(other.Right);
+				return Left.Matches(other.Left) && Right.Matches(other.Right);
 
 			return false;
 		}
