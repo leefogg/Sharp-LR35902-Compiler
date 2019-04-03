@@ -47,13 +47,14 @@ namespace Sharp_LR35902_Compiler {
 							i++;
 							var expression = CreateExpression(tokens, currentscope, ref i);
 							if (expression == null)
-								throw new SyntaxException($"Unexpected token expression after =");
+								throw new SyntaxException($"Unknown expression after =");
 
 							getVariable(token.Value, currentscope); // Check it exists
 							//var existingvariable = currentscope.GetMember(token.Value);
 							//var immediatedatatype = GetImmedateDataType(expression);
 							//checkCanConvertTypes(immediatedatatype, existingvariable.DataType);
 							currentnode.AddChild(new VariableAssignmentNode(token.Value, expression));
+							i--;
 
 							break;
 						case "++":
