@@ -259,7 +259,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
-		public void PropagteConstants_If_ExtractsBodyIfTrue()
+		public void PropagteConstants_If_ExtractsTrueBody()
 		{
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
@@ -279,23 +279,23 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
-		public void PropagteConstants_If_DeletesBodyIfFalse()
+		public void PropagteConstants_If_ExtractsFalseBody()
 		{
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
 			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(0)));
-			var block = new BlockNode();
-			block.AddChild(new VariableDeclarationNode("byte", "a"));
-			block.AddChild(new VariableAssignmentNode("a", new ShortValueNode(1)));
-			ast.AddChild(new IfNode(new VariableValueNode("x"), block));
+			var iftrue = new BlockNode();
+			iftrue.AddChild(new VariableAssignmentNode("x", new ShortValueNode(1)));
+			var iffalse = new BlockNode();
+			iffalse.AddChild(new AdditionAssignmentNode("x", new ShortValueNode(2)));
+			ast.AddChild(new IfNode(new VariableValueNode("x"), iftrue, iffalse));
 
 			var changesmade = PropagateConstants(ast);
 
 			Assert.IsTrue(changesmade);
 			var children = ast.GetChildren();
-			Assert.AreEqual(2, children.Length);
-			Assert.IsInstanceOfType(children[0], typeof(VariableDeclarationNode));
-			Assert.IsInstanceOfType(children[1], typeof(VariableAssignmentNode));
+			Assert.AreEqual(3, children.Length);
+			Assert.IsInstanceOfType(children[2], typeof(AdditionAssignmentNode));
 		}
 
 		[TestMethod]

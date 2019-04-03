@@ -149,11 +149,22 @@ namespace Sharp_LR35902_Compiler {
 					}
 					case IfNode ifNode:
 						yield return $"CP {GetVariableRegister(((VariableValueNode)ifNode.Condition).VariableName)}"; // Formatter should extract condition before it gets here
-						var afterlabelname = getRandomLabelName();
-						yield return $"JP NZ {afterlabelname}";
+						var iffalselabel = getRandomLabelName();
+						yield return $"JP NZ {iffalselabel}";
 						foreach (var asm in EmitAssembly(ifNode.IfTrue))
 							yield return asm;
-						yield return afterlabelname + ':';
+
+						var falsebody = ifNode.IfFalse.GetChildren();
+						var iftruelabel = getRandomLabelName();
+						if (falsebody.Any())
+							yield return "JP " + iftruelabel;
+						yield return iffalselabel + ':';
+						if (falsebody.Any()) {
+							foreach (var asm in EmitAssembly(ifNode.IfFalse))
+								yield return asm;
+							yield return iftruelabel + ':';
+						}
+
 						break;
 				}
 			}

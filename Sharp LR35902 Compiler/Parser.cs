@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Common.Exceptions;
+using Common.Extensions;
 using Sharp_LR35902_Compiler.Nodes;
 using Sharp_LR35902_Compiler.Nodes.Assignment;
 using static Sharp_LR35902_Compiler.TokenType;
@@ -145,7 +146,13 @@ namespace Sharp_LR35902_Compiler {
 								throw new SyntaxException("Expected open block after IF statement.");
 
 							i++;
-							currentnode.AddChild(new IfNode(expression, CreateAST(tokens, new BlockNode(), ref i, currentscope)));
+							var iftrue = CreateAST(tokens, new BlockNode(), ref i, currentscope);
+							var iffalse = new BlockNode();
+							var elsetoken = tokens.Get(++i);
+							if (elsetoken?.Value == "else")
+								iffalse = CreateAST(tokens, iffalse, ref i, currentscope);
+
+							currentnode.AddChild(new IfNode(expression, iftrue, iffalse));
 							break;
 						case "goto":
 							var nextnode = tokens[++i];

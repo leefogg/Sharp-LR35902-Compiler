@@ -73,6 +73,11 @@ namespace Sharp_LR35902_Compiler {
 						var ifchildren = ifnode.IfTrue.GetChildren();
 						for (var j = 0; j < ifchildren.Length; j++)
 							block.InsertAt(ifchildren[j], i + j);
+					} else {
+						children.InsertRange(i, ifnode.IfFalse.GetChildren());
+						var ifchildren = ifnode.IfFalse.GetChildren();
+						for (var j = 0; j < ifchildren.Length; j++)
+							block.InsertAt(ifchildren[j], i + j);
 					}
 					i--;
 				}

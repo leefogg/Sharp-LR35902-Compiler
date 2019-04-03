@@ -592,7 +592,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
-		public void CreateAST_IfStatement_CapturesBody()
+		public void CreateAST_IfStatement_CapturesTrueBody()
 		{
 			var tokens = new[] {
 				new Token(TokenType.ControlFlow, "if"),
@@ -614,6 +614,45 @@ namespace Sharp_LR35902_Compiler_Tests {
 			block.AddChild(new VariableDeclarationNode("byte", "x"));
 			block.AddChild(new VariableAssignmentNode("x", new ShortValueNode(10)));
 			expectedast.AddChild(new IfNode(new ShortValueNode(1), block));
+
+			compareNode(expectedast, ast);
+		}
+
+		[TestMethod]
+		public void CreateAST_IfStatement_CapturesFalseBody()
+		{
+			var tokens = new[] {
+				new Token(TokenType.ControlFlow, "if"),
+				new Token(TokenType.Grammar, "("),
+				new Token(TokenType.Immediate, "1"),
+				new Token(TokenType.Grammar, ")"),
+				new Token(TokenType.Grammar, "{"),
+				new Token(TokenType.DataType, "byte"),
+				new Token(TokenType.Variable, "x"),
+				new Token(TokenType.Grammar, "="),
+				new Token(TokenType.Immediate, "10"),
+				new Token(TokenType.Grammar, ";"), 
+				new Token(TokenType.Grammar, "}"),
+				new Token(TokenType.Grammar, "else"), 
+				new Token(TokenType.Grammar, "{"),
+				new Token(TokenType.DataType, "byte"),
+				new Token(TokenType.Variable, "x"),
+				new Token(TokenType.Grammar, "="),
+				new Token(TokenType.Immediate, "5"),
+				new Token(TokenType.Grammar, ";"), 
+				new Token(TokenType.Grammar, "}"),
+			};
+
+			var ast = CreateAST(tokens);
+
+			var expectedast = new ASTNode();
+			var iftrue = new BlockNode();
+			iftrue.AddChild(new VariableDeclarationNode("byte", "x"));
+			iftrue.AddChild(new VariableAssignmentNode("x", new ShortValueNode(10)));
+			var iffalse = new BlockNode();
+			iffalse.AddChild(new VariableDeclarationNode("byte", "x"));
+			iffalse.AddChild(new VariableAssignmentNode("x", new ShortValueNode(5)));
+			expectedast.AddChild(new IfNode(new ShortValueNode(1), iftrue, iffalse));
 
 			compareNode(expectedast, ast);
 		}

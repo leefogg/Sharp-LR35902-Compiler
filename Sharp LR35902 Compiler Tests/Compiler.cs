@@ -403,6 +403,32 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
+		public void EmitAssembly_If_CreatesBlock_WithElse()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(1)));
+			var iftrueblock = new BlockNode();
+			iftrueblock.AddChild(new VariableAssignmentNode("x", new ShortValueNode(1)));
+			var iffalseblock = new BlockNode();
+			iffalseblock.AddChild(new VariableAssignmentNode("x", new ShortValueNode(2)));
+			ast.AddChild(new IfNode(new VariableValueNode("x"), iftrueblock, iffalseblock));
+
+			var asm = EmitAssembly(ast).ToArray();
+
+			ListEqual(new[] {
+				"LD C 1",
+				"CP C",
+				"JP NZ generatedLabel1",
+				"LD C 1",
+				"JP generatedLabel2",
+				"generatedLabel1:",
+				"LD C 2",
+				"generatedLabel2:"
+			}, asm);
+		}
+
+		[TestMethod]
 		public void EmitAssembly_MemoryWrite_WithImmediate()
 		{
 			var ast = new ASTNode();
