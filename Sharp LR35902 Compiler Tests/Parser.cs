@@ -448,6 +448,40 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void CreateAST_DeclareAndAssignVariable_WithSelf_Throws()
+		{
+			var datatype = "byte";
+			var variablename = "x";
+			var tokens = new List<Token> {
+				new Token(TokenType.DataType, datatype),
+				new Token(TokenType.Variable, variablename),
+				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
+				new Token(TokenType.Variable, variablename)
+			};
+
+			CreateAST(tokens);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(SyntaxException))]
+		public void CreateAST_DeclareAndAssignVariable_WithSelf_InExpression_Throws()
+		{
+			var datatype = "byte";
+			var variablename = "x";
+			var tokens = new List<Token> {
+				new Token(TokenType.DataType, datatype),
+				new Token(TokenType.Variable, variablename),
+				new Token(TokenType.Operator, BuiltIn.Operators.Assign),
+				new Token(TokenType.Immediate, "5"),
+				new Token(TokenType.Operator, "+"),
+				new Token(TokenType.Variable, variablename)
+			};
+
+			CreateAST(tokens);
+		}
+
+		[TestMethod]
 		public void CreateAST_DeclareAndAssignVariable_WithVariableExpression() {
 			var datatype = "byte";
 			var variablename = "x";

@@ -108,10 +108,10 @@ namespace Sharp_LR35902_Compiler {
 							throw new SyntaxException($"Variable {variabletoken.Value} already exists in the current scope.");
 
 						currentnode.AddChild(new VariableDeclarationNode(token.Value, variabletoken.Value));
-						currentscope.AddMember(new VariableMember(variabledatatype, variabletoken.Value));
 
 						if (operatornode.Value == ";") { // Just a decleration
 							currentnode.AddChild(new VariableAssignmentNode(variabletoken.Value, new ShortValueNode(0)));
+							currentscope.AddMember(new VariableMember(variabledatatype, variabletoken.Value));
 							continue;
 						}
 					}
@@ -127,6 +127,7 @@ namespace Sharp_LR35902_Compiler {
 					//var immediatedatatype = GetImmedateDataType(expression);
 					//checkCanConvertTypes(immediatedatatype, variabledatatype);
 					currentnode.AddChild(new VariableAssignmentNode(variabletoken.Value, expression));
+					currentscope.AddMember(new VariableMember(variabledatatype, variabletoken.Value));
 				} else if (token.Type == ControlFlow) {
 					switch (token.Value) {
 						case "while": break;
