@@ -455,8 +455,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
-		public void FlattenExpresison_Assignment_If_ConditionExtracts()
-		{
+		public void FlattenExpresison_Assignment_If_ConditionExtracts() {
 			var ast = new ASTNode();
 			var ifnode = new IfNode(
 				new AdditionNode(
@@ -474,6 +473,70 @@ namespace Sharp_LR35902_Compiler_Tests {
 			Assert.IsInstanceOfType(children[0], typeof(VariableDeclarationNode));
 			Assert.IsInstanceOfType(ifnode.Condition, typeof(VariableValueNode));
 		}
+
+		[TestMethod]
+		public void TransformToIncDec_Increment_Left_Optimizes() {
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(0)));
+			ast.AddChild(new VariableAssignmentNode("x", new AdditionNode(new ShortValueNode(1), new VariableValueNode("x"))));
+
+			var changesmade = TransformToIncDec(ast);
+
+			Assert.IsTrue(changesmade);
+			var children = ast.GetChildren();
+			Assert.AreEqual(3, children.Length);
+			Assert.IsInstanceOfType(children[2], typeof(IncrementNode));
+		}
+
+		[TestMethod]
+		public void TransformToIncDec_Increment_Right_Optimizes()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(0)));
+			ast.AddChild(new VariableAssignmentNode("x", new AdditionNode(new VariableValueNode("x"), new ShortValueNode(1))));
+
+			var changesmade = TransformToIncDec(ast);
+
+			Assert.IsTrue(changesmade);
+			var children = ast.GetChildren();
+			Assert.AreEqual(3, children.Length);
+			Assert.IsInstanceOfType(children[2], typeof(IncrementNode));
+		}
+
+		[TestMethod]
+		public void TransformToIncDec_Subtract_Left_Optimizes()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(0)));
+			ast.AddChild(new VariableAssignmentNode("x", new SubtractionNode(new ShortValueNode(1), new VariableValueNode("x"))));
+
+			var changesmade = TransformToIncDec(ast);
+
+			Assert.IsTrue(changesmade);
+			var children = ast.GetChildren();
+			Assert.AreEqual(3, children.Length);
+			Assert.IsInstanceOfType(children[2], typeof(DecrementNode));
+		}
+
+		[TestMethod]
+		public void TransformToIncDec_Subtract_Right_Optimizes()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(0)));
+			ast.AddChild(new VariableAssignmentNode("x", new SubtractionNode(new VariableValueNode("x"), new ShortValueNode(1))));
+
+			var changesmade = TransformToIncDec(ast);
+
+			Assert.IsTrue(changesmade);
+			var children = ast.GetChildren();
+			Assert.AreEqual(3, children.Length);
+			Assert.IsInstanceOfType(children[2], typeof(DecrementNode));
+		}
+
 
 		[TestMethod]
 		public void CreateBasicBlocks_OneBlock() {

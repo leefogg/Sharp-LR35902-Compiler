@@ -8,7 +8,7 @@ using static Sharp_LR35902_Compiler.Nodes.ExpressionNode;
 namespace Sharp_LR35902_Compiler {
 	public static class Optimizer {
 		public static void Optimize(BlockNode block) {
-			while (PropagateConstants(block) || RemoveUnusedVariables(block)) { }
+			while (PropagateConstants(block) || RemoveUnusedVariables(block) || TransformToIncDec(block)) { }
 
 			foreach (var child in block.GetChildren())
 				if (child is IfNode ifnode)
@@ -16,11 +16,54 @@ namespace Sharp_LR35902_Compiler {
 		}
 
 		public static void Simplify(BlockNode block) {
-			while (TransformAdditionAssignmentToExpression(block) || TransformSubtractionAssignmentToExpression(block) || FlattenExpressions(block)) { }
+			while (TransformAdditionAssignmentToExpression(block) 
+				|| TransformSubtractionAssignmentToExpression(block) 
+				|| FlattenExpressions(block)) { }
 
 			foreach (var child in block.GetChildren())
 				if (child is IfNode ifnode)
 					Simplify(ifnode.IfTrue);
+		}
+
+		public static bool TransformToIncDec(BlockNode block) {
+			var children = block.GetChildren().ToList();
+			var changesmade = false;
+			for (var i = 0; i < children.Count; i++) {
+				var node = children[i];
+
+				if (!(node is VariableAssignmentNode assignment))
+					continue;
+
+				BinaryOperatorNode expression = null;
+				if (assignment.Value is AdditionNode add)
+					expression = add;
+				if (assignment.Value is SubtractionNode sub)
+					expression = sub;
+				if (expression == null)
+					continue;
+
+				ExpressionNode left, right;
+				if (expression.Left is ShortValueNode) {
+					left = expression.Left;
+					right = expression.Right;
+				} else {
+					right = expression.Left;
+					left = expression.Right;
+				}
+				if (left is ShortValueNode value && value.Value == 1 && right is VariableValueNode var && var.VariableName == assignment.VariableName) {
+					children.RemoveAt(i);
+					block.RemoveChild(i);
+					if (expression is AdditionNode) {
+						block.AddChild(new IncrementNode(assignment.VariableName));
+					} else {
+						block.AddChild(new DecrementNode(assignment.VariableName));
+					}
+
+					changesmade = true;
+				}
+			}
+
+			return changesmade;
 		}
 
 		public static bool PropagateConstants(BlockNode block) {
