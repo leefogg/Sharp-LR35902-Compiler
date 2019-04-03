@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Sharp_LR35902_Compiler.Nodes;
-using System.Linq;
 using static Sharp_LR35902_Compiler.Nodes.ExpressionNode;
 
 namespace Sharp_LR35902_Compiler {
@@ -9,9 +8,12 @@ namespace Sharp_LR35902_Compiler {
 		public static void Optimize(BlockNode block) {
 			while (PropagateConstants(block) || RemoveUnusedVariables(block) || TransformToIncDec(block)) { }
 
-			foreach (var child in block.GetChildren())
-				if (child is IfNode ifnode)
-					Simplify(ifnode.IfTrue);
+			foreach (var child in block.GetChildren()) {
+				if (child is IfNode ifnode) {
+					Optimize(ifnode.IfTrue);
+					Optimize(ifnode.IfFalse);
+				}
+			}
 		}
 
 		public static void Simplify(BlockNode block) {
