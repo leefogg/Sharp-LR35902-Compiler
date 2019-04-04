@@ -91,21 +91,18 @@ namespace Sharp_LR35902_Compiler {
 						yield return $"LD {GetVariableRegister(var.VariableName)} {imval.Value}";
 						break;
 					case VariableAssignmentNode var when var.Value is MemoryValueNode memval:
-						yield return "PUSH HL";
-						yield return $"LD HL {memval.Address}";
-						yield return "LD A (HL)";
+						yield return $"LD A ({memval.Address})";
 						yield return $"LD {GetVariableRegister(var.VariableName)} A";
-						yield return "POP HL";
 						break;
 					case MemoryAssignmentNode var:
-						yield return "PUSH HL";
-						yield return $"LD HL {var.Address}";
 						if (var.Value is VariableValueNode vval) {
-							yield return $"LD (HL) {GetVariableRegister(vval.VariableName)}";
+							yield return $"LD ({var.Address}) {GetVariableRegister(vval.VariableName)}";
 						} else if (var.Value is ShortValueNode shortval) {
+							yield return "PUSH HL";
+							yield return $"LD HL {var.Address}";
 							yield return $"LD (HL) {shortval.Value}";
+							yield return "POP HL";
 						}
-						yield return "POP HL";
 						break;
 					case VariableAssignmentNode var: {
 						if (var.Value is BinaryOperatorNode oprator) {

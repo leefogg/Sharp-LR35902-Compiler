@@ -443,6 +443,21 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
+		public void EmitAssembly_MemoryWrite_WithVariable()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			ast.AddChild(new VariableAssignmentNode("x", new ShortValueNode(10)));
+			ast.AddChild(new MemoryAssignmentNode(100, new VariableValueNode("x")));
+
+			var asm = EmitAssembly(ast).ToArray();
+
+			EndsWith(new[] {
+				"LD (100) C"
+			}, asm);
+		}
+
+		[TestMethod]
 		public void EmitAssembly_AssignVariable_WithMemory()
 		{
 			var ast = new ASTNode();
@@ -452,11 +467,8 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var asm = EmitAssembly(ast).ToList();
 
 			ListEqual(new[] {
-				"PUSH HL",
-				"LD HL 31",
-				"LD A (HL)",
+				"LD A (31)",
 				"LD C A",
-				"POP HL"
 			}, asm);
 		}
 
