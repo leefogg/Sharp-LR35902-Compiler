@@ -23,7 +23,7 @@ namespace Sharp_LR35902_Compiler.Nodes {
 
 		public override IEnumerable<string> GetWrittenVaraibles() => IfTrue.GetWrittenVaraibles().Concat(IfFalse.GetWrittenVaraibles());
 
-		public override IEnumerable<string> GetReadVariables() => IfTrue.GetReadVariables().Concat(IfFalse.GetReadVariables());
+		public override IEnumerable<string> GetReadVariables() => IfTrue.GetReadVariables().Concat(IfFalse.GetReadVariables()).Concat(Condition.GetReadVariables());
 		public override IEnumerable<Node> GetChildren() => Condition.GetChildren().Concat(IfTrue.GetChildren()).Concat(IfFalse.GetChildren());
 	}
 }
