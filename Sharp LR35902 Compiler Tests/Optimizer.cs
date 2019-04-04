@@ -475,6 +475,76 @@ namespace Sharp_LR35902_Compiler_Tests {
 		}
 
 		[TestMethod]
+		public void FlattenExpression_Assignment_MemoryValue_Left()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			var additionnode = new AdditionNode(new MemoryValueNode(100), new ShortValueNode(10));
+			var assignment = new VariableAssignmentNode("x", additionnode);
+			ast.AddChild(assignment);
+
+			var changes = FlattenExpression(ast, 1);
+
+			Assert.IsTrue(changes > 0);
+			var children = ast.GetChildren().ToList();
+			Assert.AreEqual(4, children.Count);
+			Assert.IsInstanceOfType(additionnode.Left, typeof(VariableValueNode));
+			Assert.IsInstanceOfType(children[0], typeof(VariableDeclarationNode));
+			Assert.IsInstanceOfType(children[1], typeof(VariableDeclarationNode));
+			Assert.IsInstanceOfType(children[2], typeof(VariableAssignmentNode));
+			Assert.IsInstanceOfType(children[3], typeof(VariableAssignmentNode));
+			Assert.AreSame(children[3], assignment);
+		}
+
+		[TestMethod]
+		public void FlattenExpression_Assignment_MemoryValue_Right()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			var additionnode = new AdditionNode(new ShortValueNode(10), new MemoryValueNode(100));
+			var assignment = new VariableAssignmentNode("x", additionnode);
+			ast.AddChild(assignment);
+
+			var changes = FlattenExpression(ast, 1);
+
+			Assert.IsTrue(changes > 0);
+			var children = ast.GetChildren().ToList();
+			Assert.AreEqual(4, children.Count);
+			Assert.IsInstanceOfType(additionnode.Right, typeof(VariableValueNode));
+			Assert.IsInstanceOfType(children[0], typeof(VariableDeclarationNode));
+			Assert.IsInstanceOfType(children[1], typeof(VariableDeclarationNode));
+			Assert.IsInstanceOfType(children[2], typeof(VariableAssignmentNode));
+			Assert.IsInstanceOfType(children[3], typeof(VariableAssignmentNode));
+			Assert.AreSame(children[3], assignment);
+		}
+
+		[TestMethod]
+		public void FlattenExpression_Assignment_MemoryValue_Both()
+		{
+			var ast = new ASTNode();
+			ast.AddChild(new VariableDeclarationNode("byte", "x"));
+			var additionnode = new AdditionNode(new MemoryValueNode(100), new MemoryValueNode(100));
+			var assignment = new VariableAssignmentNode("x", additionnode);
+			ast.AddChild(assignment);
+
+			var changes = FlattenExpression(ast, 1);
+
+			Assert.IsTrue(changes > 0);
+			var children = ast.GetChildren().ToList();
+			Assert.AreEqual(6, children.Count);
+			Assert.IsInstanceOfType(additionnode.Left, typeof(VariableValueNode));
+			Assert.IsInstanceOfType(additionnode.Right, typeof(VariableValueNode));
+			Assert.IsInstanceOfType(children[0], typeof(VariableDeclarationNode));
+			Assert.IsInstanceOfType(children[1], typeof(VariableDeclarationNode));
+			Assert.IsInstanceOfType(children[2], typeof(VariableAssignmentNode));
+			Assert.IsInstanceOfType(children[3], typeof(VariableDeclarationNode));
+			Assert.IsInstanceOfType(children[4], typeof(VariableAssignmentNode));
+			Assert.IsInstanceOfType(children[5], typeof(VariableAssignmentNode));
+			Assert.AreSame(children[5], assignment);
+			Assert.AreNotEqual(((VariableAssignmentNode)children[2]).VariableName, ((VariableAssignmentNode)children[4]).VariableName);
+		}
+
+		[TestMethod]
 		public void TransformToIncDec_Increment_Left_Optimizes() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));

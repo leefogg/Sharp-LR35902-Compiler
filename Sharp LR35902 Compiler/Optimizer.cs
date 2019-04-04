@@ -225,7 +225,7 @@ namespace Sharp_LR35902_Compiler {
 				return count;
 			}
 			if (currentblock is IfNode ifNode) {
-				if (!(ifNode.Condition is BinaryOperatorNode value)) // Flat enough
+				if (ifNode.Condition is VariableValueNode value) // Flat enough
 					return 0;
 
 				var tempvarname = ExtractVariable(block, ifNode.Condition, ref index);
@@ -239,7 +239,7 @@ namespace Sharp_LR35902_Compiler {
 
 		private static string ExtractVariable(BlockNode block, ExpressionNode expression, ref int index, string name = "intermediate") {
 			block.InsertAt(new VariableDeclarationNode("byte", name), index++);
-			block.InsertAt(new VariableAssignmentNode(name, expression), index);
+			block.InsertAt(new VariableAssignmentNode(name, expression), index++);
 
 			return name;
 		}
@@ -257,8 +257,19 @@ namespace Sharp_LR35902_Compiler {
 				op.Right = new VariableValueNode(extractedOperationName);
 			}
 
-			if (depth == 0)
+			if (depth == 0) {
+				if (op.Left is MemoryValueNode) {
+					var tempname = ExtractVariable(block, op.Left, ref index, $"intermediate{count++}");
+					op.Left = new VariableValueNode(tempname);
+				}
+
+				if (op.Right is MemoryValueNode) {
+					var tempname = ExtractVariable(block, op.Right, ref index, $"intermediate{count++}");
+					op.Right = new VariableValueNode(tempname);
+				}
+
 				return string.Empty;
+			}
 
 			// Left and Right side are known to be constants or variables now
 			var intermediateVariableName = $"intermediate{count}";
