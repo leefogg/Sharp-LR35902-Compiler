@@ -24,5 +24,7 @@ namespace Sharp_LR35902_Compiler.Nodes {
 				return new ShortValueNode(knownvariables[VariableName]);
 			return this;
 		}
+
+		public override string ToString() => VariableName;
 	}
 }

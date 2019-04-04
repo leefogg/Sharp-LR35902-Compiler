@@ -19,5 +19,7 @@ namespace Sharp_LR35902_Compiler.Nodes.Assignment {
 		}
 
 		public override IEnumerable<Node> GetChildren() { yield return Value; }
+
+		public override string ToString() => BuiltIn.Operators.Pointer + Address + " = " + Value.ToString();
 	}
 }

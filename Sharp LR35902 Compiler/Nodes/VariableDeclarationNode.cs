@@ -22,5 +22,7 @@ namespace Sharp_LR35902_Compiler.Nodes {
 		}
 
 		public override IEnumerable<Node> GetChildren() => NoChildren;
+
+		public override string ToString() => DataType + ' ' + VariableName;
 	}
 }

@@ -5,7 +5,6 @@ namespace Sharp_LR35902_Compiler.Nodes {
 	public class VariableAssignmentNode : AssignmentNode {
 		public string VariableName { get; set; }
 		
-
 		public VariableAssignmentNode(string variablename, ExpressionNode value) : base(value) {
 			VariableName = variablename;
 		}
@@ -21,5 +20,7 @@ namespace Sharp_LR35902_Compiler.Nodes {
 		}
 
 		public override IEnumerable<Node> GetChildren() { yield return Value; }
+
+		public override string ToString() => VariableName + ' ' + BuiltIn.Operators.Equal + ' ' + Value.ToString();
 	}
 }

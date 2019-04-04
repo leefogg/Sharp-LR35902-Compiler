@@ -27,7 +27,8 @@ namespace Sharp_LR35902_Compiler {
 				LessThan = "<",
 				And = "&&",
 				Or = "||",
-				Not = "!";
+				Not = "!",
+				Pointer = "*";
 		}
 	}
 }

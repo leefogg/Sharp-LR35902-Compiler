@@ -22,5 +22,8 @@ namespace Sharp_LR35902_Compiler.Nodes
 			yield return Left;
 			yield return Right;
 		}
+
+		public override string ToString() => Left.ToString() + ' ' + GetSymbol() + ' ' + Right.ToString();
+		protected abstract string GetSymbol();
 	}
 }

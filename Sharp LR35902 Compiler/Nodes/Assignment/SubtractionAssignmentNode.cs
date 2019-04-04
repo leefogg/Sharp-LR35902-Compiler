@@ -13,5 +13,7 @@ namespace Sharp_LR35902_Compiler.Nodes {
 		}
 
 		public override IEnumerable<string> GetReadVariables() => Value.GetReadVariables().Concat(new[] { VariableName });
+
+		public override string ToString() => VariableName + " -= " + Value.ToString();
 	}
 }

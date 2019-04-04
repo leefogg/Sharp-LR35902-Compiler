@@ -18,5 +18,7 @@ namespace Sharp_LR35902_Compiler.Nodes {
 
 			return false;
 		}
+
+		public override string ToString() => BuiltIn.Operators.Pointer + Address;
 	}
 }

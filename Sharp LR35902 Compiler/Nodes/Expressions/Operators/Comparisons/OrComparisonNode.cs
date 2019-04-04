@@ -19,5 +19,7 @@ namespace Sharp_LR35902_Compiler.Nodes {
 
 			return this;
 		}
+
+		protected override string GetSymbol() => BuiltIn.Operators.Or;
 	}
 }

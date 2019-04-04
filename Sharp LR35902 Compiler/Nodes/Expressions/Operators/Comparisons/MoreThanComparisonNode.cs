@@ -17,5 +17,7 @@ namespace Sharp_LR35902_Compiler.Nodes {
 
 			return new MoreThanComparisonNode(left, right);
 		}
+
+		protected override string GetSymbol() => BuiltIn.Operators.MoreThan;
 	}
 }
