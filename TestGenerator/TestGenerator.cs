@@ -544,7 +544,11 @@ namespace Sharp_LR35902_Compiler_Tests {
 				instruction = instruction.Replace(',', ' ');
 				// Write the method
 				var numexternalbytes = instruction.Count(c => c == 'n');
-				var methodname = instruction.Replace(',', '_').Replace(' ', '_').Replace("(", "").Replace(")", "");
+				var methodname = instruction
+					.Replace(',', '_')
+					.Replace(' ', '_')
+					.Replace("(", "")
+					.Replace(")", "");
 				if (isCB)
 					methodname = "CB_" + methodname;
 				instruction = instruction.Replace("nn", nnstring);
@@ -570,12 +574,16 @@ namespace Sharp_LR35902_Compiler_Tests {
 			var instructionsopcodes = new List<string>(42);
 
 			void writeNegativeTests(string instruction, bool isCB) {
+				instruction = instruction.Replace(',',' ');
 				var numexternalbytes = instruction.Count(c => c == 'n');
-				var basemethodname = instruction.Replace(',', '_').Replace(' ', '_').Replace("(", "").Replace(")", "");
+				var basemethodname = instruction
+					.Replace(',', '_')
+					.Replace(' ', '_')
+					.Replace("(", "")
+					.Replace(")", "");
 				if (isCB)
 					basemethodname = "CB_" + basemethodname;
 				var instructionparts = instruction
-					.Replace(',', ' ')
 					.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
 				var instructionname = instructionparts[0].ToUpper();
 
@@ -583,7 +591,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 					if (instructionsopcodes.IndexOf(instructionparts[0]) == -1) {
 						fileoutput.Add("[TestMethod]");
 						fileoutput.Add("[ExpectedException(typeof(SyntaxException))]");
-						fileoutput.Add("public void " + instructionname + "_WrongNumberOfOprands() {");
+						fileoutput.Add("public void " + basemethodname + "_WrongNumberOfOprands() {");
 						fileoutput.Add("var assembler = new Sharp_LR35902_Assembler.Assembler();");
 						fileoutput.Add($"assembler.CompileInstruction(\"{instructionname}\"); // No oprands");
 						fileoutput.Add("}");
@@ -591,6 +599,15 @@ namespace Sharp_LR35902_Compiler_Tests {
 						instructionsopcodes.Add(instructionparts[0]);
 						Console.WriteLine(instructionparts[0]);
 					}
+
+				if (instructionparts.Contains("nn")) {
+					var code = instruction.Replace("nn", n);
+					fileoutput.Add("[TestMethod]");
+					fileoutput.Add("public void " + basemethodname + "_SmallAddress() {");
+					fileoutput.Add("var assembler = new Sharp_LR35902_Assembler.Assembler();");
+					fileoutput.Add($"assembler.CompileInstruction(\"{code}\");");
+					fileoutput.Add("}");
+				}
 
 				/* 
 				 // Commenting these out as they're not providing much are are really tricky to implement
@@ -625,14 +642,15 @@ namespace Sharp_LR35902_Compiler_Tests {
 				}
 				*/
 				if (numexternalbytes == 1) {
-					instruction = instruction.Replace("nn", nnstring);
-					instruction = instruction.Replace("n", nnstring); // Purposely the wrong one
+					var code = instruction
+						.Replace("nn", nnstring)
+						.Replace("n", nnstring); // Purposely the wrong one
 
 					fileoutput.Add("[TestMethod]");
 					fileoutput.Add("[ExpectedException(typeof(SyntaxException))]");
 					fileoutput.Add("public void " + basemethodname + "_ImmediateTooBig() {");
 					fileoutput.Add("var assembler = new Sharp_LR35902_Assembler.Assembler();");
-					fileoutput.Add($"assembler.CompileInstruction(\"{instruction}\");");
+					fileoutput.Add($"assembler.CompileInstruction(\"{code}\");");
 					fileoutput.Add("}");
 				}
 			}

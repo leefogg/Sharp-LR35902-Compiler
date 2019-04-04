@@ -114,7 +114,7 @@ namespace Sharp_LR35902_Assembler {
 				// Assigning ushort to register pair
 				// 0xn1
 				ushort oprand2const = 0;
-				if (TryParseImmediate(oprands[1], ref oprand2const) && !oprand2const.isByte()) {
+				if (RegisterPairs.Contains(oprands[0]) && TryParseImmediate(oprands[1], ref oprand2const)) {
 					var pairindex = RegisterPairs.IndexOf(oprands[0]);
 					if (pairindex == -1)
 						throw new ArgumentException($"Register pair '{oprands[1]}' doesn't exist");
@@ -139,7 +139,7 @@ namespace Sharp_LR35902_Assembler {
 				if (oprand1offset == -1) {
 					ushort location = 0;
 					if (!TryParseImmediate(TrimBrackets(oprands[0]), ref location))
-						throw new ArgumentException($"Unexpected expression '{oprands[1]}', expected uint16.");
+						throw new ArgumentException($"Unexpected expression '{oprands[0]}', expected uint16.");
 
 					var locationbytes = location.ToByteArray();
 					if (oprands[1] == "A")
@@ -170,8 +170,9 @@ namespace Sharp_LR35902_Assembler {
 					var bytecode = 0x06 + oprand1offset * 8;
 
 					ushort immediate = 0;
-					if (!TryParseImmediate(oprands[1], ref immediate))
-						throw new FormatException($"Oprand 2 '{oprands[1]}' is not a valid immediate");
+					if (!TryParseImmediate(oprands[1], ref immediate) || !immediate.isByte())
+						throw new ArgumentException($"Unexpected expression '{oprands[1]}', expected uint8.");
+
 					return new[] {(byte)bytecode, (byte)immediate};
 				} else // 0x40 - 0x6F
 				{
@@ -399,7 +400,7 @@ namespace Sharp_LR35902_Assembler {
 				}
 
 				if (!TryParseImmediate(oprands[1], ref address, true))
-					throw new ArgumentException($"Unknown expression '{oprands[0]}'.");
+					throw new ArgumentException($"Unknown expression '{oprands[1]}'.");
 
 				var immediatebytes = address.ToByteArray();
 				return ListOf((byte)(0xC2 + 8 * conditionindex), immediatebytes[0], immediatebytes[1]);
