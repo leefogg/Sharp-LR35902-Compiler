@@ -21,9 +21,12 @@ namespace Sharp_LR35902_Compiler {
 				|| TransformSubtractionAssignmentToExpression(block) 
 				|| FlattenExpressions(block)) { }
 
-			foreach (var child in block.GetChildren())
-				if (child is IfNode ifnode)
+			foreach (var child in block.GetChildren()) {
+				if (child is IfNode ifnode) {
 					Simplify(ifnode.IfTrue);
+					Simplify(ifnode.IfFalse);
+				}
+			}
 		}
 
 		public static bool TransformToIncDec(BlockNode block) {
