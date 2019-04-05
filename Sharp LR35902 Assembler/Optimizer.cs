@@ -17,7 +17,8 @@ namespace Sharp_LR35902_Assembler {
 			var basicblocks = CreateBasicBlocks(instructions).ToList();
 			while (RemoveOverwrittenWrites(basicblocks)) { }
 
-			instructions = basicblocks.SelectMany(list => list).ToList();
+			instructions.Clear();
+			instructions.AddRange(basicblocks.SelectMany(list => list).ToList());
 
 			// Convert
 			for (var i = 0; i < instructions.Count; i++)
