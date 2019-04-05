@@ -145,6 +145,7 @@ namespace Sharp_LR35902_Compiler {
 						break;
 					}
 					case IfNode ifNode:
+						yield return "XOR A";
 						yield return $"CP {GetVariableRegister(((VariableValueNode)ifNode.Condition).VariableName)}"; // Formatter should extract condition before it gets here
 						var iffalselabel = getRandomLabelName();
 						yield return $"JP NZ {iffalselabel}";

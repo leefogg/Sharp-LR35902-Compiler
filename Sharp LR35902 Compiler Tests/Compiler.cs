@@ -393,6 +393,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			ListEqual(new[] {
 				"LD C 1",
+				"XOR A",
 				"CP C",
 				"JP NZ generatedLabel1",
 				"LD C 1",
@@ -416,6 +417,7 @@ namespace Sharp_LR35902_Compiler_Tests {
 
 			ListEqual(new[] {
 				"LD C 1",
+				"XOR A",
 				"CP C",
 				"JP NZ generatedLabel1",
 				"LD C 1",
