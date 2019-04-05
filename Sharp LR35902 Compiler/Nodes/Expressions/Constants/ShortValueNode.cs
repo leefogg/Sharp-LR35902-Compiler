@@ -14,5 +14,7 @@ namespace Sharp_LR35902_Compiler.Nodes {
 		}
 
 		public override ushort GetValue() => Value;
+
+		public override string ToString() => Value.ToString();
 	}
 }
