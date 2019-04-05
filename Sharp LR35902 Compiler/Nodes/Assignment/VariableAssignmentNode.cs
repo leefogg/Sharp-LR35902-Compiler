@@ -21,6 +21,6 @@ namespace Sharp_LR35902_Compiler.Nodes {
 
 		public override IEnumerable<Node> GetChildren() { yield return Value; }
 
-		public override string ToString() => VariableName + ' ' + BuiltIn.Operators.Equal + ' ' + Value.ToString();
+		public override string ToString() => VariableName + ' ' + BuiltIn.Operators.Assign + ' ' + Value.ToString();
 	}
 }
