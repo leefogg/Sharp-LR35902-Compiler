@@ -249,12 +249,14 @@ namespace Sharp_LR35902_Compiler {
 			var seenvariables = new List<string>();
 
 			foreach (var node in children) {
-				if (node is VariableAssignmentNode assignmentnode) {
-					if (seenvariables.Contains(assignmentnode.VariableName))
+				var writtenvaraibles = node.GetWrittenVaraibles();
+				foreach (var variablename in writtenvaraibles) {
+					if (seenvariables.Contains(variablename))
 						continue;
-					var lastusage = FindLastVariableUsage(children, assignmentnode.VariableName, index);
-					yield return new VariableUseRange(assignmentnode.VariableName, index, lastusage);
-					seenvariables.Add(assignmentnode.VariableName);
+					
+					var lastusage = FindLastVariableUsage(children, variablename, index);
+					yield return new VariableUseRange(variablename, index, lastusage);
+					seenvariables.Add(variablename);
 				}
 
 				index++;
