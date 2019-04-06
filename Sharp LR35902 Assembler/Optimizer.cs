@@ -193,7 +193,7 @@ namespace Sharp_LR35902_Assembler {
 				yield return currentblock;
 		}
 
-		public static string LD_A_0_TO_XOR_A(string instruction) => instruction == "LD A, 0" ? "XOR A" : instruction;
+		public static string LD_A_0_TO_XOR_A(string instruction) => instruction == "LD A 0" ? "XOR A" : instruction;
 		public static string ADD_A_1_TO_INC_A(string instruction) => instruction == "ADD A 1" ? "INC A" : instruction;
 	}
 }

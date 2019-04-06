@@ -16,7 +16,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 
 		[TestMethod]
 		public void LD_A_0_TO_XOR_A_Converts() {
-			var result = LD_A_0_TO_XOR_A("LD A, 0");
+			var result = LD_A_0_TO_XOR_A("LD A 0");
 
 			Assert.AreEqual("XOR A", result);
 		}
