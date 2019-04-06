@@ -22,6 +22,13 @@ namespace Sharp_LR35902_Assembler_Tests {
 		}
 
 		[TestMethod]
+		public void ADD_A_1_TO_INC_A_Converts() {
+			var result = ADD_A_1_TO_INC_A("ADD A 1");
+
+			Assert.AreEqual("INC A", result);
+		}
+
+		[TestMethod]
 		public void DeleteUnreachableCode_EndOfFile() {
 			var lines = new List<string> {
 				"JP SOMELABEL",

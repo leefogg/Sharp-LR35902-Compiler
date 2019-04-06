@@ -21,8 +21,11 @@ namespace Sharp_LR35902_Assembler {
 			instructions.AddRange(basicblocks.SelectMany(list => list).ToList());
 
 			// Convert
-			for (var i = 0; i < instructions.Count; i++)
+			for (var i = 0; i < instructions.Count; i++) {
 				instructions[i] = LD_A_0_TO_XOR_A(instructions[i]);
+				instructions[i] = ADD_A_1_TO_INC_A(instructions[i]);
+			}
+
 			// TODO: JP to JR
 		}
 
@@ -191,5 +194,6 @@ namespace Sharp_LR35902_Assembler {
 		}
 
 		public static string LD_A_0_TO_XOR_A(string instruction) => instruction == "LD A, 0" ? "XOR A" : instruction;
+		public static string ADD_A_1_TO_INC_A(string instruction) => instruction == "ADD A 1" ? "INC A" : instruction;
 	}
 }
