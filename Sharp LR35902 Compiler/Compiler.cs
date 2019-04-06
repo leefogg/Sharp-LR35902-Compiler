@@ -115,7 +115,9 @@ namespace Sharp_LR35902_Compiler {
 								} else if (var.Value is MoreThanComparisonNode) {
 									yield return "JP C " + iffalselabelname;
 									yield return "JP NZ " + iffalselabelname;
-								}
+								} else if (var.Value is EqualsComparisonNode) {
+									yield return $"JP NZ " + iffalselabelname;
+                                }
 
 								yield return $"LD {GetVariableRegister(var.VariableName)} 1";
 								var iftruelabelname = getRandomLabelName();

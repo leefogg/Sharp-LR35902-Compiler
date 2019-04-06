@@ -312,7 +312,30 @@ namespace Sharp_LR35902_Compiler_Tests {
 			ListEqual(expectedASM, actualASM);
 		}
 
-		[TestMethod]
+        [TestMethod]
+        public void EmitAssembly_Expression_Equals()
+        {
+            var rootnode = new ASTNode();
+            rootnode.AddChild(new VariableDeclarationNode("byte", "x"));
+            rootnode.AddChild(new VariableAssignmentNode("x", new EqualsComparisonNode(new ShortValueNode(5), new ShortValueNode(5))));
+
+            var actualASM = new List<string>(EmitAssembly(rootnode));
+
+            var expectedASM = new[] {
+			   "LD A 5",
+				"CP 5",
+				"JP NZ generatedLabel1",
+				"LD C 1",
+				"JP generatedLabel2",
+				"generatedLabel1:",
+				"LD C 0",
+				"generatedLabel2:"
+			};
+
+            ListEqual(expectedASM, actualASM);
+        }
+
+        [TestMethod]
 		public void EmitAssembly_Expression_LessThen() {
 			var ast = new ASTNode();
 			ast.AddChild(new VariableDeclarationNode("byte", "x"));
