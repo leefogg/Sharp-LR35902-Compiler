@@ -16,7 +16,14 @@ namespace Common_Tests
 		}
 
 		[TestMethod]
-		public void ParseImmediate_HexNumber_0x()
+		[ExpectedException(typeof(FormatException))]
+		public void ParseImmediate_HexNumber_0x_NoData()
+		{
+			ParseImmediate("0x");
+		}
+
+		[TestMethod]
+		public void ParseImmediate_HexNumber_0x_byte()
 		{
 			var num = 0x11;
 
@@ -24,8 +31,16 @@ namespace Common_Tests
 		}
 
 		[TestMethod]
+		public void ParseImmediate_HexNumber_0x_uint16()
+		{
+			var num = 0x1111;
+
+			Assert.AreEqual(num, ParseImmediate("0x1111"));
+		}
+
+		[TestMethod]
 		[ExpectedException(typeof(FormatException))]
-		public void ParseImmediate_HexNumber_0x_WrongLength()
+		public void ParseImmediate_HexNumber_0x_InvalidLength()
 		{
 			ParseImmediate("0x111");
 		}
