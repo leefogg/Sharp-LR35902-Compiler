@@ -22,6 +22,12 @@ namespace Common {
 				return parseHex(out result, stripped);
 			}
 
+			if (immediate.ToLower().EndsWith("h"))
+			{
+				var stripped = immediate.Substring(0, immediate.Length - 1);
+				return parseHex(out result, stripped);
+			}
+
 			if (immediate.StartsWith("0b", StringComparison.InvariantCultureIgnoreCase)) {
 				immediate = immediate.ToLower();
 				var bitsindex = immediate.IndexOf('b') + 1;
@@ -44,12 +50,6 @@ namespace Common {
 				return result;
 			}
 
-			if (immediate.ToLower().EndsWith("h"))
-			{
-				var stripped = immediate.Substring(0, immediate.Length-1);
-				return parseHex(out result, stripped);
-			}
-
 			throw new FormatException("Unknown immediate value format");
 		}
 
@@ -58,14 +58,15 @@ namespace Common {
 			var bytes = stripped.GetHexBytes();
 
 			result = 0;
-			for (byte i = 0; i < Math.Min(2, bytes.Length); i++)
+			for (byte i = 0; i < bytes.Length; i++)
 				result |= (ushort)(bytes[i] << (i * 8));
 
 			return result;
 		}
 
 		public static bool TryParseImmediate(string immediate, ref ushort value) {
-			try {
+			try
+			{
 				value = ParseImmediate(immediate);
 				return true;
 			}
