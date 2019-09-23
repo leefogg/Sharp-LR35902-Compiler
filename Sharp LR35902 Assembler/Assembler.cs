@@ -735,18 +735,18 @@ namespace Sharp_LR35902_Assembler {
 
 		public byte[] CompileInstruction(string code) {
 			var parts = code.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
-			return CompileInstruction(parts[0], parts.Skip(1).ToArray());
+			try {
+				return CompileInstruction(parts[0], parts.Skip(1).ToArray());
+			} catch (ArgumentException ee) {
+				throw new SyntaxException($"Unable to compile malformed instruction {code}", ee);
+			}
 		}
 
 		public byte[] CompileInstruction(string opcode, string[] oprands) {
-			try {
-				if (!Instructions.TryGetValue(opcode, out var method))
-					throw new NotFoundException($"Instruction '{opcode}' not found");
+			if (!Instructions.TryGetValue(opcode, out var method))
+				throw new NotFoundException($"Instruction '{opcode}' not found");
 
-				return method(oprands);
-			} catch (ArgumentException ee) {
-				throw new SyntaxException("Unable to compile malformed instruction", ee);
-			}
+			return method(oprands);
 		}
 
 		public void SetDefintion(string key, string value = "0") {
