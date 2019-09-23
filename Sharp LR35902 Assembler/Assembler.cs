@@ -19,6 +19,7 @@ namespace Sharp_LR35902_Assembler {
 		private readonly Dictionary<string, Func<string[], byte[]>> Instructions;
 		private readonly Dictionary<string, ushort> LabelLocations = new Dictionary<string, ushort>();
 		private ushort CurrentLocation;
+		private bool FirstPass;
 
 		// Common patterns for opcode ranges
 		private byte[] Pattern_BIT(IReadOnlyList<string> oprands, byte startopcode)
@@ -343,7 +344,7 @@ namespace Sharp_LR35902_Assembler {
 				var conditionindex = Conditions.IndexOf(oprands[0]);
 				if (conditionindex == -1) {
 					ushort address = 0;
-					if (!TryParseImmediate(oprands[0], ref address, true))
+					if (!TryParseImmediate(oprands[0], ref address))
 						throw new ArgumentException($"Unknown expression '{oprands[0]}'.");
 
 					var addressbytes = address.ToByteArray();
@@ -351,7 +352,7 @@ namespace Sharp_LR35902_Assembler {
 				}
 
 				ushort immediate = 0;
-				if (!TryParseImmediate(oprands[1], ref immediate, true))
+				if (!TryParseImmediate(oprands[1], ref immediate))
 					throw new ArgumentException($"Unknown expression '{oprands[0]}'.");
 
 				var immediatebytes = immediate.ToByteArray();
@@ -392,14 +393,14 @@ namespace Sharp_LR35902_Assembler {
 				var conditionindex = Conditions.IndexOf(oprands[0]);
 				ushort address = 0;
 				if (conditionindex == -1) {
-					if (!TryParseImmediate(oprands[0], ref address, true))
+					if (!TryParseImmediate(oprands[0], ref address))
 						throw new ArgumentException($"Unknown expression '{oprands[0]}'.");
 
 					var addressbytes = address.ToByteArray();
 					return ListOf<byte>(0xC3, addressbytes[0], addressbytes[1]);
 				}
 
-				if (!TryParseImmediate(oprands[1], ref address, true))
+				if (!TryParseImmediate(oprands[1], ref address))
 					throw new ArgumentException($"Unknown expression '{oprands[1]}'.");
 
 				var immediatebytes = address.ToByteArray();
@@ -633,6 +634,7 @@ namespace Sharp_LR35902_Assembler {
 		public byte[] CompileProgram(List<string> instructions) {
 			byte[] rom;
 			try {
+				FirstPass = true;
 				rom = getROM(instructions);
 			} catch {
 				/*  Swallow all exceptions as they'll be raised on 2nd pass.
@@ -644,6 +646,7 @@ namespace Sharp_LR35902_Assembler {
 				*/
 			}
 
+			FirstPass = false;
 			CurrentLocation = 0;
 			Definitions.Clear();
 			try {
@@ -764,7 +767,7 @@ namespace Sharp_LR35902_Assembler {
 			Definitions[key] = value;
 		}
 
-		public bool TryParseImmediate(string immediate, ref ushort result, bool trylabels = false) {
+		public bool TryParseImmediate(string immediate, ref ushort result) {
 			if (string.IsNullOrEmpty(immediate))
 				return false;
 
@@ -777,21 +780,21 @@ namespace Sharp_LR35902_Assembler {
 			immediate = parts[0];
 
 			if (parts.Count > 1) {
-				res = parseExpression(parts, trylabels);
+				res = parseExpression(parts);
 			} else if (!Parser.TryParseImmediate(immediate, ref res)) {
 				if (Definitions.ContainsKey(immediate))
 					res = Definitions[immediate];
-				else if (trylabels && LabelLocations.ContainsKey(immediate))
+				else if (LabelLocations.ContainsKey(immediate))
 					res = LabelLocations[immediate];
 				else
-					return false;
+					return FirstPass;
 			}
 
 			result = res;
 			return true;
 		}
 
-		private ushort parseExpression(List<string> parts, bool trylabels) {
+		private ushort parseExpression(List<string> parts) {
 			if (parts.Count < 3 || (parts.Count - 3) % 2 == 1)
 				throw new ArgumentException("Unbalanced expression");
 
@@ -801,10 +804,10 @@ namespace Sharp_LR35902_Assembler {
 				var right = parts[2];
 
 				ushort leftushort = 0;
-				if (!TryParseImmediate(left, ref leftushort, trylabels))
+				if (!TryParseImmediate(left, ref leftushort))
 					throw new FormatException($"Unable to parse expression '{left}' to uint16.");
 				ushort rightushort = 0;
-				if (!TryParseImmediate(right, ref rightushort, trylabels))
+				if (!TryParseImmediate(right, ref rightushort))
 					throw new FormatException($"Unable to parse expression '{rightushort}' to uint16.");
 
 				switch (op) {
