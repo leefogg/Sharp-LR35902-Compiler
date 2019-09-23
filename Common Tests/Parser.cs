@@ -16,7 +16,7 @@ namespace Common_Tests
 		}
 
 		[TestMethod]
-		public void ParseImmediate_HexNumber()
+		public void ParseImmediate_HexNumber_0x()
 		{
 			var num = 0x11;
 
@@ -25,7 +25,7 @@ namespace Common_Tests
 
 		[TestMethod]
 		[ExpectedException(typeof(FormatException))]
-		public void ParseImmediate_HexNumber_WrongLength()
+		public void ParseImmediate_HexNumber_0x_WrongLength()
 		{
 			ParseImmediate("0x111");
 		}
@@ -64,6 +64,43 @@ namespace Common_Tests
 		public void ParseImmediate_UnknownFormat()
 		{
 			ParseImmediate("x");
+		}
+
+		[TestMethod]
+		public void ParseImmediate_HexNumber_h_byte()
+		{
+			var num = 0x71;
+
+			var result = ParseImmediate("71h");
+
+			Assert.AreEqual(num, result);
+		}
+
+		[TestMethod]
+		public void ParseImmediate_HexNumber_h_Uppercase()
+		{
+			var num = 0x71;
+
+			var result = ParseImmediate("71H");
+
+			Assert.AreEqual(num, result);
+		}
+
+		[TestMethod]
+		public void ParseImmediate_HexNumber_uint16()
+		{
+			var num = 0x1171;
+
+			var result = ParseImmediate("1171h");
+
+			Assert.AreEqual(num, result);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(FormatException))]
+		public void ParseImmediate_HexNumber_InvalidLength()
+		{
+			ParseImmediate("711h");
 		}
 
 

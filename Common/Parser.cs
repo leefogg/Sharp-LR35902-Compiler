@@ -13,18 +13,13 @@ namespace Common {
 			if (immediate.Equals("false", StringComparison.InvariantCultureIgnoreCase))
 				return 0;
 
-			if (immediate.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase)) {
+			if (immediate.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
+			{
 				if (immediate.Length == 2)
 					throw new FormatException("Expected 2 hex characters after 0x");
 
 				var stripped = immediate.Substring(2);
-				var bytes = stripped.GetHexBytes();
-
-				result = 0;
-				for (byte i = 0; i < Math.Min(2, bytes.Length); i++)
-					result |= (ushort)(bytes[i] << (i * 8));
-
-				return result;
+				return parseHex(out result, stripped);
 			}
 
 			if (immediate.StartsWith("0b", StringComparison.InvariantCultureIgnoreCase)) {
@@ -49,14 +44,32 @@ namespace Common {
 				return result;
 			}
 
+			if (immediate.ToLower().EndsWith("h"))
+			{
+				var stripped = immediate.Substring(0, immediate.Length-1);
+				return parseHex(out result, stripped);
+			}
+
 			throw new FormatException("Unknown immediate value format");
+		}
+
+		private static ushort parseHex(out ushort result, string stripped)
+		{
+			var bytes = stripped.GetHexBytes();
+
+			result = 0;
+			for (byte i = 0; i < Math.Min(2, bytes.Length); i++)
+				result |= (ushort)(bytes[i] << (i * 8));
+
+			return result;
 		}
 
 		public static bool TryParseImmediate(string immediate, ref ushort value) {
 			try {
 				value = ParseImmediate(immediate);
 				return true;
-			} catch // This is a Try* method, we expect failure and just swallow the exception. Use non Try* method if you want the exception details
+			}
+			catch // This is a Try* method, we expect failure and just swallow the exception. Use non Try* method if you want the exception details
 			{
 				return false;
 			}
