@@ -573,6 +573,7 @@ namespace Sharp_LR35902_Assembler {
 				Console.WriteLine("Compiler [options] [-in inputfilepath] [-out outputfilepath]");
 				Console.WriteLine("Options:");
 				Console.WriteLine("-FHS:	Fix currupted HALTs and STOPs by ensuring a following NOP");
+				Console.WriteLine("-P n:	Set unset bytes to constant value n");
 				// TODO: Add any switches here
 				return;
 			}
@@ -580,6 +581,7 @@ namespace Sharp_LR35902_Assembler {
 			byte optimizationlevel = 1;
 			string inputpath = null, outputpath = null;
 			var fixhaltsandstops = false;
+			ushort padding = 0;
 
 			for (var i = 0; i < args.Length; i++)
 				switch (args[i].ToLower()) {
@@ -594,6 +596,13 @@ namespace Sharp_LR35902_Assembler {
 						break;
 					case "-fhs":
 						fixhaltsandstops = true;
+						break;
+					case "-p":
+						if (!Parser.TryParseImmediate(args[++i], ref padding))
+						{
+							Console.WriteLine("Error: Padding value could not be parsed");
+							return;
+						}
 						break;
 					default:
 						Console.WriteLine($"Unknown switch '{args[i]}'");
@@ -620,7 +629,7 @@ namespace Sharp_LR35902_Assembler {
 			Optimizer.Optimize(instructions, optimizationlevel);
 			byte[] bytecode;
 			try {
-				bytecode = assembler.CompileProgram(instructions);
+				bytecode = assembler.CompileProgram(instructions, (byte)padding);
 			} catch (Exception e) {
 				Console.WriteLine(e.Message);
 				Console.WriteLine("Output file has not been written.");
@@ -632,11 +641,11 @@ namespace Sharp_LR35902_Assembler {
 			}
 		}
 
-		public byte[] CompileProgram(IEnumerable<string> instructions) {
+		public byte[] CompileProgram(IEnumerable<string> instructions, byte padding = 0) {
 			byte[] rom;
 			try {
 				FirstPass = true;
-				rom = getROM(instructions);
+				rom = getROM(instructions, padding);
 			} catch {
 				/*  Swallow all exceptions as they'll be raised on 2nd pass.
 					Doing a 2-pass assembler as we need to find label locations 
@@ -651,7 +660,7 @@ namespace Sharp_LR35902_Assembler {
 			CurrentLocation = 0;
 			Definitions.Clear();
 			try {
-				rom = getROM(instructions);
+				rom = getROM(instructions, padding);
 			} catch (AggregateException ex) {
 				foreach (var exception in ex.InnerExceptions)
 				{
@@ -667,9 +676,9 @@ namespace Sharp_LR35902_Assembler {
 			return rom;
 		}
 
-		private byte[] getROM(IEnumerable<string> instructions) {
+		private byte[] getROM(IEnumerable<string> instructions, byte padding = 0) {
 			var exceptions = new List<Exception>();
-			var rom = new ROM();
+			var rom = new ROM(padding);
 
 			foreach (var instruction in instructions)
 				try {

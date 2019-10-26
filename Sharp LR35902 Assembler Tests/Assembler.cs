@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Common.Exceptions;
+using Common.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sharp_LR35902_Assembler;
 using static Test_Common.Utils;
@@ -297,6 +298,15 @@ namespace Sharp_LR35902_Assembler_Tests {
 			}
 
 			Assert.Fail();
+		}
+
+		[TestMethod]
+		public void CompileProgram_Padding_FillsROM()
+		{
+			byte padding = 255;
+			var rom = new Sharp_LR35902_Assembler.Assembler().CompileProgram(new string[0], padding);
+
+			ListEqual(IEnumerableExtensions.ListOf(padding, rom.Length), rom);
 		}
 
 		[TestMethod]
