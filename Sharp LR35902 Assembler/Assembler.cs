@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Common;
 using Common.Exceptions;
 using Common.Extensions;
@@ -631,7 +632,7 @@ namespace Sharp_LR35902_Assembler {
 			}
 		}
 
-		public byte[] CompileProgram(List<string> instructions) {
+		public byte[] CompileProgram(IEnumerable<string> instructions) {
 			byte[] rom;
 			try {
 				FirstPass = true;
@@ -653,8 +654,14 @@ namespace Sharp_LR35902_Assembler {
 				rom = getROM(instructions);
 			} catch (AggregateException ex) {
 				foreach (var exception in ex.InnerExceptions)
-					Console.WriteLine(exception.Message);
-				throw new Exception("One or more errors occured while compiling source code.");
+				{
+					if (exception is WarningException)
+						Console.Write("Warning: ");
+					else if (exception is ErrorException)
+						Console.Write("Error: ");
+					Console.Write(exception.Message);
+				}
+				throw new Exception("One or more errors occured while compiling source code.", ex);
 			}
 
 			return rom;
@@ -673,15 +680,21 @@ namespace Sharp_LR35902_Assembler {
 						continue;
 					}
 
+					byte[] compiledInstructions = null;
 					if (instruction.StartsWith('.') || instruction.StartsWith('#')) // Compiler directives
 					{
-						ParseDirective(instruction, rom, ref CurrentLocation);
-						continue;
+						compiledInstructions = ParseDirective(instruction, ref CurrentLocation);
+						if (compiledInstructions.Length == 0)
+							continue;
 					}
 
-					var assembledinstructions = CompileInstruction(upperinstruction);
+					var assembledinstructions = compiledInstructions ?? CompileInstruction(upperinstruction);
 					for (var i = 0; i < assembledinstructions.Length; i++, CurrentLocation++)
+					{
+						if (rom[CurrentLocation] != 0)
+							exceptions.Add(new OverwriteException($"Overwrote value {rom[CurrentLocation]} at location {CurrentLocation}."));
 						rom[CurrentLocation] = assembledinstructions[i];
+					}
 				} catch (Exception e) {
 					exceptions.Add(e);
 				}
@@ -697,15 +710,22 @@ namespace Sharp_LR35902_Assembler {
 				LabelLocations.Add(labelname, location);
 		}
 
-		public void ParseDirective(string instruction, ROM rom, ref ushort currentlocation) {
+		public byte[] ParseDirective(string instruction, ref ushort currentlocation) {
 			var upperinstruction = instruction.ToUpper();
 			var directive = upperinstruction.Substring(1, Math.Max(upperinstruction.IndexOf(' ') - 1, 2));
+			var parts = upperinstruction.Split(' ');
 			switch (directive) {
 				case "ORG":
-					var immediate = upperinstruction.Substring(upperinstruction.IndexOf(' ') + 1);
-					if (!TryParseImmediate(immediate, ref currentlocation))
-						throw new ArgumentException("Expected uint16 location on org instruction.");
-					break;
+					if (parts[1] == "ALIGN") {
+						ushort alignment = 0;
+						if (!TryParseImmediate(parts[2], ref alignment))
+							throw new ArgumentException("Expected uint16 location on org instruction.");
+						currentlocation += (ushort)(alignment % currentlocation);
+					} else {
+						if (!TryParseImmediate(parts[1], ref currentlocation))
+							throw new ArgumentException("Expected uint16 location on org instruction.");
+					}
+					return new byte[0];
 				case "BYTE":
 					var stringvalues = instruction.Substring(instruction.IndexOf(' ') + 1).Split(' ');
 					var values = new byte[stringvalues.Length];
@@ -720,18 +740,13 @@ namespace Sharp_LR35902_Assembler {
 						values[i] = (byte)val;
 					}
 
-					for (var i = 0; i < values.Length; i++, currentlocation++)
-						rom[currentlocation] = values[i];
-					break;
+					return values;
 				case "TEXT":
 					var text = instruction.Substring(instruction.IndexOf(' ') + 1);
-					for (var i = 0; i < text.Length; i++, currentlocation++)
-						rom[currentlocation] = (byte)text[i];
-					break;
+					return Encoding.UTF8.GetBytes(text);
 				case "DEFINE":
-					var parts = upperinstruction.Split(' ');
 					SetDefintion(parts[1], parts[2]);
-					break;
+					return new byte[0];
 				default: throw new NotFoundException($"Compiler directive '{directive}' not found.");
 			}
 		}

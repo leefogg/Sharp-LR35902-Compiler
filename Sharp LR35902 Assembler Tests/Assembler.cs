@@ -90,7 +90,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 
 		[TestMethod]
 		public void CompileProgram_MultipleLines() {
-			var result = new Sharp_LR35902_Assembler.Assembler().CompileProgram(new List<string> {"EI", "EI"});
+			var result = new Sharp_LR35902_Assembler.Assembler().CompileProgram(new[] {"EI", "EI"});
 			StartsWith(
 				new byte[] {0xFB, 0xFB, 0x00},
 				result
@@ -102,7 +102,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 			ushort expectedvalue = 0x7F;
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
 
-			assembler.CompileProgram(new List<string> {$"#DEFINE X {expectedvalue}"});
+			assembler.CompileProgram(new[] {$"#DEFINE X {expectedvalue}"});
 
 			ushort value = 0;
 			Assert.IsTrue(assembler.TryParseImmediate("X", ref value));
@@ -114,7 +114,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 			ushort expectedvalue = 0x7F;
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
 
-			assembler.CompileProgram(new List<string> {"#DEFINE X 0x7F"});
+			assembler.CompileProgram(new[] {"#DEFINE X 0x7F"});
 
 			ushort value = 0;
 			Assert.IsTrue(assembler.TryParseImmediate("X", ref value));
@@ -123,7 +123,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 
 		[TestMethod]
 		public void CompileProgram_ReplacesLabelLocation_Jump() {
-			var instructions = new List<string> {
+			var instructions = new[] {
 				"XOR A",
 				"jumplabel:",
 				"JP jumplabel"
@@ -139,7 +139,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 
 		[TestMethod]
 		public void CompileProgram_ReplacesLabelLocation_Call() {
-			var instructions = new List<string> {
+			var instructions = new[] {
 				"XOR A",
 				"calllabel:",
 				"CALL calllabel"
@@ -155,7 +155,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 
 		[TestMethod]
 		public void CompileProgram_ReplacesLabelLocation_NonCaseSensitive() {
-			var instructions = new List<string> {
+			var instructions = new[] {
 				"XOR A",
 				"AbCdEFDG:",
 				"JP AbCdEFDG"
@@ -172,7 +172,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 		[TestMethod]
 		[ExpectedException(typeof(Exception))]
 		public void CompileProgram_ReplacesLabelLocation_ThrowIfNotFound() {
-			var instructions = new List<string> {
+			var instructions = new[] {
 				"XOR A",
 				"top:",
 				"JP bottom"
@@ -183,51 +183,55 @@ namespace Sharp_LR35902_Assembler_Tests {
 
 		[TestMethod]
 		public void ParseDirective_Org() {
-			var rom = new ROM();
 			ushort currentlocation = 0;
 
-			new Sharp_LR35902_Assembler.Assembler().ParseDirective(".ORG 0x03", rom, ref currentlocation);
+			new Sharp_LR35902_Assembler.Assembler().ParseDirective(".ORG 0x03", ref currentlocation);
 
 			Assert.AreEqual(0x03, currentlocation);
 		}
 
 		[TestMethod]
+		public void ParseDirective_Org_Align()
+		{
+			ushort currentlocation = 10;
+
+			var assembler = new Sharp_LR35902_Assembler.Assembler();
+			assembler.ParseDirective(".ORG align 16", ref currentlocation);
+
+			Assert.AreEqual(16, currentlocation);
+		}
+
+		[TestMethod]
 		public void ParseDirective_SupportsHash() {
-			var rom = new ROM();
 			ushort currentlocation = 0;
 
-			new Sharp_LR35902_Assembler.Assembler().ParseDirective("#ORG 0x03", rom, ref currentlocation);
+			new Sharp_LR35902_Assembler.Assembler().ParseDirective("#ORG 0x03", ref currentlocation);
 
 			Assert.AreEqual(0x03, currentlocation);
 		}
 
 		[TestMethod]
 		public void ParseDirective_Byte() {
-			var rom = new ROM();
-			ushort currentlocation = 1;
+			ushort currentlocation = 0;
 
-			new Sharp_LR35902_Assembler.Assembler().ParseDirective(".byte 1 0x01 0b00000001", rom, ref currentlocation);
-
-			Assert.AreEqual(4, currentlocation);
+			var rom = new Sharp_LR35902_Assembler.Assembler().ParseDirective(".byte 1 0x01 0b00000001", ref currentlocation);
+			
 			StartsWith(
 				new byte[] {
-					0,
 					0x01,
 					0x01,
 					0x01
 				},
 				rom
 			);
-			Assert.AreEqual(4, currentlocation);
 		}
 
 		[TestMethod]
 		[ExpectedException(typeof(ArgumentException))]
 		public void ParseDirective_Byte_MustBe8Bit() {
-			var rom = new ROM();
 			ushort currentlocation = 1;
 
-			new Sharp_LR35902_Assembler.Assembler().ParseDirective(".byte 256", rom, ref currentlocation);
+			new Sharp_LR35902_Assembler.Assembler().ParseDirective(".byte 256", ref currentlocation);
 
 			Assert.AreEqual(2, currentlocation);
 		}
@@ -235,25 +239,21 @@ namespace Sharp_LR35902_Assembler_Tests {
 		[TestMethod]
 		[ExpectedException(typeof(ArgumentException))]
 		public void ParseDirective_Byte_FailedToParseThrows() {
-			var rom = new ROM();
-			ushort currentlocation = 1;
+				ushort currentlocation = 1;
 
-			new Sharp_LR35902_Assembler.Assembler().ParseDirective(".byte 255 x", rom, ref currentlocation);
+			new Sharp_LR35902_Assembler.Assembler().ParseDirective(".byte 255 x",  ref currentlocation);
 
 			Assert.AreEqual(2, currentlocation);
 		}
 
 		[TestMethod]
 		public void ParseDirective_Text() {
-			var rom = new ROM();
-			ushort currentlocation = 1;
+			ushort currentlocation = 0;
 
-			new Sharp_LR35902_Assembler.Assembler().ParseDirective(".text hello", rom, ref currentlocation);
+			var rom = new Sharp_LR35902_Assembler.Assembler().ParseDirective(".text hello", ref currentlocation);
 
-			Assert.AreEqual(6, currentlocation);
 			StartsWith(
 				new byte[] {
-					0,
 					(byte)'h',
 					(byte)'e',
 					(byte)'l',
@@ -262,16 +262,41 @@ namespace Sharp_LR35902_Assembler_Tests {
 				},
 				rom
 			);
-			Assert.AreEqual(6, currentlocation);
 		}
 
 		[TestMethod]
 		[ExpectedException(typeof(NotFoundException))]
 		public void CompileProgram_CompilerDirective_NotFound() {
-			var rom = new ROM();
 			ushort currentlocation = 0;
 
-			new Sharp_LR35902_Assembler.Assembler().ParseDirective("#somedirective", rom, ref currentlocation);
+			new Sharp_LR35902_Assembler.Assembler().ParseDirective("#somedirective", ref currentlocation);
+		}
+
+
+		[TestMethod]
+		public void CompileProgram_OverwriteInstruction_ThrowsWarning()
+		{
+			var assembler = new Sharp_LR35902_Assembler.Assembler();
+
+			try
+			{
+				assembler.CompileProgram(new[]
+				{
+					".byte 255",
+					".org 0",
+					".byte 0"
+				});
+			}
+			catch (Exception ex)
+			{
+				if (ex.InnerException is AggregateException aggEx)
+				{
+					if (aggEx.InnerExceptions?[0] is OverwriteException)
+						return;
+				}
+			}
+
+			Assert.Fail();
 		}
 
 		[TestMethod]
@@ -361,12 +386,11 @@ namespace Sharp_LR35902_Assembler_Tests {
 
 		[TestMethod]
 		public void TryParseConstant_Math_WithConstant() {
-			var rom = new ROM();
 			ushort currentlocation = 0;
 			ushort val = 0;
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
 
-			assembler.ParseDirective("#DEFINE O 77", rom, ref currentlocation);
+			assembler.ParseDirective("#DEFINE O 77", ref currentlocation);
 			Assert.IsTrue(assembler.TryParseImmediate("O + 3", ref val));
 			Assert.AreEqual(80, val);
 		}
