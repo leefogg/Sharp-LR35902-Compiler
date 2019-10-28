@@ -668,7 +668,7 @@ namespace Sharp_LR35902_Assembler {
 						Console.Write("Warning: ");
 					else if (exception is ErrorException)
 						Console.Write("Error: ");
-					Console.Write(exception.Message);
+					Console.WriteLine(exception.Message);
 				}
 				throw new Exception("One or more errors occured while compiling source code.", ex);
 			}
@@ -729,7 +729,7 @@ namespace Sharp_LR35902_Assembler {
 						ushort alignment = 0;
 						if (!TryParseImmediate(parts[2], ref alignment))
 							throw new ArgumentException("Expected uint16 location on org instruction.");
-						currentlocation += (ushort)(alignment % currentlocation);
+						currentlocation += (ushort)(alignment - (currentlocation % alignment));
 					} else {
 						if (!TryParseImmediate(parts[1], ref currentlocation))
 							throw new ArgumentException("Expected uint16 location on org instruction.");
