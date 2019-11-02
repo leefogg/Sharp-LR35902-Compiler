@@ -672,11 +672,13 @@ namespace Sharp_LR35902_Assembler {
 			var containedError = false;
 			foreach (var exception in exceptions)
 			{
-				if (exception is WarningException)
+				if (exception is WarningException warning) {
 					Console.Write("Warning: ");
-				else if (exception is ErrorException)
+					printException(warning);
+				} else if (exception is ErrorException error) { 
 					Console.Write("Error: ");
-				Console.WriteLine(exception.Message);
+					printException(error);
+				}
 
 				if (!(exception is WarningException))
 					containedError = true;
@@ -685,6 +687,21 @@ namespace Sharp_LR35902_Assembler {
 				throw new AggregateException("One or more errors occured while compiling source code.", exceptions);
 
 			return rom;
+		}
+
+		private static void printException(CoreException ex) {
+			var indentation = 0;
+			var sb = new StringBuilder();
+			Exception innerException = ex;
+			while (innerException != null) {
+				sb.Clear();
+				for (var i = 0; i < indentation; i++)
+					sb.Append('\t');
+				sb.Append(innerException.Message);
+				Console.WriteLine(sb);
+
+				innerException = innerException?.InnerException;
+			}
 		}
 
 		private byte[] getROM(IEnumerable<string> instructions, IList<Exception> exceptions, byte padding = 0) {
