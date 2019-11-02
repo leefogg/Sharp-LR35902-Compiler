@@ -26,7 +26,7 @@ namespace Sharp_LR35902_Assembler {
 
 		private readonly Dictionary<string, Func<string[], byte[]>> Instructions;
 		private readonly Dictionary<string, ushort> LabelLocations = new Dictionary<string, ushort>();
-		private ushort CurrentLocation;
+		public ushort CurrentLocation;
 		private bool FirstPass;
 
 		// Common patterns for opcode ranges
@@ -419,29 +419,40 @@ namespace Sharp_LR35902_Assembler {
 				if (oprands.Length == 0)
 					throw TooFewOprandsException(1);
 
+				int getOffset(string expression) {
+					ushort destinationAddress = 0;
+					if (TryParseImmediate(expression, ref destinationAddress, false)) {
+						
+					} else if (LabelLocations.ContainsKey(expression)) {
+						destinationAddress = LabelLocations[expression];
+					} else {
+						throw UnknownExpression(expression);
+					}
+
+					var range = destinationAddress - (CurrentLocation + 2);
+					return range;
+				}
+				void checkOffset(int range, byte[] bytecode) {
+					if (range > 127)
+						throw new InvalidRangeExcpetion(bytecode, "JR destination out of range. Can only jump forward 127 bytes.");
+					if (range < -128)
+						throw new InvalidRangeExcpetion(bytecode, "JR destination out of range. Can only jump backward 128 bytes.");
+				}
+
 				var conditionindex = Conditions.IndexOf(oprands[0]);
+				int offset = 0;
+				byte[] compiledInstruction;
 				if (conditionindex == -1) {
-					ushort address = 0;
-					if (!TryParseImmediate(oprands[0], ref address))
-						throw UnknownExpression(oprands[0]);
-
-					var addressbytes = address.ToByteArray();
-					var assembledInstruction = ListOf<byte>(0x18, addressbytes[0]);
-					if (!address.isByte())
-						throw new InvalidRangeExcpetion(assembledInstruction, "Can only jump back 127 and forward 128");
-					return assembledInstruction;
+					offset = getOffset(oprands[0]);
+					compiledInstruction = ListOf<byte>(0x18, (byte)offset);
+					checkOffset(offset, compiledInstruction);
+					return compiledInstruction;
 				}
 
-				ushort immediate = 0;
-				if (TryParseImmediate(oprands[1], ref immediate)) {
-					if (!immediate.isByte())
-						throw UnexpectedInt16Exception;
-				} else {
-					throw new OprandException($"Unknown condition '{oprands[1]}'");
-				}
-
-				var immediatebytes = immediate.ToByteArray();
-				return ListOf((byte)(0x20 + 8 * conditionindex), immediatebytes[0]);
+				offset = getOffset(oprands[1]);
+				compiledInstruction = ListOf((byte)(0x20 + 8 * conditionindex), (byte)offset);
+				checkOffset(offset, compiledInstruction);
+				return compiledInstruction;
 			}
 
 			byte[] LoadAndIncrement(string[] oprands) {
@@ -736,7 +747,7 @@ namespace Sharp_LR35902_Assembler {
 							exceptions.Add(new OverwriteException($"Overwrote value {rom[CurrentLocation]} at location {CurrentLocation}."));
 						rom[CurrentLocation] = compiledInstruction[i];
 					}
-				} catch (Exception e) {
+				} catch (ErrorException e) {
 					exceptions.Add(e);
 				}
 			}
@@ -821,7 +832,7 @@ namespace Sharp_LR35902_Assembler {
 			Definitions[key] = value;
 		}
 
-		public bool TryParseImmediate(string immediate, ref ushort result) {
+		public bool TryParseImmediate(string immediate, ref ushort result, bool enableLocations = true) {
 			if (string.IsNullOrEmpty(immediate))
 				return false;
 
@@ -838,7 +849,7 @@ namespace Sharp_LR35902_Assembler {
 			} else if (!Parser.TryParseImmediate(immediate, ref res)) {
 				if (Definitions.ContainsKey(immediate))
 					res = Definitions[immediate];
-				else if (LabelLocations.ContainsKey(immediate))
+				else if (enableLocations && LabelLocations.ContainsKey(immediate))
 					res = LabelLocations[immediate];
 				else
 					return FirstPass;

@@ -283,8 +283,8 @@ namespace Sharp_LR35902_Assembler_Tests {
 		[TestMethod]
 		public void JR_n() {
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("JR 225");
-			Is(result, 0x18, 225);
+			var result = assembler.CompileInstruction("JR 100");
+			Is(result, 0x18, 98);
 		}
 
 		[TestMethod]
@@ -301,6 +301,48 @@ namespace Sharp_LR35902_Assembler_Tests {
 			assembler.CompileInstruction("JR 62689");
 		}
 
+		[TestMethod]
+		[ExpectedException(typeof(InvalidRangeExcpetion))]
+		public void JR_n_DestinationTooFarForward()
+		{
+			var assembler = new Sharp_LR35902_Assembler.Assembler();
+			assembler.AddLabelLocation("X", 130);
+			assembler.CompileInstruction("JR X");
+		}
+
+		[TestMethod]
+		public void JR_n_Label_Offset()
+		{
+			var assembler = new Sharp_LR35902_Assembler.Assembler();
+			assembler.AddLabelLocation("X", 120);
+			var bytes = assembler.CompileInstruction("JR X");
+
+			Assert.AreEqual(118, bytes[1]);
+		}
+
+		[TestMethod]
+		public void JR_n_Offset()
+		{
+			var assembler = new Sharp_LR35902_Assembler.Assembler();
+			var bytes = assembler.CompileProgram(new[]
+			{
+				".ORG 500",
+				"jr end",
+				"nop",
+				"end:",
+			}, null);
+
+			Assert.AreEqual(1, bytes[501]);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(InvalidRangeExcpetion))]
+		public void JR_n_DestinationTooFarBackward() {
+			var assembler = new Sharp_LR35902_Assembler.Assembler();
+			assembler.AddLabelLocation("X", 0);
+			assembler.CurrentLocation = 127;
+			assembler.CompileInstruction("JR X");
+		}
 
 		[TestMethod]
 		public void ADD_HL_DE() {
@@ -375,12 +417,12 @@ namespace Sharp_LR35902_Assembler_Tests {
 		[TestMethod]
 		public void JR_NZ_n() {
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("JR NZ 225");
-			Is(result, 0x20, 225);
+			var result = assembler.CompileInstruction("JR NZ 100");
+			Is(result, 0x20, 98);
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(CompilationErrorException))]
+		[ExpectedException(typeof(InvalidRangeExcpetion))]
 		public void JR_NZ_n_ImmediateTooBig() {
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
 			assembler.CompileInstruction("JR NZ 62689");
@@ -466,15 +508,53 @@ namespace Sharp_LR35902_Assembler_Tests {
 		[TestMethod]
 		public void JR_Z_n() {
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("JR Z 225");
-			Is(result, 0x28, 225);
+			var result = assembler.CompileInstruction("JR Z 100");
+			Is(result, 0x28, 98);
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(CompilationErrorException))]
+		[ExpectedException(typeof(InvalidRangeExcpetion))]
 		public void JR_Z_n_ImmediateTooBig() {
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
 			assembler.CompileInstruction("JR Z 62689");
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(InvalidRangeExcpetion))]
+		public void JR_Z_n_DestinationTooFarForward()
+		{
+			var assembler = new Sharp_LR35902_Assembler.Assembler();
+			assembler.AddLabelLocation("X", 130);
+			assembler.CompileInstruction("JR Z X");
+		}
+
+		[TestMethod]
+		public void JR_Z_n_Label_Offset()
+		{
+			var assembler = new Sharp_LR35902_Assembler.Assembler();
+			assembler.AddLabelLocation("X", 120);
+			var bytes = assembler.CompileInstruction("JR Z X");
+
+			Assert.AreEqual(118, bytes[1]);
+		}
+
+		[TestMethod]
+		public void JR_Z_n_Offset()
+		{
+			var assembler = new Sharp_LR35902_Assembler.Assembler();
+			var bytes = assembler.CompileInstruction("JR Z 100");
+
+			Assert.AreEqual(98, bytes[1]);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(InvalidRangeExcpetion))]
+		public void JR_Z_n_DestinationTooFarBackward()
+		{
+			var assembler = new Sharp_LR35902_Assembler.Assembler();
+			assembler.AddLabelLocation("X", 0);
+			assembler.CurrentLocation = 127;
+			assembler.CompileInstruction("JR Z X");
 		}
 
 
@@ -544,12 +624,12 @@ namespace Sharp_LR35902_Assembler_Tests {
 		[TestMethod]
 		public void JR_NC_n() {
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("JR NC 225");
-			Is(result, 0x30, 225);
+			var result = assembler.CompileInstruction("JR NC 100");
+			Is(result, 0x30, 98);
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(CompilationErrorException))]
+		[ExpectedException(typeof(InvalidRangeExcpetion))]
 		public void JR_NC_n_ImmediateTooBig() {
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
 			assembler.CompileInstruction("JR NC 62689");
@@ -635,12 +715,12 @@ namespace Sharp_LR35902_Assembler_Tests {
 		[TestMethod]
 		public void JR_C_n() {
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			var result = assembler.CompileInstruction("JR C 225");
-			Is(result, 0x38, 225);
+			var result = assembler.CompileInstruction("JR C 100");
+			Is(result, 0x38, 98);
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(CompilationErrorException))]
+		[ExpectedException(typeof(InvalidRangeExcpetion))]
 		public void JR_C_n_ImmediateTooBig() {
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
 			assembler.CompileInstruction("JR C 62689");
