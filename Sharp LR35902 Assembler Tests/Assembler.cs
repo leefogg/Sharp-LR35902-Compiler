@@ -4,13 +4,14 @@ using Common.Exceptions;
 using Common.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sharp_LR35902_Assembler;
+using Sharp_LR35902_Assembler.Exceptions;
 using static Test_Common.Utils;
 
 namespace Sharp_LR35902_Assembler_Tests {
 	[TestClass]
 	public class Assembler {
 		[TestMethod]
-		[ExpectedException(typeof(NotFoundException))]
+		[ExpectedException(typeof(CompilationErrorException))]
 		public void UnrecognizedInstruction() { new Sharp_LR35902_Assembler.Assembler().CompileInstruction("Something strange"); }
 
 		[TestMethod]
@@ -91,7 +92,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 
 		[TestMethod]
 		public void CompileProgram_MultipleLines() {
-			var result = new Sharp_LR35902_Assembler.Assembler().CompileProgram(new[] {"EI", "EI"});
+			var result = new Sharp_LR35902_Assembler.Assembler().CompileProgram(new[] {"EI", "EI"}, null);
 			StartsWith(
 				new byte[] {0xFB, 0xFB, 0x00},
 				result
@@ -103,7 +104,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 			ushort expectedvalue = 0x7F;
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
 
-			assembler.CompileProgram(new[] {$"#DEFINE X {expectedvalue}"});
+			assembler.CompileProgram(new[] {$"#DEFINE X {expectedvalue}"}, null);
 
 			ushort value = 0;
 			Assert.IsTrue(assembler.TryParseImmediate("X", ref value));
@@ -115,7 +116,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 			ushort expectedvalue = 0x7F;
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
 
-			assembler.CompileProgram(new[] {"#DEFINE X 0x7F"});
+			assembler.CompileProgram(new[] {"#DEFINE X 0x7F"}, null);
 
 			ushort value = 0;
 			Assert.IsTrue(assembler.TryParseImmediate("X", ref value));
@@ -130,7 +131,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 				"JP jumplabel"
 			};
 
-			var binary = new Sharp_LR35902_Assembler.Assembler().CompileProgram(instructions);
+			var binary = new Sharp_LR35902_Assembler.Assembler().CompileProgram(instructions, null);
 
 			StartsWith(
 				new byte[] {0xAF, 0xC3, 0x01, 0x00},
@@ -146,7 +147,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 				"CALL calllabel"
 			};
 
-			var binary = new Sharp_LR35902_Assembler.Assembler().CompileProgram(instructions);
+			var binary = new Sharp_LR35902_Assembler.Assembler().CompileProgram(instructions, null);
 
 			StartsWith(
 				new byte[] {0xAF, 0xCD, 0x01, 0x00},
@@ -162,7 +163,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 				"JP AbCdEFDG"
 			};
 
-			var binary = new Sharp_LR35902_Assembler.Assembler().CompileProgram(instructions);
+			var binary = new Sharp_LR35902_Assembler.Assembler().CompileProgram(instructions, null);
 
 			StartsWith(
 				new byte[] {0xAF, 0xC3, 0x01, 0x00},
@@ -171,7 +172,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(Exception))]
+		[ExpectedException(typeof(AggregateException))]
 		public void CompileProgram_ReplacesLabelLocation_ThrowIfNotFound() {
 			var instructions = new[] {
 				"XOR A",
@@ -179,7 +180,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 				"JP bottom"
 			};
 
-			new Sharp_LR35902_Assembler.Assembler().CompileProgram(instructions);
+			new Sharp_LR35902_Assembler.Assembler().CompileProgram(instructions, null);
 		}
 
 		[TestMethod]
@@ -279,32 +280,23 @@ namespace Sharp_LR35902_Assembler_Tests {
 		{
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
 
-			try
+			var exceptions = new List<Exception>();
+			assembler.CompileProgram(new[]
 			{
-				assembler.CompileProgram(new[]
-				{
-					".byte 255",
-					".org 0",
-					".byte 0"
-				});
-			}
-			catch (Exception ex)
-			{
-				if (ex.InnerException is AggregateException aggEx)
-				{
-					if (aggEx.InnerExceptions?[0] is OverwriteException)
-						return;
-				}
-			}
+				".byte 255",
+				".org 0",
+				".byte 0"
+			}, exceptions);
 
-			Assert.Fail();
+			Assert.AreEqual(1, exceptions.Count);
+			Assert.IsInstanceOfType(exceptions[0], typeof(OverwriteException));
 		}
 
 		[TestMethod]
 		public void CompileProgram_Padding_FillsROM()
 		{
 			byte padding = 255;
-			var rom = new Sharp_LR35902_Assembler.Assembler().CompileProgram(new string[0], padding);
+			var rom = new Sharp_LR35902_Assembler.Assembler().CompileProgram(new string[0], null, padding);
 
 			ListEqual(IEnumerableExtensions.ListOf(padding, rom.Length), rom);
 		}
