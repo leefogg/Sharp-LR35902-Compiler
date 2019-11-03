@@ -22,10 +22,8 @@ namespace Sharp_LR35902_Assembler {
 		private static OprandException TooFewOprandsException(int expectednumber) => new OprandException($"Expected at least {expectednumber} oprands");
 		private static OprandException UnknownOprand(string oprand) => new OprandException($"Invalid or unknown oprand '{oprand}'");
 
-		private readonly Dictionary<string, ushort> Definitions = new Dictionary<string, ushort>();
-
 		private readonly Dictionary<string, Func<string[], byte[]>> Instructions;
-		private readonly Dictionary<string, ushort> LabelLocations = new Dictionary<string, ushort>();
+		private SymbolTable SymbolTable = new SymbolTable();
 		public ushort CurrentLocation;
 		private bool FirstPass;
 
@@ -423,8 +421,8 @@ namespace Sharp_LR35902_Assembler {
 					ushort destinationAddress = 0;
 					if (TryParseImmediate(expression, ref destinationAddress, false)) {
 						
-					} else if (LabelLocations.ContainsKey(expression)) {
-						destinationAddress = LabelLocations[expression];
+					} else if (SymbolTable.TryGetLabelLocation(expression, out var location)) {
+						destinationAddress = location;
 					} else {
 						throw UnknownExpression(expression);
 					}
@@ -590,6 +588,7 @@ namespace Sharp_LR35902_Assembler {
 				Console.WriteLine("Options:");
 				Console.WriteLine("-FHS:	Fix currupted HALTs and STOPs by ensuring a following NOP");
 				Console.WriteLine("-P n:	Set unset bytes to constant value n");
+				Console.WriteLine("-SYM		Export no$gmb format symbol file");
 				// TODO: Add any switches here
 				return;
 			}
@@ -598,6 +597,7 @@ namespace Sharp_LR35902_Assembler {
 			string inputpath = null, outputpath = null;
 			var fixhaltsandstops = false;
 			ushort padding = 0;
+			var exportSymbolFile = false;
 
 			for (var i = 0; i < args.Length; i++)
 				switch (args[i].ToLower()) {
@@ -619,6 +619,9 @@ namespace Sharp_LR35902_Assembler {
 							Console.WriteLine("Error: Padding value could not be parsed");
 							return;
 						}
+						break;
+					case "-sym":
+						exportSymbolFile = true;
 						break;
 					default:
 						Console.WriteLine($"Unknown switch '{args[i]}'");
@@ -642,7 +645,7 @@ namespace Sharp_LR35902_Assembler {
 			Formatter.Format(instructions);
 			if (fixhaltsandstops)
 				Formatter.EnsureNOPAfterSTOPOrHALT(instructions);
-			Optimizer.Optimize(instructions, optimizationlevel);
+			//Optimizer.Optimize(instructions, optimizationlevel);
 			byte[] bytecode;
 			var exceptions = new List<Exception>();
 			try {
@@ -653,8 +656,14 @@ namespace Sharp_LR35902_Assembler {
 				return;
 			}
 
-			using (var outputfile = File.Create(outputpath)) {
+			using (var outputfile = File.Create(outputpath))
 				outputfile.Write(bytecode, 0, bytecode.Length);
+			if (exportSymbolFile) {
+				var outputFolder = Path.GetDirectoryName(outputpath);
+				var outputName = Path.GetFileNameWithoutExtension(outputpath);
+				var symbolFilePath = Path.Combine(outputFolder, outputName + ".sym");
+				using (var symbolFile = File.CreateText(symbolFilePath))
+					symbolFile.Write(assembler.SymbolTable.CreateSymbolFile());
 			}
 		}
 
@@ -676,7 +685,7 @@ namespace Sharp_LR35902_Assembler {
 
 			FirstPass = false;
 			CurrentLocation = 0;
-			Definitions.Clear();
+			SymbolTable.ClearDefinitions();
 			exceptions.Clear();
 
 			rom = getROM(instructions, exceptions, padding);
@@ -756,8 +765,8 @@ namespace Sharp_LR35902_Assembler {
 		}
 
 		public void AddLabelLocation(string labelname, ushort location) {
-			if (!LabelLocations.ContainsKey(labelname))
-				LabelLocations.Add(labelname, location);
+			if (!SymbolTable.TryGetLabelLocation(labelname, out var _))
+				SymbolTable.AddLabelLocation(labelname, location);
 		}
 
 		public byte[] ParseDirective(string instruction, ref ushort currentlocation) {
@@ -826,10 +835,10 @@ namespace Sharp_LR35902_Assembler {
 		}
 
 		public void SetDefintion(string key, ushort value) {
-			if (Definitions.ContainsKey(key))
+			if (SymbolTable.TryGetDefinition(key, out _))
 				Console.WriteLine($"Warning: Redeclaration of global constant '{key}.'");
 
-			Definitions[key] = value;
+			SymbolTable.AddDefinition(key, value);
 		}
 
 		public bool TryParseImmediate(string immediate, ref ushort result, bool enableLocations = true) {
@@ -847,12 +856,11 @@ namespace Sharp_LR35902_Assembler {
 			if (parts.Count > 1) {
 				res = parseExpression(parts);
 			} else if (!Parser.TryParseImmediate(immediate, ref res)) {
-				if (Definitions.ContainsKey(immediate))
-					res = Definitions[immediate];
-				else if (enableLocations && LabelLocations.ContainsKey(immediate))
-					res = LabelLocations[immediate];
-				else
+				if (SymbolTable.TryGetDefinition(immediate, out res)) {
+				} else if (enableLocations && SymbolTable.TryGetLabelLocation(immediate, out res)) {
+				} else {
 					return FirstPass;
+				}
 			}
 
 			result = res;
