@@ -589,6 +589,7 @@ namespace Sharp_LR35902_Assembler {
 				Console.WriteLine("-FHS:	Fix currupted HALTs and STOPs by ensuring a following NOP");
 				Console.WriteLine("-P n:	Set unset bytes to constant value n");
 				Console.WriteLine("-SYM		Export no$gmb format symbol file");
+				Console.WriteLine("-SUM		Fix header checksum");
 				// TODO: Add any switches here
 				return;
 			}
@@ -598,6 +599,7 @@ namespace Sharp_LR35902_Assembler {
 			var fixhaltsandstops = false;
 			ushort padding = 0;
 			var exportSymbolFile = false;
+			var fixHeaderChecksum = false;
 
 			for (var i = 0; i < args.Length; i++)
 				switch (args[i].ToLower()) {
@@ -622,6 +624,9 @@ namespace Sharp_LR35902_Assembler {
 						break;
 					case "-sym":
 						exportSymbolFile = true;
+						break;
+					case "-sum":
+						fixHeaderChecksum = true;
 						break;
 					default:
 						Console.WriteLine($"Unknown switch '{args[i]}'");
@@ -654,6 +659,13 @@ namespace Sharp_LR35902_Assembler {
 				Console.WriteLine(e.Message);
 				Console.WriteLine("Output file has not been written.");
 				return;
+			}
+
+			if (fixHeaderChecksum) {
+				byte checksum = 0;
+				for (var i = 0x0134; i <= 0x014C; i++)
+					checksum = (byte)(checksum - bytecode[i] - 1);
+				bytecode[0x14D] = checksum;
 			}
 
 			using (var outputfile = File.Create(outputpath))
