@@ -82,7 +82,7 @@ namespace Sharp_LR35902_Assembler {
 
 			ushort immediate = 0;
 			if (!TryParseImmediate(oprands[0], ref immediate))
-				throw UnknownRegisterException(oprands[0]);
+				throw UnknownExpression(oprands[0]);
 			if (!immediate.isByte())
 				throw UnexpectedInt16Exception;
 
