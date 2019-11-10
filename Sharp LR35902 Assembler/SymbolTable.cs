@@ -29,13 +29,6 @@ namespace Sharp_LR35902_Assembler
 				sb.Append(' ');
 				sb.AppendLine(key);
 			}
-			foreach (var key in Definitions.Keys) {
-				sb.Append("00:"); // We dont support banks yet
-				var location = Definitions[key];
-				sb.Append(location.ToString("X4"));
-				sb.Append(' ');
-				sb.AppendLine(key);
-			}
 
 			return sb.ToString();
 		}
