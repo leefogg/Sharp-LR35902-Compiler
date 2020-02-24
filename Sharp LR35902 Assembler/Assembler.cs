@@ -21,15 +21,16 @@ namespace Sharp_LR35902_Assembler {
 		private static SyntaxException UnknownExpression(string expression) => throw new SyntaxException($"Unknown expression '{expression}'");
 		private static OprandException TooFewOprandsException(int expectednumber) => new OprandException($"Expected at least {expectednumber} oprands");
 		private static OprandException UnknownOprand(string oprand) => new OprandException($"Invalid or unknown oprand '{oprand}'");
+		private static bool FixHaltsAndStops;
+		private static ushort PaddingValue;
+		public static readonly char[] LabelSuffixes = new[] { ':', '{' };
+		public static readonly char[] DirectivePrefixes = new[] { '.', '#' };
 
 		private readonly string CurrentPath; // The folder of the current file being processed
 		private readonly Dictionary<string, Func<string[], byte[]>> Instructions;
 		private SymbolTable SymbolTable = new SymbolTable();
 		public ushort CurrentLocation;
 		private bool FirstPass;
-
-		private static bool FixHaltsAndStops;
-		private static ushort PaddingValue;
 
 		// Common patterns for opcode ranges
 		private byte[] Pattern_BIT(IReadOnlyList<string> oprands, byte startopcode)
@@ -753,14 +754,14 @@ namespace Sharp_LR35902_Assembler {
 			foreach (var instruction in instructions) { 
 				try {
 					var upperinstruction = instruction.ToUpper();
-					if (instruction.EndsWith(':')) {
+					if (LabelSuffixes.Any(suffix => instruction.EndsWith(suffix))) {
 						var labelname = upperinstruction.Substring(0, upperinstruction.Length - 1).Trim();
 						AddLabelLocation(labelname, CurrentLocation);
 						continue;
 					}
 
 					byte[] compiledInstructions = null;
-					if (instruction.StartsWith('.') || instruction.StartsWith('#')) { // Compiler directives
+					if (DirectivePrefixes.Any(prefix => instruction.StartsWith(prefix))) { // Compiler directives
 						compiledInstructions = ParseDirective(instruction, exceptions, ref CurrentLocation);
 						if (compiledInstructions.Length == 0)
 							continue;

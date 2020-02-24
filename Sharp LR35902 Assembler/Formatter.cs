@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Common.Extensions;
 
 namespace Sharp_LR35902_Assembler {
 	public class Formatter {
 		private static readonly Regex WhitespaceRegex = new Regex(@"\s+", RegexOptions.Compiled);
+		private static readonly char[] CommentPrefixes = new[] { ';', '}' };
 
 		public static void Format(IList<string> instructions) {
 			RemoveComments(instructions);
@@ -21,7 +23,7 @@ namespace Sharp_LR35902_Assembler {
 		public static void RemoveComments(IList<string> instructions) {
 			for (var i = 0; i < instructions.Count; i++) {
 				var instruction = instructions[i];
-				var indexofcomment = instruction.IndexOf(';');
+				var indexofcomment = instruction.IndexOfFirst(CommentPrefixes);
 				if (indexofcomment == -1)
 					continue;
 

@@ -171,6 +171,26 @@ namespace Sharp_LR35902_Assembler_Tests {
 			);
 		}
 
+
+		[TestMethod]
+		public void CompileProgram_ReplacesLabelLocation_SupportsBraces()
+		{
+			var instructions = new List<string> {
+				"XOR A",
+				"AbCdEFDG {",
+				"JP AbCdEFDG",
+				"}"
+			};
+			Sharp_LR35902_Assembler.Formatter.Format(instructions);
+
+			var binary = new Sharp_LR35902_Assembler.Assembler().CompileProgram(instructions, null);
+
+			StartsWith(
+				new byte[] { 0xAF, 0xC3, 0x01, 0x00 },
+				binary
+			);
+		}
+
 		[TestMethod]
 		[ExpectedException(typeof(AggregateException))]
 		public void CompileProgram_ReplacesLabelLocation_ThrowIfNotFound() {
