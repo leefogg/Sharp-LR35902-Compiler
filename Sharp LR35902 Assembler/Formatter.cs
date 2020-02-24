@@ -5,7 +5,7 @@ namespace Sharp_LR35902_Assembler {
 	public class Formatter {
 		private static readonly Regex WhitespaceRegex = new Regex(@"\s+", RegexOptions.Compiled);
 
-		public static void Format(List<string> instructions) {
+		public static void Format(IList<string> instructions) {
 			RemoveComments(instructions);
 			LineBreakLabels(instructions);
 			RemoveComma(instructions);
@@ -13,12 +13,12 @@ namespace Sharp_LR35902_Assembler {
 			RemoveBlankLines(instructions);
 		}
 
-		public static void RemoveComma(List<string> instructions) {
+		public static void RemoveComma(IList<string> instructions) {
 			for (var i = 0; i < instructions.Count; i++)
 				instructions[i] = instructions[i].Replace(',', ' ');
 		}
 
-		public static void RemoveComments(List<string> instructions) {
+		public static void RemoveComments(IList<string> instructions) {
 			for (var i = 0; i < instructions.Count; i++) {
 				var instruction = instructions[i];
 				var indexofcomment = instruction.IndexOf(';');
@@ -29,7 +29,7 @@ namespace Sharp_LR35902_Assembler {
 			}
 		}
 
-		public static void RemoveBlankLines(List<string> instructions) {
+		public static void RemoveBlankLines(IList<string> instructions) {
 			for (var i = 0; i < instructions.Count; i++)
 				if (instructions[i].Length == 0) {
 					instructions.RemoveAt(i);
@@ -37,7 +37,7 @@ namespace Sharp_LR35902_Assembler {
 				}
 		}
 
-		public static void RemoveWhitespace(List<string> instructions) {
+		public static void RemoveWhitespace(IList<string> instructions) {
 			for (var i = 0; i < instructions.Count; i++) {
 				var line = instructions[i];
 				line = WhitespaceRegex.Replace(line, " ").Trim();
@@ -45,7 +45,7 @@ namespace Sharp_LR35902_Assembler {
 			}
 		}
 
-		public static void LineBreakLabels(List<string> instructions) {
+		public static void LineBreakLabels(IList<string> instructions) {
 			for (var i = 0; i < instructions.Count; i++) {
 				var line = instructions[i];
 				var colonindex = line.IndexOf(':');
@@ -60,7 +60,7 @@ namespace Sharp_LR35902_Assembler {
 			}
 		}
 
-		public static void EnsureNOPAfterSTOPOrHALT(List<string> instructions) {
+		public static void EnsureNOPAfterSTOPOrHALT(IList<string> instructions) {
 			for (var i = 0; i < instructions.Count; i++) {
 				var line = instructions[i].ToUpper();
 				if (!(line == "STOP" || line == "HALT"))

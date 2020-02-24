@@ -187,7 +187,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 		public void ParseDirective_Org() {
 			ushort currentlocation = 0;
 
-			new Sharp_LR35902_Assembler.Assembler().ParseDirective(".ORG 0x03", ref currentlocation);
+			new Sharp_LR35902_Assembler.Assembler().ParseDirective(".ORG 0x03", new List<Exception>(), ref currentlocation);
 
 			Assert.AreEqual(0x03, currentlocation);
 		}
@@ -198,7 +198,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 			ushort currentlocation = 10;
 
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
-			assembler.ParseDirective(".ORG align 16", ref currentlocation);
+			assembler.ParseDirective(".ORG align 16", new List<Exception>(), ref currentlocation);
 
 			Assert.AreEqual(16, currentlocation);
 		}
@@ -207,7 +207,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 		public void ParseDirective_SupportsHash() {
 			ushort currentlocation = 0;
 
-			new Sharp_LR35902_Assembler.Assembler().ParseDirective("#ORG 0x03", ref currentlocation);
+			new Sharp_LR35902_Assembler.Assembler().ParseDirective("#ORG 0x03", new List<Exception>(), ref currentlocation);
 
 			Assert.AreEqual(0x03, currentlocation);
 		}
@@ -216,7 +216,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 		public void ParseDirective_Byte() {
 			ushort currentlocation = 0;
 
-			var rom = new Sharp_LR35902_Assembler.Assembler().ParseDirective(".byte 1 0x01 0b00000001", ref currentlocation);
+			var rom = new Sharp_LR35902_Assembler.Assembler().ParseDirective(".byte 1 0x01 0b00000001", new List<Exception>(), ref currentlocation);
 			
 			StartsWith(
 				new byte[] {
@@ -233,7 +233,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 		public void ParseDirective_Byte_MustBe8Bit() {
 			ushort currentlocation = 1;
 
-			new Sharp_LR35902_Assembler.Assembler().ParseDirective(".byte 256", ref currentlocation);
+			new Sharp_LR35902_Assembler.Assembler().ParseDirective(".byte 256", new List<Exception>(), ref currentlocation);
 
 			Assert.AreEqual(2, currentlocation);
 		}
@@ -243,7 +243,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 		public void ParseDirective_Byte_FailedToParseThrows() {
 				ushort currentlocation = 1;
 
-			new Sharp_LR35902_Assembler.Assembler().ParseDirective(".byte 255 x",  ref currentlocation);
+			new Sharp_LR35902_Assembler.Assembler().ParseDirective(".byte 255 x", new List<Exception>(), ref currentlocation);
 
 			Assert.AreEqual(2, currentlocation);
 		}
@@ -252,7 +252,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 		public void ParseDirective_Text() {
 			ushort currentlocation = 0;
 
-			var rom = new Sharp_LR35902_Assembler.Assembler().ParseDirective(".text hello", ref currentlocation);
+			var rom = new Sharp_LR35902_Assembler.Assembler().ParseDirective(".text hello", new List<Exception>(), ref currentlocation);
 
 			StartsWith(
 				new byte[] {
@@ -271,7 +271,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 		public void CompileProgram_CompilerDirective_NotFound() {
 			ushort currentlocation = 0;
 
-			new Sharp_LR35902_Assembler.Assembler().ParseDirective("#somedirective", ref currentlocation);
+			new Sharp_LR35902_Assembler.Assembler().ParseDirective("#somedirective", new List<Exception>(), ref currentlocation);
 		}
 
 
@@ -392,7 +392,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 			ushort val = 0;
 			var assembler = new Sharp_LR35902_Assembler.Assembler();
 
-			assembler.ParseDirective("#DEFINE O 77", ref currentlocation);
+			assembler.ParseDirective("#DEFINE O 77", new List<Exception>(), ref currentlocation);
 			Assert.IsTrue(assembler.TryParseImmediate("O + 3", ref val));
 			Assert.AreEqual(80, val);
 		}

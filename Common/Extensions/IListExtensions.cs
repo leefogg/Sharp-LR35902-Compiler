@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Common.Extensions {
@@ -18,6 +19,16 @@ namespace Common.Extensions {
 			}
 
 			return sb.ToString();
+		}
+
+		public static int LastIndexOf<T>(this IList<T> self, Func<T, bool> critera)
+		{
+			var lastGoodIndex = 0;
+			for (int i = 0; i < self.Count; i++)
+				if (critera(self[i]))
+					lastGoodIndex = i;
+
+			return lastGoodIndex;
 		}
 	}
 }

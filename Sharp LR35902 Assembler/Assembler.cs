@@ -22,10 +22,14 @@ namespace Sharp_LR35902_Assembler {
 		private static OprandException TooFewOprandsException(int expectednumber) => new OprandException($"Expected at least {expectednumber} oprands");
 		private static OprandException UnknownOprand(string oprand) => new OprandException($"Invalid or unknown oprand '{oprand}'");
 
+		private readonly string CurrentPath; // The folder of the current file being processed
 		private readonly Dictionary<string, Func<string[], byte[]>> Instructions;
 		private SymbolTable SymbolTable = new SymbolTable();
 		public ushort CurrentLocation;
 		private bool FirstPass;
+
+		private static bool FixHaltsAndStops;
+		private static ushort PaddingValue;
 
 		// Common patterns for opcode ranges
 		private byte[] Pattern_BIT(IReadOnlyList<string> oprands, byte startopcode)
@@ -89,7 +93,9 @@ namespace Sharp_LR35902_Assembler {
 			return ListOf(nopcode, (byte)immediate);
 		}
 
-		public Assembler() {
+		public Assembler(string inputFile = "") { // Only use empty constructor for unit testing
+			CurrentPath = Path.GetDirectoryName(inputFile);
+
 			byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
 			byte[] Stop(string[] oprands) => ListOf<byte>(0x10);
 			byte[] BCDAdjustA(string[] oprands) => ListOf<byte>(0x27);
@@ -581,7 +587,8 @@ namespace Sharp_LR35902_Assembler {
 		}
 
 		public static void Main(string[] args) {
-			if (args.Length == 0 || args.Length == 1 && (args[0] == "/?" || args[0] == "-?")) {
+			if (args.Length == 0 || args.Length == 1 && (args[0] == "/?" || args[0] == "-?"))
+			{
 				Console.WriteLine("Compiles assembly code that uses the Sharp LR35902 instruction-set into a binary.");
 				Console.WriteLine();
 				Console.WriteLine("Compiler [options] [-in inputfilepath] [-out outputfilepath]");
@@ -596,8 +603,8 @@ namespace Sharp_LR35902_Assembler {
 
 			byte optimizationlevel = 1;
 			string inputpath = null, outputpath = null;
-			var fixhaltsandstops = false;
-			ushort padding = 0;
+			FixHaltsAndStops = false;
+			PaddingValue = 0;
 			var exportSymbolFile = false;
 			var fixHeaderChecksum = false;
 
@@ -613,10 +620,10 @@ namespace Sharp_LR35902_Assembler {
 						optimizationlevel = byte.Parse(args[++i]);
 						break;
 					case "-fhs":
-						fixhaltsandstops = true;
+						FixHaltsAndStops = true;
 						break;
 					case "-p":
-						if (!Parser.TryParseImmediate(args[++i], ref padding))
+						if (!Parser.TryParseImmediate(args[++i], ref PaddingValue))
 						{
 							Console.WriteLine("Error: Padding value could not be parsed");
 							return;
@@ -643,18 +650,13 @@ namespace Sharp_LR35902_Assembler {
 				return;
 			}
 
-
-			var instructions = new List<string>(File.ReadAllLines(inputpath));
-
-			var assembler = new Assembler();
-			Formatter.Format(instructions);
-			if (fixhaltsandstops)
-				Formatter.EnsureNOPAfterSTOPOrHALT(instructions);
+			var instructions = GetCleanFileContent(inputpath);
+			var assembler = new Assembler(inputpath);
 			//Optimizer.Optimize(instructions, optimizationlevel);
 			byte[] bytecode;
 			var exceptions = new List<Exception>();
 			try {
-				bytecode = assembler.CompileProgram(instructions, exceptions, (byte)padding);
+				bytecode = assembler.CompileProgram(instructions, exceptions, (byte)PaddingValue);
 			} catch (Exception e) {
 				Console.WriteLine(e.Message);
 				Console.WriteLine("Output file has not been written.");
@@ -670,13 +672,22 @@ namespace Sharp_LR35902_Assembler {
 
 			using (var outputfile = File.Create(outputpath))
 				outputfile.Write(bytecode, 0, bytecode.Length);
-			if (exportSymbolFile) {
+			if (exportSymbolFile)
+			{
 				var outputFolder = Path.GetDirectoryName(outputpath);
 				var outputName = Path.GetFileNameWithoutExtension(outputpath);
 				var symbolFilePath = Path.Combine(outputFolder, outputName + ".sym");
 				using (var symbolFile = File.CreateText(symbolFilePath))
 					symbolFile.Write(assembler.SymbolTable.CreateSymbolFile());
 			}
+		}
+
+		private static string[] GetCleanFileContent(string inputpath) {
+			var instructions = File.ReadAllLines(inputpath);
+			Formatter.Format(instructions);
+			if (FixHaltsAndStops)
+				Formatter.EnsureNOPAfterSTOPOrHALT(instructions);
+			return instructions;
 		}
 
 		public byte[] CompileProgram(IEnumerable<string> instructions, IList<Exception> exceptions, byte padding = 0) {
@@ -743,15 +754,14 @@ namespace Sharp_LR35902_Assembler {
 				try {
 					var upperinstruction = instruction.ToUpper();
 					if (instruction.EndsWith(':')) {
-						var labelname = upperinstruction.Substring(0, upperinstruction.Length - 1);
+						var labelname = upperinstruction.Substring(0, upperinstruction.Length - 1).Trim();
 						AddLabelLocation(labelname, CurrentLocation);
 						continue;
 					}
 
 					byte[] compiledInstructions = null;
-					if (instruction.StartsWith('.') || instruction.StartsWith('#')) // Compiler directives
-					{
-						compiledInstructions = ParseDirective(instruction, ref CurrentLocation);
+					if (instruction.StartsWith('.') || instruction.StartsWith('#')) { // Compiler directives
+						compiledInstructions = ParseDirective(instruction, exceptions, ref CurrentLocation);
 						if (compiledInstructions.Length == 0)
 							continue;
 					}
@@ -764,7 +774,7 @@ namespace Sharp_LR35902_Assembler {
 						compiledInstruction = ex.CompiledInstruction;
 					}
 					for (var i = 0; i < compiledInstruction.Length; i++, CurrentLocation++) {
-						if (rom[CurrentLocation] != 0)
+						if (rom[CurrentLocation] != PaddingValue)
 							exceptions.Add(new OverwriteException($"Overwrote value {rom[CurrentLocation]} at location {CurrentLocation}."));
 						rom[CurrentLocation] = compiledInstruction[i];
 					}
@@ -781,7 +791,7 @@ namespace Sharp_LR35902_Assembler {
 				SymbolTable.AddLabelLocation(labelname, location);
 		}
 
-		public byte[] ParseDirective(string instruction, ref ushort currentlocation) {
+		public byte[] ParseDirective(string instruction, IList<Exception> exceptions, ref ushort currentlocation) {
 			var upperinstruction = instruction.ToUpper();
 			var directive = upperinstruction.Substring(1, Math.Max(upperinstruction.IndexOf(' ') - 1, 2));
 			var parts = upperinstruction.Split(' ');
@@ -818,6 +828,15 @@ namespace Sharp_LR35902_Assembler {
 				case "DEFINE":
 					SetDefintion(parts[1], parts[2]);
 					return new byte[0];
+				case "IMPORT":
+					var path = instruction.Substring(instruction.IndexOf(' ') + 1);
+					path = Path.Combine(CurrentPath, path);
+					var fileContent = GetCleanFileContent(path);
+					var assembler = new Assembler(path);
+					var bytes = assembler.CompileProgram(fileContent, exceptions, (byte)PaddingValue);
+					var endIndex = bytes.LastIndexOf(b => b != PaddingValue); // Get the last changed byte
+					bytes = bytes.Take(endIndex+1).ToArray();
+					return bytes;
 				default: throw new NotFoundException($"Compiler directive '{directive}' not found.");
 			}
 		}
