@@ -6,7 +6,9 @@ namespace Common.Exceptions
 {
 	public class CoreException : Exception
 	{
-		public CoreException(string message) : base(message) { }
-		public CoreException(string message, Exception innerException) : base(message, innerException) { }
+		public string File;
+		public CoreException(string message, Exception ex = null, string source = null) : base(message, ex) {
+			File = source;
+		}
 	}
 }

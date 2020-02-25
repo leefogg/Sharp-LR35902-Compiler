@@ -6,7 +6,6 @@ namespace Common.Exceptions
 {
 	public class CompilationErrorException : ErrorException
 	{
-		public CompilationErrorException(string message) : base(message) { }
-		public CompilationErrorException(string message, Exception innerException) : base(message, innerException) { }
+		public CompilationErrorException(string message, Exception ex = null, string source = null) : base(message, ex, source) { }
 	}
 }

@@ -8,11 +8,7 @@ namespace Common.Exceptions
 	{
 		public byte[] CompiledInstruction { get; set; }
 
-		public CompilationWarningException(byte[] assembledInstruction, string message) : base(message)
-		{
-			CompiledInstruction = assembledInstruction;
-		}
-		public CompilationWarningException(byte[] assembledInstruction, string message, Exception innerException) : base(message, innerException)
+		public CompilationWarningException(byte[] assembledInstruction, string message, Exception innerException = null, string source = null) : base(message, innerException, source)
 		{
 			CompiledInstruction = assembledInstruction;
 		}

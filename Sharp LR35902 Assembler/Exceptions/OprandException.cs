@@ -7,7 +7,6 @@ namespace Sharp_LR35902_Assembler.Exceptions
 {
 	public class OprandException : CompilationErrorException
 	{
-		public OprandException(string message) : base(message) { }
-		public OprandException(string message, Exception innerException) : base(message, innerException) { }
+		public OprandException(string message, Exception innerException = null, string source = null) : base(message, innerException, source) { }
 	}
 }

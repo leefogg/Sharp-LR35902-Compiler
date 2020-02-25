@@ -6,7 +6,6 @@ namespace Common.Exceptions
 {
 	public abstract class WarningException : CoreException
 	{
-		public WarningException(string message) : base(message) { }
-		public WarningException(string message, Exception innerException) : base(message, innerException) { }
+		public WarningException(string message, Exception ex = null, string source = null) : base(message, ex, source) { }
 	}
 }

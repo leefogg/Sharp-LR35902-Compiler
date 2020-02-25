@@ -192,7 +192,6 @@ namespace Sharp_LR35902_Assembler_Tests {
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(AggregateException))]
 		public void CompileProgram_ReplacesLabelLocation_ThrowIfNotFound() {
 			var instructions = new[] {
 				"XOR A",
@@ -200,7 +199,10 @@ namespace Sharp_LR35902_Assembler_Tests {
 				"JP bottom"
 			};
 
-			new Sharp_LR35902_Assembler.Assembler().CompileProgram(instructions, null);
+			var exceptions = new List<Exception>(1);
+			new Sharp_LR35902_Assembler.Assembler().CompileProgram(instructions, exceptions);
+			Assert.IsTrue(exceptions.Count > 0);
+			Assert.IsInstanceOfType(exceptions[0], typeof(ErrorException));
 		}
 
 		[TestMethod]
@@ -249,7 +251,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
+		[ExpectedException(typeof(OprandException))]
 		public void ParseDirective_Byte_MustBe8Bit() {
 			ushort currentlocation = 1;
 
@@ -259,7 +261,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
+		[ExpectedException(typeof(OprandException))]
 		public void ParseDirective_Byte_FailedToParseThrows() {
 				ushort currentlocation = 1;
 
@@ -333,7 +335,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
+		[ExpectedException(typeof(OprandException))]
 		public void TryParseConstant_GetDefinition_ThrowsOnParseFail() { new Sharp_LR35902_Assembler.Assembler().SetDefintion("VRAM", "Hi there"); }
 
 		[TestMethod]
@@ -383,7 +385,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
+		[ExpectedException(typeof(SyntaxException))]
 		public void TryParseConstant_Math_Unblanced() {
 			ushort val = 0;
 
@@ -391,7 +393,7 @@ namespace Sharp_LR35902_Assembler_Tests {
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
+		[ExpectedException(typeof(SyntaxException))]
 		public void TryParseConstant_Math_Unblanced2() {
 			ushort val = 0;
 

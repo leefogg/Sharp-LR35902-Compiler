@@ -2,7 +2,6 @@
 
 namespace Common.Exceptions {
 	public class SyntaxException : CompilationErrorException {
-		public SyntaxException(string reason) : base(reason) { }
-		public SyntaxException(string reason, Exception innerexception) : base(reason, innerexception) { }
+		public SyntaxException(string message, Exception ex = null, string source = null) : base(message, ex, source) { }
 	}
 }

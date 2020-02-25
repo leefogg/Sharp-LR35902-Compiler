@@ -14,24 +14,25 @@ namespace Sharp_LR35902_Assembler {
 		private static readonly string[] Registers = {"B", "C", "D", "E", "H", "L", "(HL)", "A"};
 		private static readonly string[] RegisterPairs = {"BC", "DE", "HL", "SP"};
 		private static readonly string[] Conditions = {"NZ", "Z", "NC", "C"};
-		private static OprandException NoOprandMatchException => new OprandException("No known oprand match found");
-		private static OprandException UnexpectedInt16Exception => throw new OprandException("Unexpected 16-bit immediate, expected 8-bit immediate.");
-		private static SyntaxException UnknownRegisterException(string regName) => throw new SyntaxException($"Unknown register or register pair '{regName}'");
-		private static SyntaxException UnexpectedExpression(string expression) => throw new SyntaxException($"Unexpected expression '{expression}'");
-		private static SyntaxException UnknownExpression(string expression) => throw new SyntaxException($"Unknown expression '{expression}'");
-		private static OprandException TooFewOprandsException(int expectednumber) => new OprandException($"Expected at least {expectednumber} oprands");
-		private static OprandException UnknownOprand(string oprand) => new OprandException($"Invalid or unknown oprand '{oprand}'");
 		private static bool FixHaltsAndStops;
 		private static ushort PaddingValue;
 		public static readonly char[] LabelSuffixes = new[] { ':', '{' };
 		public static readonly char[] DirectivePrefixes = new[] { '.', '#' };
 
 		private readonly string CurrentPath; // The folder of the current file being processed
+		private readonly string CurrentFile; // The file being processed
 		private readonly Dictionary<string, Func<string[], byte[]>> Instructions;
 		private SymbolTable SymbolTable = new SymbolTable();
 		public ushort CurrentLocation;
 		private bool FirstPass;
 
+		private OprandException NoOprandMatchException => new OprandException("No known oprand match found", source: CurrentFile);
+		private OprandException UnexpectedInt16Exception => throw new OprandException("Unexpected 16-bit immediate, expected 8-bit immediate.", source: CurrentFile);
+		private SyntaxException UnknownRegisterException(string regName) => throw new SyntaxException($"Unknown register or register pair '{regName}'", source: CurrentFile);
+		private SyntaxException UnexpectedExpression(string expression) => throw new SyntaxException($"Unexpected expression '{expression}'", source: CurrentFile);
+		private SyntaxException UnknownExpression(string expression) => throw new SyntaxException($"Unknown expression '{expression}'", source: CurrentFile);
+		private OprandException TooFewOprandsException(int expectednumber) => new OprandException($"Expected at least {expectednumber} oprands", source: CurrentFile);
+		private OprandException UnknownOprand(string oprand) => new OprandException($"Invalid or unknown oprand '{oprand}'", source: CurrentFile);
 		// Common patterns for opcode ranges
 		private byte[] Pattern_BIT(IReadOnlyList<string> oprands, byte startopcode)
 		{
@@ -52,7 +53,7 @@ namespace Sharp_LR35902_Assembler {
 			return ListOf<byte>(0xCB, (byte)(startopcode + 8 * bit + registerindex));
 		}
 
-		private static byte[] Pattern_Line(IReadOnlyList<string> oprands, byte startopcode)
+		private byte[] Pattern_Line(IReadOnlyList<string> oprands, byte startopcode)
 		{
 			if (oprands.Count != 1)
 				throw new OprandException("Expected 1 register oprand");
@@ -64,7 +65,7 @@ namespace Sharp_LR35902_Assembler {
 			return ListOf<byte>(0xCB, (byte)(startopcode + registerindex));
 		}
 
-		private static byte[] Pattern_LineWithFastA(IReadOnlyList<string> oprands, byte rowstartopcode)
+		private byte[] Pattern_LineWithFastA(IReadOnlyList<string> oprands, byte rowstartopcode)
 		{
 			if (oprands.Count != 1)
 				throw TooFewOprandsException(1);
@@ -96,6 +97,7 @@ namespace Sharp_LR35902_Assembler {
 
 		public Assembler(string inputFile = "") { // Only use empty constructor for unit testing
 			CurrentPath = Path.GetDirectoryName(inputFile);
+			CurrentFile = Path.GetFileName(inputFile);
 
 			byte[] NoOp(string[] oprands) => ListOf<byte>(0x00);
 			byte[] Stop(string[] oprands) => ListOf<byte>(0x10);
@@ -109,14 +111,14 @@ namespace Sharp_LR35902_Assembler {
 			byte[] EnableInterrupts(string[] oprands) => ListOf<byte>(0xFB);
 			byte[] Return(string[] oprands) {
 				if (oprands.Length > 1)
-					throw new OprandException("Unexpected oprands");
+					throw new OprandException("Unexpected oprands", source: CurrentFile);
 
 				if (oprands.Length == 0)
 					return ListOf<byte>(0xC9);
 
 				var conditionindex = Conditions.IndexOf(oprands[0]);
 				if (conditionindex == -1)
-					throw new OprandException($"Unexpected condition '{oprands[0]}'");
+					throw new OprandException($"Unexpected condition '{oprands[0]}'", source: CurrentFile);
 
 				return ListOf((byte)(0xC0 + conditionindex * 8));
 			}
@@ -153,7 +155,7 @@ namespace Sharp_LR35902_Assembler {
 				if (oprand1offset == -1) {
 					ushort location = 0;
 					if (!TryParseImmediate(TrimBrackets(oprands[0]), ref location))
-						throw new OprandException($"Unexpected expression '{oprands[0]}', expected uint16.");
+						throw new OprandException($"Unexpected expression '{oprands[0]}', expected uint16.", source: CurrentFile);
 
 					var locationbytes = location.ToByteArray();
 					if (oprands[1] == "A")
@@ -173,7 +175,7 @@ namespace Sharp_LR35902_Assembler {
 					// Pointed to by immediate
 					ushort location = 0;
 					if (!TryParseImmediate(TrimBrackets(oprands[1]), ref location))
-						throw new OprandException($"Unexpected expression '{oprands[1]}', expected uint16.");
+						throw new OprandException($"Unexpected expression '{oprands[1]}', expected uint16.", source: CurrentFile);
 					var locationbytes = location.ToByteArray();
 					return new byte[] {0xFA, locationbytes[0], locationbytes[1]};
 				}
@@ -185,7 +187,7 @@ namespace Sharp_LR35902_Assembler {
 
 					ushort immediate = 0;
 					if (!TryParseImmediate(oprands[1], ref immediate) || !immediate.isByte())
-						throw new OprandException($"Unexpected expression '{oprands[1]}', expected uint8.");
+						throw new OprandException($"Unexpected expression '{oprands[1]}', expected uint8.", source: CurrentFile);
 
 					return new[] {(byte)bytecode, (byte)immediate};
 				} else // 0x40 - 0x6F
@@ -221,7 +223,7 @@ namespace Sharp_LR35902_Assembler {
 				}
 
 				if (oprands[0] != "A")
-					throw new OprandException($"Cannot add into register '{oprands[0]}'. Can only add into register A and HL");
+					throw new OprandException($"Cannot add into register '{oprands[0]}'. Can only add into register A and HL", source: CurrentFile);
 
 				var registerindex = Registers.IndexOf(oprands[1]);
 				if (registerindex == -1) {
@@ -245,7 +247,7 @@ namespace Sharp_LR35902_Assembler {
 					throw TooFewOprandsException(2);
 
 				if (oprands[0] != "A")
-					throw new OprandException($"Cannot add into register '{oprands[0]}'. Can only add into register A");
+					throw new OprandException($"Cannot add into register '{oprands[0]}'. Can only add into register A", source: CurrentFile);
 
 				var registerindex = Registers.IndexOf(oprands[1]);
 				if (registerindex != -1)
@@ -266,7 +268,7 @@ namespace Sharp_LR35902_Assembler {
 					throw TooFewOprandsException(2);
 
 				if (oprands[0] != "A")
-					throw new OprandException($"Cannot subtract into register '{oprands[0]}'. Can only subtract into register A");
+					throw new OprandException($"Cannot subtract into register '{oprands[0]}'. Can only subtract into register A", source: CurrentFile);
 
 				var registerindex = Registers.IndexOf(oprands[1]);
 				if (registerindex > -1)
@@ -286,7 +288,7 @@ namespace Sharp_LR35902_Assembler {
 					throw TooFewOprandsException(2);
 
 				if (oprands[0] != "A")
-					throw new OprandException($"Cannot subtract into register '{oprands[0]}'. Can only subtract into register A");
+					throw new OprandException($"Cannot subtract into register '{oprands[0]}'. Can only subtract into register A", source: CurrentFile);
 
 				var registerindex = Registers.IndexOf(oprands[1]);
 				if (registerindex != -1)
@@ -345,7 +347,7 @@ namespace Sharp_LR35902_Assembler {
 				var vectors = new[] {"0", "8", "10", "18", "20", "28", "30", "38"};
 				var vectorindex = vectors.IndexOf(oprands[0]);
 				if (vectorindex == -1)
-					throw new OprandException($"Unknown reset vector '{oprands[0]}'");
+					throw new OprandException($"Unknown reset vector '{oprands[0]}'", source: CurrentFile);
 
 				return ListOf((byte)(0xC7 + 8 * vectorindex));
 			}
@@ -439,9 +441,9 @@ namespace Sharp_LR35902_Assembler {
 				}
 				void checkOffset(int range, byte[] bytecode) {
 					if (range > 127)
-						throw new InvalidRangeExcpetion(bytecode, "JR destination out of range. Can only jump forward 127 bytes.");
+						throw new InvalidRangeExcpetion(bytecode, "JR destination out of range. Can only jump forward 127 bytes.", source: CurrentFile);
 					if (range < -128)
-						throw new InvalidRangeExcpetion(bytecode, "JR destination out of range. Can only jump backward 128 bytes.");
+						throw new InvalidRangeExcpetion(bytecode, "JR destination out of range. Can only jump backward 128 bytes.", source: CurrentFile);
 				}
 
 				var conditionindex = Conditions.IndexOf(oprands[0]);
@@ -515,7 +517,7 @@ namespace Sharp_LR35902_Assembler {
 					throw TooFewOprandsException(2);
 
 				if (oprands[0] != "SP")
-					throw new OprandException("Can only add 8-bit immediate to SP");
+					throw new OprandException("Can only add 8-bit immediate to SP", source: CurrentFile);
 
 				ushort immediate = 0;
 				if (!TryParseImmediate(oprands[1], ref immediate))
@@ -658,6 +660,10 @@ namespace Sharp_LR35902_Assembler {
 			var exceptions = new List<Exception>();
 			try {
 				bytecode = assembler.CompileProgram(instructions, exceptions, (byte)PaddingValue);
+				printExceptions(exceptions);
+
+				if (exceptions.Any(ex => ex is ErrorException))
+					throw new CompilationErrorException("One or more errors occured while compiling source code.");
 			} catch (Exception e) {
 				Console.WriteLine(e.Message);
 				Console.WriteLine("Output file has not been written.");
@@ -691,13 +697,17 @@ namespace Sharp_LR35902_Assembler {
 			return instructions;
 		}
 
-		public byte[] CompileProgram(IEnumerable<string> instructions, IList<Exception> exceptions, byte padding = 0) {
+		public byte[] CompileProgram(IEnumerable<string> instructions, IList<Exception> exceptions, byte padding = 0)
+		{
 			exceptions = exceptions ?? new List<Exception>();
 			byte[] rom;
-			try {
+			try
+			{
 				FirstPass = true;
-				rom = getROM(instructions, exceptions, padding);
-			} catch {
+				rom = getROM(instructions, new List<Exception>(), padding);
+			}
+			catch
+			{
 				/*  Swallow all exceptions as they'll be raised on 2nd pass.
 					Doing a 2-pass assembler as we need to find label locations 
 					and we cant do that without at least knowing the length of each instruction.
@@ -710,39 +720,37 @@ namespace Sharp_LR35902_Assembler {
 			FirstPass = false;
 			CurrentLocation = 0;
 			SymbolTable.ClearDefinitions();
-			exceptions.Clear();
 
 			rom = getROM(instructions, exceptions, padding);
-			var containedError = false;
-			foreach (var exception in exceptions)
-			{
-				if (exception is WarningException warning) {
-					Console.Write("Warning: ");
-					printException(warning);
-				} else if (exception is ErrorException error) { 
-					Console.Write("Error: ");
-					printException(error);
-				}
-
-				if (!(exception is WarningException))
-					containedError = true;
-			}
-			if (containedError)
-				throw new AggregateException("One or more errors occured while compiling source code.", exceptions);
 
 			return rom;
 		}
 
-		private static void printException(CoreException ex) {
-			var indentation = 0;
-			var sb = new StringBuilder();
+		public static void printExceptions(IList<Exception> exceptions)
+		{
+			foreach (var exception in exceptions)
+			{
+				if (exception is WarningException warning)
+				{
+					if (!string.IsNullOrEmpty(warning.File))
+						Console.Write($"[{warning.File}] ");
+					Console.Write($"Warning:  ");
+					printExceptionRecursive(warning);
+				}
+				else if (exception is ErrorException error)
+				{
+					if (!string.IsNullOrEmpty(error.File))
+						Console.Write($"[{error.File}] ");
+					Console.Write($"Error: ");
+					printExceptionRecursive(error);
+				}
+			}
+		}
+
+		private static void printExceptionRecursive(CoreException ex) {
 			Exception innerException = ex;
 			while (innerException != null) {
-				sb.Clear();
-				for (var i = 0; i < indentation; i++)
-					sb.Append('\t');
-				sb.Append(innerException.Message);
-				Console.WriteLine(sb);
+				Console.WriteLine(innerException.Message);
 
 				innerException = innerException?.InnerException;
 			}
@@ -801,11 +809,11 @@ namespace Sharp_LR35902_Assembler {
 					if (parts[1] == "ALIGN") {
 						ushort alignment = 0;
 						if (!TryParseImmediate(parts[2], ref alignment))
-							throw new ArgumentException("Expected uint16 location on org instruction.");
+							throw new OprandException("Expected uint16 location on org instruction.", source: CurrentFile);
 						currentlocation += (ushort)(alignment - (currentlocation % alignment));
 					} else {
 						if (!TryParseImmediate(parts[1], ref currentlocation))
-							throw new ArgumentException("Expected uint16 location on org instruction.");
+							throw new OprandException("Expected uint16 location on org instruction.", source: CurrentFile);
 					}
 					return new byte[0];
 				case "BYTE":
@@ -815,9 +823,9 @@ namespace Sharp_LR35902_Assembler {
 						var value = stringvalues[i];
 						ushort val = 0;
 						if (!TryParseImmediate(value, ref val))
-							throw new ArgumentException($"Unable to parse expression '{value}'.");
+							throw new OprandException($"Unable to parse expression '{value}'.", source: CurrentFile);
 						if (!val.isByte())
-							throw new ArgumentException("All values in BYTE directive must be uint8s.");
+							throw new OprandException("All values in BYTE directive must be uint8s.", source: CurrentFile);
 
 						values[i] = (byte)val;
 					}
@@ -838,7 +846,7 @@ namespace Sharp_LR35902_Assembler {
 					var endIndex = bytes.LastIndexOf(b => b != PaddingValue); // Get the last changed byte
 					bytes = bytes.Take(endIndex+1).ToArray();
 					return bytes;
-				default: throw new NotFoundException($"Compiler directive '{directive}' not found.");
+				default: throw new NotFoundException($"Compiler directive '{directive}' not found.", source: CurrentFile);
 			}
 		}
 
@@ -847,13 +855,13 @@ namespace Sharp_LR35902_Assembler {
 			try {
 				return compileInstruction(parts[0], parts.Skip(1).ToArray());
 			} catch (CompilationErrorException ee) {
-				throw new CompilationErrorException($"Unable to compile malformed instruction {code}", ee);
+				throw new CompilationErrorException($"Unable to compile malformed instruction {code}", ee, CurrentFile);
 			}
 		}
 
 		private byte[] compileInstruction(string opcode, string[] oprands) {
 			if (!Instructions.TryGetValue(opcode, out var method))
-				throw new NotFoundException($"Instruction '{opcode}' not found");
+				throw new NotFoundException($"Instruction '{opcode}' not found", source: CurrentFile);
 
 			return method(oprands);
 		}
@@ -861,7 +869,7 @@ namespace Sharp_LR35902_Assembler {
 		public void SetDefintion(string key, string value = "0") {
 			ushort ushortval = 0;
 			if (!TryParseImmediate(value, ref ushortval))
-				throw new ArgumentException("Definitions may only be integer");
+				throw new OprandException("Definitions may only be integer", source: CurrentFile);
 
 			SetDefintion(key, ushortval);
 		}
@@ -901,7 +909,7 @@ namespace Sharp_LR35902_Assembler {
 
 		private ushort parseExpression(List<string> parts) {
 			if (parts.Count < 3 || (parts.Count - 3) % 2 == 1)
-				throw new ArgumentException("Unbalanced expression");
+				throw new SyntaxException("Unbalanced expression", source: CurrentFile);
 
 			while (parts.Count >= 3) {
 				var left = parts[0];
@@ -910,10 +918,10 @@ namespace Sharp_LR35902_Assembler {
 
 				ushort leftushort = 0;
 				if (!TryParseImmediate(left, ref leftushort))
-					throw new FormatException($"Unable to parse expression '{left}' to uint16.");
+					throw new SyntaxException($"Unable to parse expression '{left}' to uint16.", source: CurrentFile);
 				ushort rightushort = 0;
 				if (!TryParseImmediate(right, ref rightushort))
-					throw new FormatException($"Unable to parse expression '{rightushort}' to uint16.");
+					throw new SyntaxException($"Unable to parse expression '{rightushort}' to uint16.", source: CurrentFile);
 
 				switch (op) {
 					case "+":
@@ -922,7 +930,7 @@ namespace Sharp_LR35902_Assembler {
 					case "-":
 						leftushort -= rightushort;
 						break;
-					default: throw new NotImplementedException($"Operator '{parts[1]}' not supported");
+					default: throw new SyntaxException($"Operator '{parts[1]}' not supported", source: CurrentFile);
 				}
 
 				parts.RemoveRange(0, 3);
