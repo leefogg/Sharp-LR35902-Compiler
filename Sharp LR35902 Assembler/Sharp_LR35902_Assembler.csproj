@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
 	<RuntimeFrameworkVersion>2.1.1</RuntimeFrameworkVersion>
 	<PlatformTarget>AnyCPU</PlatformTarget>
 	<RuntimeIdentifier>win-x64</RuntimeIdentifier>
@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
-	<PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0" />
+	<PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.8" />
   </ItemGroup>
 
 </Project>

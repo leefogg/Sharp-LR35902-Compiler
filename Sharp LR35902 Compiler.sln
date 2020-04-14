@@ -1,23 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2000
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestGenerator", "TestGenerator\TestGenerator.csproj", "{F8C18F9F-4BCB-49B5-B7A7-084A38DBB1FF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{47D1906E-CDC0-4F4D-B527-02DB8C5E80AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharp_LR35902_Compiler", "Sharp LR35902 Compiler\Sharp_LR35902_Compiler.csproj", "{65AD8C33-A468-43DA-9D6D-B35F22815BDD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharp LR35902 Compiler", "Sharp LR35902 Compiler\Sharp_LR35902_Compiler.csproj", "{65AD8C33-A468-43DA-9D6D-B35F22815BDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharp_LR35902_Compiler_Tests", "Sharp LR35902 Compiler Tests\Sharp_LR35902_Compiler_Tests.csproj", "{36A86FA1-0C60-4FEE-8E06-74C6FB7865A6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharp LR35902 Compiler Tests", "Sharp LR35902 Compiler Tests\Sharp_LR35902_Compiler_Tests.csproj", "{36A86FA1-0C60-4FEE-8E06-74C6FB7865A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharp_LR35902_Assembler", "Sharp LR35902 Assembler\Sharp_LR35902_Assembler.csproj", "{70F2D05E-5524-4CE7-A69B-8C893C8978E2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharp LR35902 Assembler", "Sharp LR35902 Assembler\Sharp_LR35902_Assembler.csproj", "{70F2D05E-5524-4CE7-A69B-8C893C8978E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharp_LR35902_Assembler_Tests", "Sharp LR35902 Assembler Tests\Sharp_LR35902_Assembler_Tests.csproj", "{6676F7EE-52B2-4076-BE09-2475FFFBA6B8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharp LR35902 Assembler Tests", "Sharp LR35902 Assembler Tests\Sharp_LR35902_Assembler_Tests.csproj", "{6676F7EE-52B2-4076-BE09-2475FFFBA6B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test_Common", "Test Common\Test_Common.csproj", "{5586D261-6B4B-4B12-8099-906E24BFCF30}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test Common", "Test Common\Test_Common.csproj", "{5586D261-6B4B-4B12-8099-906E24BFCF30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common_Tests", "Common Tests\Common_Tests.csproj", "{2F2B802F-E077-4C22-999F-04FE9C037D9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common Tests", "Common Tests\Common_Tests.csproj", "{2F2B802F-E077-4C22-999F-04FE9C037D9B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{4F74F1F7-2222-4CD8-9AC4-991CBA64A3D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,6 @@ Global
 		{F8C18F9F-4BCB-49B5-B7A7-084A38DBB1FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8C18F9F-4BCB-49B5-B7A7-084A38DBB1FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8C18F9F-4BCB-49B5-B7A7-084A38DBB1FF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{47D1906E-CDC0-4F4D-B527-02DB8C5E80AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{47D1906E-CDC0-4F4D-B527-02DB8C5E80AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{47D1906E-CDC0-4F4D-B527-02DB8C5E80AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{47D1906E-CDC0-4F4D-B527-02DB8C5E80AA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{65AD8C33-A468-43DA-9D6D-B35F22815BDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{65AD8C33-A468-43DA-9D6D-B35F22815BDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65AD8C33-A468-43DA-9D6D-B35F22815BDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -57,6 +53,10 @@ Global
 		{2F2B802F-E077-4C22-999F-04FE9C037D9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F2B802F-E077-4C22-999F-04FE9C037D9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F2B802F-E077-4C22-999F-04FE9C037D9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F74F1F7-2222-4CD8-9AC4-991CBA64A3D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F74F1F7-2222-4CD8-9AC4-991CBA64A3D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F74F1F7-2222-4CD8-9AC4-991CBA64A3D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F74F1F7-2222-4CD8-9AC4-991CBA64A3D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
